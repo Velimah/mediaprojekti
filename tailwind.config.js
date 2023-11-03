@@ -5,7 +5,14 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundSize: {
+        '50': '50px 50px',
+      },
+      backgroundImage: {
+        'gridBg': 'linear-gradient(to right, #c9c9c9 1px, transparent 1px), linear-gradient(to bottom, #c9c9c9 1px, transparent 1px);',
+      }
+    },
   },
   plugins: [],
 }
