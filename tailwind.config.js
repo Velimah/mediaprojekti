@@ -7,10 +7,10 @@ export default {
   theme: {
     extend: {
       backgroundSize: {
-        '50': '50px 50px',
+        '20': '20px 20px',
       },
       backgroundImage: {
-        'gridBg': 'linear-gradient(to right, #c9c9c9 1px, transparent 1px), linear-gradient(to bottom, #c9c9c9 1px, transparent 1px);',
+        'gridBg': 'linear-gradient(to right, rgba(201, 201, 201, 0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(201, 201, 201, 0.5) 1px, transparent 1px);',
       }
     },
   },

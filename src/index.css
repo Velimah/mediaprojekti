@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-50 bg-gridBg;
+    @apply bg-20 bg-gridBg bg-white;
   }
 }
 
