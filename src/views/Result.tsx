@@ -1,8 +1,19 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useChat } from "../contexts/ChatContext";
 
 const Result = () => {
+  const { state, dispatch } = useChat();
+  const { question, answer, editedanswer } = state;
+
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    // Update the code state with the current answer
+    if (answer) {
+      setCode(answer);
+    }
+  }, [answer]);
 
   const handleRunCode = () => {
     if (previewFrame.current) {
@@ -47,7 +58,7 @@ const Result = () => {
                 rows={15}
                 cols={50}
                 className="border p-2 w-full bg-slate-100 border-gray-300 rounded-lg overflow-y-scroll resize-none"
-              >aaa</textarea>
+              ></textarea>
             </div>
             <div className="mb-4 space-x-2">
               <button
