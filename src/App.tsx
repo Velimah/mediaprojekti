@@ -1,6 +1,7 @@
 import './App.css';
 import {Routes, Route, HashRouter} from 'react-router-dom';
 import Home from './views/Home';
+import Result from './views/Result';
 import Layout from './views/Layout';
 import ScrollToTop from './hooks/ScrollHook';
 
@@ -15,6 +16,7 @@ const App = () => {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/result" element={<Result />} />
         </Route>
       </Routes>
     </HashRouter>
