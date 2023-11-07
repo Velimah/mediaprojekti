@@ -6,6 +6,9 @@
   body {
     @apply bg-20 bg-gridBg bg-white;
   }
+  header {
+    @apply w-full;
+  }
 }
 
 :root {
