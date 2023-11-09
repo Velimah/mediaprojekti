@@ -25,7 +25,7 @@ const Home = () => {
 
   return (
     <>
-      <article className="w-screen h-[calc(100vh-5rem)] flex items-center justify-center">
+      <article className="w-full h-[calc(100vh-10rem)] flex items-center justify-center">
         <section className="flex flex-col w-[35rem] bg-white rounded-md shadow-lg">
           <div id="header">
             <figure className="bg-gray-200 h-36 rounded-t-md">
