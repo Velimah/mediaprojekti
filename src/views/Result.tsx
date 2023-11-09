@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
 
 const Result = () => {
-  const { state, dispatch } = useChat();
-  const { question, answer, editedanswer } = state;
+  const { state } = useChat();
+  const { question, answer /*, editedanswer*/ } = state;
+  console.log("Question: ", question)
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);

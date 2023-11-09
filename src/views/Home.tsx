@@ -1,79 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { useChat } from "../contexts/ChatContext";
+import React, { useState } from "react";
+import { useChatGPT } from "../hooks/ApiHooks";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 
 const Home = () => {
-  const navigate = useNavigate();
-  const { state, dispatch } = useChat();
-  const [loading, setLoading] = useState(false);
+  const { postQuestion, loading } = useChatGPT();
   const [newQuestion, setNewQuestion] = useState("");
-  const urli: string = "http://localhost:8000/gpt/completions";
+  const navigate = useNavigate();
 
-  const askChatGPT = (e: React.FormEvent) => {
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message: newQuestion }),
-    };
-
+  const handleForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newQuestion.trim() !== "") {
-      dispatch({ type: "SET_QUESTION", payload: newQuestion });
 
-      setLoading(true);
+    try {
+      const data = await postQuestion("html", newQuestion);
+      console.log(data);
 
-      fetch(urli, options)
-        .then((response) => response.json())
-        .then((data) => {
-          dispatch({
-            type: "SET_ANSWER",
-            payload: data.choices[0].message.content,
-          });
-        })
-        .catch((error) => {
-          console.error("API Error:", error);
-        })
-        .finally(() => {
-          setLoading(false);
-          navigate("/result");
-        });
-      setNewQuestion("");
+    } catch (e) {
+      console.log("error: ", e);
+    } finally {
+      navigate("/result");
     }
+    setNewQuestion("");
   };
-
-  useEffect(() => {
-    if (state.question) {
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: state.question }),
-      };
-
-      setLoading(true);
-
-      fetch(urli, options)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("answer:", data.choices[0].message.content);
-          dispatch({
-            type: "SET_ANSWER",
-            payload: data.choices[0].message.content,
-          });
-        })
-        .catch((error) => {
-          console.error("API Error:", error);
-        })
-        .finally(() => {
-          setLoading(false);
-          navigate("/result");
-        });
-    }
-  }, [state.question, dispatch, navigate]);
 
   return (
     <>
@@ -159,7 +107,7 @@ const Home = () => {
             </div>
             <form
               className="bg-gray-200 p-4 rounded-b-md"
-              onSubmit={askChatGPT}
+              onSubmit={handleForm}
             >
               <label className="relative">
                 <input
