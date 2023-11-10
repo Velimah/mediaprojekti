@@ -43,6 +43,8 @@ const Result = () => {
     // Save logic here
   };
 
+  handleRunCode();
+
   return (
     <>
       <div className="w-[1000px]">
@@ -89,6 +91,7 @@ const Result = () => {
             </div>
           </div>
         </div>
+        {/*
         <div className="mb-4">
           <button
             onClick={handleRunCode}
@@ -96,7 +99,7 @@ const Result = () => {
           >
             Show preview
           </button>
-        </div>
+        </div>*/}
         <div className="bg-white flex flex-col items-center border border-black rounded">
           <h2 className="bg-black text-white font-bold w-full">Preview</h2>
           <iframe
@@ -105,7 +108,7 @@ const Result = () => {
             sandbox="allow-same-origin"
             width="100%"
             height={500}
-            className="border-black bg-slate-100"
+            className="border-black bg-slate-100 resize-x"
           ></iframe>
         </div>
       </div>

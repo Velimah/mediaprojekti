@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useChat } from "../contexts/ChatContext";
 
+// TODO: Update to backend URL
 const urli: string = "http://localhost:8000/gpt/completions";
 
 const useChatGPT = () => {
