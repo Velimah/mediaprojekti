@@ -34,13 +34,11 @@ const useChatGPT = () => {
 
       const data = await response.text();
 
-      dispatch({ type: "SET_ANSWER", payload: data });
-
-      console.log(data);
+      console.log('fetch data', data);
 
       setResult(data);
 
-      return result;
+      return data;
     } catch (error) {
       console.error("API Error:", error);
       throw error;
