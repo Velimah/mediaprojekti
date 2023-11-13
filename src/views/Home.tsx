@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import { useChatGPT } from "../hooks/ApiHooks";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { useChat } from "../contexts/ChatContext";
 
 const Home = () => {
   const { postQuestion, loading } = useChatGPT();
   const [newQuestion, setNewQuestion] = useState("");
   const navigate = useNavigate();
+  const { dispatch } = useChat();
 
   const handleForm = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const data = await postQuestion("html", newQuestion);
+      const data = await postQuestion("search_engine_optimization", newQuestion);
       console.log(data);
+      dispatch({ type: "SET_ANSWER", payload: data });
 
     } catch (e) {
       console.log("error: ", e);
@@ -161,6 +164,7 @@ const Home = () => {
                 </label>
               </div>
             </form>
+            <button className="rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold" onClick={() => navigate("/advanced")}>Advanced</button>
           </section>
         </section>
         {loading && <Loader />}

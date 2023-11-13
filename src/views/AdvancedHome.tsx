@@ -16,7 +16,7 @@ const AdvancedHome = () => {
 	const [formValues, setFormValues] = useState<FormValues>({
     topic: "rpg games",
     cssLibrary: "tailwind",
-    colors: "#88A0A8, #B4CEB3, #DBD3C9",
+    colors: "#88A0A8",
     linkCount: "3",
     linkNames: "Home,About,Contact",
     heroParagraphCount: "3",
@@ -26,66 +26,72 @@ const AdvancedHome = () => {
     mainWordCount: "300",
   });
 
-
   const handleForm = async (e: React.FormEvent) => {
 		const htmlArray: string[] = [];
     e.preventDefault();
 
-		const selectedTemplate: PromptTemplate = 'createNavigation';
-		const selectedTemplate2: PromptTemplate = 'createHeroSection';
-		const selectedTemplate3: PromptTemplate = 'createMainSection';
-		const selectedTemplate4: PromptTemplate = 'createTableSection';
-		const selectedTemplate5: PromptTemplate = 'createFooter';
-		const generatedPrompt = getPromptTemplate(selectedTemplate, formValues);
-		const generatedPrompt2 = getPromptTemplate(selectedTemplate2, formValues);
-		const generatedPrompt3 = getPromptTemplate(selectedTemplate3, formValues);
-		const generatedPrompt4 = getPromptTemplate(selectedTemplate4, formValues);
-		const generatedPrompt5 = getPromptTemplate(selectedTemplate5, formValues);
+		const createNavigation: PromptTemplate = 'createNavigation';
+		const createHeroSection: PromptTemplate = 'createHeroSection';
+		const createMainSection: PromptTemplate = 'createMainSection';
+		const createTableSection: PromptTemplate = 'createTableSection';
+		const createFooter: PromptTemplate = 'createFooter';
+		const CreateHead: PromptTemplate = 'CreateHead';
+		const createNavigationPrompt = getPromptTemplate(createNavigation, formValues);
+		const createHeroSectionPrompt = getPromptTemplate(createHeroSection, formValues);
+		const createMainSectionPrompt = getPromptTemplate(createMainSection, formValues);
+		const createTableSectionPrompt = getPromptTemplate(createTableSection, formValues);
+		const createFooterPrompt = getPromptTemplate(createFooter, formValues);
+		const CreateHeadPrompt = getPromptTemplate(CreateHead, formValues);
 
 		console.log('formValues', formValues);
 
     try {
-      const data = await postQuestion("html_block", generatedPrompt);
+      const data = await postQuestion("html_block", createNavigationPrompt);
 			const newData = removeHtmlMarkdown(data);
 			console.log('newData', newData);
 			htmlArray.push(newData);
 
-			const data2 = await postQuestion("html_block", generatedPrompt2);
+			const data2 = await postQuestion("html_block", createHeroSectionPrompt);
 			const newData2 = removeHtmlMarkdown(data2);
 			console.log('newData2', newData2);
 			htmlArray.push(newData2);
 
-			const data3 = await postQuestion("html_block", generatedPrompt3);
+			const data3 = await postQuestion("html_block", createMainSectionPrompt);
 			const newData3 = removeHtmlMarkdown(data3);
 			console.log('newData3', newData3);
 			htmlArray.push(newData3);
 
-			const data4 = await postQuestion("html_block", generatedPrompt4);
+			const data4 = await postQuestion("html_block", createTableSectionPrompt);
 			const newData4 = removeHtmlMarkdown(data4);
 			console.log('newData4', newData4);
 			htmlArray.push(newData4);
 
-			const data5 = await postQuestion("html_block", generatedPrompt5);
+			const data5 = await postQuestion("html_block", createFooterPrompt);
 			const newData5 = removeHtmlMarkdown(data5);
 			console.log('newData5', newData5);
 			htmlArray.push(newData5);
 
-      htmlArray.unshift(`<!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
-        <title></title>
-      </head>
-      <body>`);
-    // Add a string to the last spot
-    htmlArray.push(`</body>
-		</html>`);
+			const data6 = await postQuestion("create_head", CreateHeadPrompt+htmlArray.join(''));
+			console.log('data6', data6);
+			const newData6 = removeHtmlMarkdown(data6);
+			console.log('newData6', newData6);
 
-    const htmlString = htmlArray.join('');
-		console.log(htmlString);
-		dispatch({ type: "SET_ANSWER", payload: htmlString });
+			let bodytag = `
+<body>
+`;
+			htmlArray.unshift(bodytag);
+
+			htmlArray.unshift(newData6);
+
+			let documentHead = `<!DOCTYPE html>
+<html lang="en">`;
+      htmlArray.unshift(documentHead);
+
+			htmlArray.push(`</body>
+</html>`);
+
+			const htmlString = htmlArray.join('');
+			dispatch({ type: "SET_ANSWER", payload: htmlString });
 
     } catch (e) {
       console.log("error: ", e);
@@ -187,7 +193,7 @@ const AdvancedHome = () => {
                   placeholder="Give me a topic for website ..."
                   value={formValues.topic}
                   onChange={(e) => setFormValues({ ...formValues, topic: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
 								<label className="relative"> Number of nav links
@@ -197,7 +203,7 @@ const AdvancedHome = () => {
                   placeholder="Give me navigation link count..."
                   value={formValues.linkCount}
                   onChange={(e) => setFormValues({ ...formValues, linkCount: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
 								<label className="relative"> Nav link names
@@ -207,7 +213,7 @@ const AdvancedHome = () => {
                   placeholder="Give me navigation link names ..."
                   value={formValues.linkNames}
 									onChange={(e) => setFormValues({ ...formValues, linkNames: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
 								<label className="relative"> Hero section paragraph count
@@ -217,7 +223,7 @@ const AdvancedHome = () => {
                   placeholder="Give me hero paragraph count ..."
                   value={formValues.heroParagraphCount}
                   onChange={(e) => setFormValues({ ...formValues, heroParagraphCount: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
 								<label className="relative"> Hero section word count
@@ -227,7 +233,7 @@ const AdvancedHome = () => {
                   placeholder="Give me hero section word count..."
                   value={formValues.wordCount}
                   onChange={(e) => setFormValues({ ...formValues, wordCount: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
 								<label className="relative"> Main section paragraph count
@@ -237,7 +243,7 @@ const AdvancedHome = () => {
                   placeholder="Give me main section paragraph count ..."
                   value={formValues.mainParagraphCount}
                   onChange={(e) => setFormValues({ ...formValues, mainParagraphCount: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
 								<label className="relative"> Main section word count
@@ -247,7 +253,7 @@ const AdvancedHome = () => {
                   placeholder="Give me main section word count ..."
                   value={formValues.mainWordCount}
                   onChange={(e) => setFormValues({ ...formValues, mainWordCount: e.target.value })}
-                  className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                  className="rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
 								<label className="relative"> Tables section details
@@ -257,7 +263,7 @@ const AdvancedHome = () => {
                   placeholder="Give me table section details ..."
                   value={formValues.tableDetails}
                   onChange={(e) => setFormValues({ ...formValues, tableDetails: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
               <div className="flex py-4 md:flex-row flex-col items-stretch md:items-center">
@@ -287,6 +293,7 @@ const AdvancedHome = () => {
                 </label>
               </div>
             </form>
+						<button className="rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold" onClick={() => navigate("/")}>Home</button>
           </section>
         </section>
         {loading && <Loader />}

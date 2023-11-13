@@ -1,10 +1,10 @@
 export type PromptTemplate =
-  | "html"
   | "createNavigation"
   | "createHeroSection"
   | "createMainSection"
   | "createTableSection"
-  | "createFooter";
+  | "createFooter"
+  | "CreateHead";
 
  export interface FormValues {
     topic: string;
@@ -34,44 +34,46 @@ export type PromptTemplate =
     } = formValues;
 
     const promptTemplates = {
-      html: `Background information provided for the HTML:
-      Generate HTML. Use Tailwind uiframework framework/library for the UI.
-      Import any needed files from a public CDN.
-      Do not include 'integrity' attribute for resources.
-      Do not include markdown, just HTML.
-      Do not provide any explanations, just the code.`,
       createNavigation: `Topic: ${topic}.
-                        Use ${cssLibrary} for the UI styling.
-                        Use shadows and hover effects if deemed appropriate.
-                        Use ${colors} for theme colors. Take into account color contrast and white text on dark background, black text on light background.
-                        Create a fully functional navigation section <nav></nav> with ${linkCount} links named ${linkNames}. 
-                        Make the navigation responsive with working hamburger menu for mobile and javascript for functionality. 
-                        no imageplaceholders`,
+ Use ${cssLibrary} for the UI styling.
+ Use shadows and hover effects if appropriate.
+ Use flexbox for the layout.
+ Make the navigation background dark and text light.
+ Create a fully functional navigation section <nav></nav> with ${linkCount} links named ${linkNames}. 
+ Make the navigation responsive with working hamburger menu for mobile and javascript for functionality. 
+ No imageplaceholders`,
       createHeroSection: `Topic: ${topic}.
-                          Use ${cssLibrary} for the UI styling.
-                          Use shadows and hover effects if deemed appropriate.
-                          Use ${colors} for theme colors. Take into account color contrast and white text on dark background, black text on light background.
-                          Create a fully functional hero section <section></section> with ${heroParagraphCount} paragraphs to welcome the user to the site. 
-                          Minimum of total ${wordCount} words. 
-                          Create a image tag size 256x256px, image src is public/image.webp . 
-                          Use real information and text, no lorem ipsum.`,
+ Use ${cssLibrary} for the UI styling.
+ Use shadows and hover effects if appropriate.
+ Use flexbox for the layout.
+ Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
+ Create a fully functional hero section <section></section> with ${heroParagraphCount} paragraphs to welcome the user to the site. 
+ Minimum of total ${wordCount} words. 
+ Create a image tag size 256x256px, image src is /image.webp . 
+ Use real information and text, no lorem ipsum.`,
       createFooter: `Topic: ${topic}.
-                          Use ${cssLibrary} for the UI styling.
-                          Use shadows and hover effects if deemed appropriate.
-                          Use ${colors} for theme colors. Take into account color contrast and white text on dark background, black text on light background.
-                          Create a fully functional footer section <footer></footer> with legal information and appropriate links.`,
+ Use ${cssLibrary} for the UI styling.
+ Use shadows and hover effects if appropriate.
+ Use flexbox for the layout.
+ Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
+ Create a fully functional footer section <footer></footer> with legal information and appropriate links.`,
       createTableSection: `Topic: ${topic}.
-                          Use ${cssLibrary} for the UI styling.
-                          Use shadows and hover effects if deemed appropriate.
-                          Use ${colors} for theme colors. Take into account color contrast and white text on dark background, black text on light background.
-                          Create a fully functional table section. Infromation: ${tableDetails}.`,
+ Use ${cssLibrary} for the UI styling.
+ Use shadows and hover effects if appropriate.
+ use maximum of 10rem padding/margin horizontally.
+ Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
+ Create a fully functional table section. Infromation: ${tableDetails}.`,
       createMainSection: `Topic: ${topic}.
-                          Use ${cssLibrary} for the UI styling.
-                          Use shadows and hover effects if deemed appropriate.
-                          Use ${colors} for theme colors. Take into account color contrast and white text on dark background, black text on light background.
-                          create a fully functional main section <main></main> with ${mainParagraphCount} paragraphs of information about the game. 
-                          Minimum of total ${mainWordCount} words. 
-                          No lorem ipsum, use real information.`,
+ Use ${cssLibrary} for the UI styling.
+ Use shadows and hover effects if appropriate.
+ Use flexbox for the layout.
+ Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
+ create a fully functional main section <main></main> with ${mainParagraphCount} paragraphs of information about the game. 
+ Minimum of total ${mainWordCount} words. 
+ No lorem ipsum, use real information.`,
+      CreateHead: `update <head></head> tags with search engine optimization meta tags. 
+ Add content delivery network link for ${cssLibrary}. 
+ Return only the updated <head></head> tags containing the updated code:`
     };
 
     return promptTemplates[promptTemplate];
