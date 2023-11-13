@@ -17,17 +17,16 @@ const AdvancedHome = () => {
     topic: "rpg games",
     cssLibrary: "tailwind",
     colors: "#88A0A8",
-    linkCount: "3",
-    linkNames: "Home,About,Contact",
+    linkCount: "4",
+    linkNames: "Hero,Main,Table,Footer",
     heroParagraphCount: "3",
-    wordCount: "300",
-    tableDetails: "Create a 6x4 table with information about the topic",
+    wordCount: "200",
+    tableDetails: "Create a table with information about the topic",
     mainParagraphCount: "3",
-    mainWordCount: "300",
+    mainWordCount: "200",
   });
 
   const handleForm = async (e: React.FormEvent) => {
-		const htmlArray: string[] = [];
     e.preventDefault();
 
 		const createNavigation: PromptTemplate = 'createNavigation';
@@ -45,6 +44,7 @@ const AdvancedHome = () => {
 
 		console.log('formValues', formValues);
 
+		const htmlArray: string[] = [];
     try {
       const data = await postQuestion("html_block", createNavigationPrompt);
 			const newData = removeHtmlMarkdown(data);
@@ -72,23 +72,22 @@ const AdvancedHome = () => {
 			htmlArray.push(newData5);
 
 			const data6 = await postQuestion("create_head", CreateHeadPrompt+htmlArray.join(''));
-			console.log('data6', data6);
-			const newData6 = removeHtmlMarkdown(data6);
-			console.log('newData6', newData6);
+			const newHeadData = removeHtmlMarkdown(data6);
+			console.log('newHeadData', newHeadData);
 
-			let bodytag = `
+			htmlArray.unshift(
+`<!DOCTYPE html>
+<html lang="en">
+${newHeadData}
 <body>
-`;
-			htmlArray.unshift(bodytag);
-
-			htmlArray.unshift(newData6);
-
-			let documentHead = `<!DOCTYPE html>
-<html lang="en">`;
-      htmlArray.unshift(documentHead);
-
-			htmlArray.push(`</body>
-</html>`);
+`
+);
+				
+				htmlArray.push(
+`
+</body>
+</html>`
+);
 
 			const htmlString = htmlArray.join('');
 			dispatch({ type: "SET_ANSWER", payload: htmlString });
@@ -197,14 +196,17 @@ const AdvancedHome = () => {
                 />
 								</label>
 								<label className="relative"> Number of nav links
-								<input
-                  id="linkCount"
-                  type="text"
-                  placeholder="Give me navigation link count..."
-                  value={formValues.linkCount}
-                  onChange={(e) => setFormValues({ ...formValues, linkCount: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
-                />
+								<select
+                      id="linkCount"
+                      className="w-full rounded-md bg-white p-2"
+											onChange={(e) => setFormValues({ ...formValues, linkCount: e.target.value })}
+											defaultValue={4}
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+											<option value="3">3</option>
+                      <option value="4">4</option>
+                </select>			
 								</label>
 								<label className="relative"> Nav link names
 								<input
@@ -217,14 +219,17 @@ const AdvancedHome = () => {
                 />
 								</label>
 								<label className="relative"> Hero section paragraph count
-								<input
-                  id="heroParagraphCount"
-                  type="text"
-                  placeholder="Give me hero paragraph count ..."
-                  value={formValues.heroParagraphCount}
-                  onChange={(e) => setFormValues({ ...formValues, heroParagraphCount: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
-                />
+								<select
+                      id="heroParagraphCount"
+                      className="w-full rounded-md bg-white p-2"
+											onChange={(e) => setFormValues({ ...formValues, heroParagraphCount: e.target.value })}
+											defaultValue={2}
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+											<option value="3">3</option>
+                      <option value="4">4</option>
+                </select>
 								</label>
 								<label className="relative"> Hero section word count
 								<input
@@ -237,14 +242,17 @@ const AdvancedHome = () => {
                 />
 								</label>
 								<label className="relative"> Main section paragraph count
-								<input
-                  id="mainParagraphCount"
-                  type="text"
-                  placeholder="Give me main section paragraph count ..."
-                  value={formValues.mainParagraphCount}
-                  onChange={(e) => setFormValues({ ...formValues, mainParagraphCount: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 px-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
-                />
+								<select
+                      id="mainParagraphCount"
+                      className="w-full rounded-md bg-white p-2"
+											onChange={(e) => setFormValues({ ...formValues, mainParagraphCount: e.target.value })}
+											defaultValue={3}
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+											<option value="3">3</option>
+                      <option value="4">4</option>
+                </select>
 								</label>
 								<label className="relative"> Main section word count
 								<input
@@ -275,8 +283,12 @@ const AdvancedHome = () => {
                       className="w-full rounded-md bg-white pl-1"
 											onChange={(e) => setFormValues({ ...formValues, cssLibrary: e.target.value })}
                     >
-                      <option value="tailwind">Tailwind</option>
-                      <option value="vanilla">Vanilla</option>
+                      <option value="Tailwind">Tailwind</option>
+											<option value="Bootstrap">Bootstrap</option>
+											<option value="Materialize">Materialize</option>
+											<option value="Bulma">Bulma</option>
+											<option value="Foundation">Foundation</option>
+                      <option value="Vanilla">Vanilla</option>
                     </select>			
                   </label>
                   <label className="flex flex-row items-center">
