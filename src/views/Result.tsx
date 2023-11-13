@@ -4,10 +4,11 @@ import { useChat } from "../contexts/ChatContext";
 const Result = () => {
   const { state } = useChat();
   const { question, answer /*, editedanswer*/ } = state;
-  console.log("Question: ", question)
+  console.log("Question: ", question);
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
+  const codeTextarea = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     // Update the code state with the current answer
@@ -31,8 +32,16 @@ const Result = () => {
     // Undo logic here
   };
 
-  const handleCopy = () => {
-    // Copy logic here
+  const handleCopy = async () => {
+    // TODO? show notification that says text was copied to clipboard
+    try {
+      if (codeTextarea.current) {
+        await navigator.clipboard.writeText(codeTextarea.current.value);
+        console.log("Copied");
+      }
+    } catch (error) {
+      console.log("Error when copying to clipboard: ", error);
+    }
   };
 
   const handleBuild = () => {
@@ -51,6 +60,7 @@ const Result = () => {
             <h2 className="text-white bg-black font-bold w-full">Code</h2>
             <div className="w-full p-4">
               <textarea
+                ref={codeTextarea}
                 id="code"
                 value={code}
                 onChange={(e) => {
