@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useChat } from "../contexts/ChatContext";
 
-// TODO: Update to backend URL
-const urli: string = "http://localhost:8000/gpt/completions";
+// TODO: Update to backend URL when pushing to main, switch to localhost when testing locally
+const urli: string = "https://html-engine-0269f7c8ab3b.herokuapp.com/gpt/completions";
 
 const useChatGPT = () => {
   const { dispatch } = useChat();
@@ -38,6 +38,12 @@ const useChatGPT = () => {
       dispatch({ type: "SET_ANSWER", payload: data });
 
       console.log(data);
+
+      // if GPT's answer start with sorry or I, throw a new error
+      // TODO: fix this from backend, change GPT response when it doesn't understand/can't do the task
+      if(data.startsWith('Sorry') || data.startsWith('I')){
+        throw new Error("Request failed: " + data);
+      }
 
       setResult(data);
 
