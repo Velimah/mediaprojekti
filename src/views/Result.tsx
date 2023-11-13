@@ -52,6 +52,16 @@ const Result = () => {
     // Save logic here
   };
 
+  const handleSaveToFile = () => {
+    const blob = new Blob([code], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const fileLink = document.createElement("a");
+    fileLink.href = url;
+    fileLink.download = "your-website.html";
+    fileLink.dispatchEvent(new MouseEvent("click"));
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <>
       <div className="w-[1000px]">
@@ -95,6 +105,12 @@ const Result = () => {
                 className="bg-black text-white py-2 px-4 rounded"
               >
                 Save
+              </button>
+              <button
+                onClick={handleSaveToFile}
+                className="bg-black text-white py-2 px-4 rounded"
+              >
+                Save as HTML
               </button>
             </div>
           </div>
