@@ -1,6 +1,6 @@
 const Footer = () => {
     return (
-           <div className="text-3xl font-bold underline">Footer</div>
+           <div className="font-bold bg-gray-200 md:m-5 p-4 h-12 w-max-screen rounded-md flex items-center justify-between">Footer</div>
       );
     };
     

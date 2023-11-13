@@ -64,7 +64,7 @@ const Result = () => {
 
   return (
     <>
-      <div className="w-screen md:w-[90vw] mt-6 p-4">
+      <div className="w-full md:w-[90vw] mt-6 p-4">
         <div className="mb-4">
           <div className="bg-white flex flex-col items-center border border-black rounded">
             <h2 className="bg-black text-white text-lg font-bold w-full p-1">Code</h2>
