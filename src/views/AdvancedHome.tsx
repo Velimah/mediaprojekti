@@ -13,6 +13,18 @@ const AdvancedHome = () => {
 	const { dispatch } = useChat();
   const { postQuestion, loading } = useChatGPT();
   const navigate = useNavigate();
+	const [formValues, setFormValues] = useState<FormValues>({
+    topic: "rpg games",
+    cssLibrary: "tailwind",
+    colors: "#88A0A8, #B4CEB3, #DBD3C9",
+    linkCount: "3",
+    linkNames: "Home,About,Contact",
+    heroParagraphCount: "3",
+    wordCount: "300",
+    tableDetails: "Create a 6x4 table with information about the topic",
+    mainParagraphCount: "3",
+    mainWordCount: "300",
+  });
 
 
   const handleForm = async (e: React.FormEvent) => {
@@ -30,37 +42,33 @@ const AdvancedHome = () => {
 		const generatedPrompt4 = getPromptTemplate(selectedTemplate4, formValues);
 		const generatedPrompt5 = getPromptTemplate(selectedTemplate5, formValues);
 
+		console.log('formValues', formValues);
+
     try {
       const data = await postQuestion("html_block", generatedPrompt);
-			console.log('data', data);
 			const newData = removeHtmlMarkdown(data);
 			console.log('newData', newData);
 			htmlArray.push(newData);
-			console.log('array', htmlArray);
 
 			const data2 = await postQuestion("html_block", generatedPrompt2);
-			console.log('data', data2);
 			const newData2 = removeHtmlMarkdown(data2);
+			console.log('newData2', newData2);
 			htmlArray.push(newData2);
-			console.log('array', htmlArray);
 
 			const data3 = await postQuestion("html_block", generatedPrompt3);
-			console.log('data', data3);
 			const newData3 = removeHtmlMarkdown(data3);
+			console.log('newData3', newData3);
 			htmlArray.push(newData3);
-			console.log('array', htmlArray);
 
 			const data4 = await postQuestion("html_block", generatedPrompt4);
-			console.log('data', data4);
 			const newData4 = removeHtmlMarkdown(data4);
+			console.log('newData4', newData4);
 			htmlArray.push(newData4);
-			console.log('array', htmlArray);
 
 			const data5 = await postQuestion("html_block", generatedPrompt5);
-			console.log('data', data5);
 			const newData5 = removeHtmlMarkdown(data5);
+			console.log('newData5', newData5);
 			htmlArray.push(newData5);
-			console.log('array', htmlArray);
 
       htmlArray.unshift(`<!DOCTYPE html>
       <html lang="en">
@@ -72,14 +80,12 @@ const AdvancedHome = () => {
       </head>
       <body>`);
     // Add a string to the last spot
-    htmlArray.push(`
-      </body>
-      </html>`);
+    htmlArray.push(`</body>
+		</html>`);
 
     const htmlString = htmlArray.join('');
 		console.log(htmlString);
 		dispatch({ type: "SET_ANSWER", payload: htmlString });
-
 
     } catch (e) {
       console.log("error: ", e);
@@ -88,22 +94,9 @@ const AdvancedHome = () => {
     }
   };
 
-  const [formValues, setFormValues] = useState<FormValues>({
-    topic: "html",
-    cssLibrary: "bootstrap",
-    colors: "#000000",
-    linkCount: "3",
-    linkNames: "Home,About,Contact",
-    heroParagraphCount: "3",
-    wordCount: "200",
-    tableDetails: "Create a 3x9 table",
-    mainParagraphCount: "3",
-    mainWordCount: "200",
-  });
-
   return (
     <>
-      <article className="w-full h-[calc(100vh-10rem)] flex items-center justify-center">
+      <article className="w-full flex items-center justify-center">
         <section className="flex flex-col w-[35rem] bg-white rounded-md shadow-lg">
           <div id="header">
             <figure className="bg-gray-200 h-36 rounded-t-md">
@@ -187,7 +180,7 @@ const AdvancedHome = () => {
               className="bg-gray-200 p-4 rounded-b-md"
               onSubmit={handleForm}
             >
-              <label className="relative">
+              <label className="relative"> Topic
                 <input
                   id="topic"
                   type="text"
@@ -196,22 +189,8 @@ const AdvancedHome = () => {
                   onChange={(e) => setFormValues({ ...formValues, topic: e.target.value })}
                   className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
-								<input
-                  id="cssLibrary"
-                  type="text"
-                  placeholder="Give me a css framework ..."
-                  value={formValues.cssLibrary}
-                  onChange={(e) => setFormValues({ ...formValues, cssLibrary: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
-                />
-								<input
-                  id="colors"
-                  type="text"
-                  placeholder="Give me color codes ..."
-                  value={formValues.colors}
-                  onChange={(e) => setFormValues({ ...formValues, colors: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
-                />
+								</label>
+								<label className="relative"> Number of nav links
 								<input
                   id="linkCount"
                   type="text"
@@ -220,6 +199,8 @@ const AdvancedHome = () => {
                   onChange={(e) => setFormValues({ ...formValues, linkCount: e.target.value })}
                   className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
+								</label>
+								<label className="relative"> Nav link names
 								<input
                   id="linkNames"
                   type="text"
@@ -228,6 +209,8 @@ const AdvancedHome = () => {
 									onChange={(e) => setFormValues({ ...formValues, linkNames: e.target.value })}
                   className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
+								</label>
+								<label className="relative"> Hero section paragraph count
 								<input
                   id="heroParagraphCount"
                   type="text"
@@ -236,6 +219,8 @@ const AdvancedHome = () => {
                   onChange={(e) => setFormValues({ ...formValues, heroParagraphCount: e.target.value })}
                   className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
+								</label>
+								<label className="relative"> Hero section word count
 								<input
                   id="wordCount"
                   type="text"
@@ -244,14 +229,8 @@ const AdvancedHome = () => {
                   onChange={(e) => setFormValues({ ...formValues, wordCount: e.target.value })}
                   className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
-								<input
-                  id="tableDetails"
-                  type="text"
-                  placeholder="Give me table section details ..."
-                  value={formValues.tableDetails}
-                  onChange={(e) => setFormValues({ ...formValues, tableDetails: e.target.value })}
-                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
-                />
+								</label>
+								<label className="relative"> Main section paragraph count
 								<input
                   id="mainParagraphCount"
                   type="text"
@@ -260,6 +239,8 @@ const AdvancedHome = () => {
                   onChange={(e) => setFormValues({ ...formValues, mainParagraphCount: e.target.value })}
                   className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
+								</label>
+								<label className="relative"> Main section word count
 								<input
                   id="mainWordCount"
                   type="text"
@@ -268,23 +249,17 @@ const AdvancedHome = () => {
                   onChange={(e) => setFormValues({ ...formValues, mainWordCount: e.target.value })}
                   className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
-                <span className="absolute left-0 top-0 px-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="nonabsolutee"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-                    />
-                  </svg>
-                </span>
-              </label>
+								</label>
+								<label className="relative"> Tables section details
+								<input
+                  id="tableDetails"
+                  type="text"
+                  placeholder="Give me table section details ..."
+                  value={formValues.tableDetails}
+                  onChange={(e) => setFormValues({ ...formValues, tableDetails: e.target.value })}
+                  className="mb-2 rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                />
+								</label>
               <div className="flex py-4 md:flex-row flex-col items-stretch md:items-center">
                 <div>
                   <label className="flex flex-row pb-2">
@@ -292,14 +267,15 @@ const AdvancedHome = () => {
                     <select
                       id="userPromptCSS"
                       className="w-full rounded-md bg-white pl-1"
+											onChange={(e) => setFormValues({ ...formValues, cssLibrary: e.target.value })}
                     >
-                      <option value="bootstrap">Bootstrap</option>
+                      <option value="tailwind">Tailwind</option>
                       <option value="vanilla">Vanilla</option>
-                    </select>
+                    </select>			
                   </label>
                   <label className="flex flex-row items-center">
                     <span className="pr-2 font-bold">Primary color:</span>
-                    <input type="color" id="userPromptColor" className="grow" />
+                    <input type="color" id="userPromptColor" className="grow" onChange={(e) => setFormValues({ ...formValues, colors: e.target.value })}/>
                   </label>
                 </div>
                 <label className="grow pt-4 md:pl-4 md:pt-0">

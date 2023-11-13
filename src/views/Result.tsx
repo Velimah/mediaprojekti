@@ -45,7 +45,7 @@ const Result = () => {
 
   return (
     <>
-      <div className="w-[1000px]">
+      <div className="w-[1400px]">
         <div className="mb-4">
           <div className="bg-white flex flex-col items-center border border-black rounded">
             <h2 className="text-white bg-black font-bold w-full">Code</h2>

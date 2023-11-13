@@ -6,7 +6,6 @@ const urli: string = "http://localhost:8000/gpt/completions";
 const useChatGPT = () => {
   const { dispatch } = useChat();
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState("");
 
   const postQuestion = async (
     role: string,
@@ -33,10 +32,6 @@ const useChatGPT = () => {
       }
 
       const data = await response.text();
-
-      console.log('fetch data', data);
-
-      setResult(data);
 
       return data;
     } catch (error) {

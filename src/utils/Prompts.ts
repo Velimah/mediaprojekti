@@ -53,7 +53,7 @@ export type PromptTemplate =
                           Use ${colors} for theme colors. Take into account color contrast and white text on dark background, black text on light background.
                           Create a fully functional hero section <section></section> with ${heroParagraphCount} paragraphs to welcome the user to the site. 
                           Minimum of total ${wordCount} words. 
-                          Create a image tag size 256x256px, image src is image.webp . 
+                          Create a image tag size 256x256px, image src is public/image.webp . 
                           Use real information and text, no lorem ipsum.`,
       createFooter: `Topic: ${topic}.
                           Use ${cssLibrary} for the UI styling.
