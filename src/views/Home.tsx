@@ -2,29 +2,47 @@ import React, { useState } from "react";
 import { useChatGPT } from "../hooks/ApiHooks";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import AlertDialog from "../components/AlertDialog";
 
 const Home = () => {
   const { postQuestion, loading } = useChatGPT();
   const [newQuestion, setNewQuestion] = useState("");
   const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   const handleForm = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const data = await postQuestion("html", newQuestion);
-      console.log(data);
-
-    } catch (e) {
-      console.log("error: ", e);
-    } finally {
-      navigate("/result");
+    // if question string is empty, show error before fetching
+    // TODO: add form valitators instead
+    if(newQuestion === ''){
+      console.log('yes');
+      setError('Please give me instructions first!');
+      setShowAlertDialog(true);
+    } else {
+      try {
+        const data = await postQuestion("html", newQuestion);
+        console.log(data);
+        navigate("/result");
+        setNewQuestion("");
+      } catch (error) {
+        console.log("error: ", error);
+        setError((error as Error).message);
+        setShowAlertDialog(true);
+      }
     }
-    setNewQuestion("");
+
   };
+
+  // Toggle alert dialog on and off
+  const handleToggleDialog = () => {
+    setShowAlertDialog((prev) => !prev);
+  };  
 
   return (
     <>
+    {showAlertDialog && (<AlertDialog content={error} onClose={handleToggleDialog} />)}
       <article className="w-full h-[calc(100vh-10rem)] flex items-center justify-center">
         <section className="flex flex-col w-[35rem] bg-white rounded-md shadow-lg">
           <div id="header">
@@ -155,7 +173,7 @@ const Home = () => {
                 <label className="grow pt-4 md:pl-4 md:pt-0">
                   <input
                     type="submit"
-                    className="rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold"
+                    className="rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black border-2 border-black font-bold cursor-pointer"
                     value="BUILD!"
                   />
                 </label>
