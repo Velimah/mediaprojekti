@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
 
   const [activePage, setActivePage] = useState('Build');
 
   // TODO: add router/page switch
-  // TODO: if on build -page and user is switching out of it, add a pop-up alert
+  // TODO: if on loaded build -page and user is switching out of it, add a pop-up alert
   const renderPage = () => {
     switch (activePage) {
       case 'Build':
