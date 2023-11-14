@@ -15,7 +15,7 @@ const AdvancedResult = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(true);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
-  const {getHead, getHtmlBlock} = PromptFunctions();
+  const {createHeadInfo, createHtmlBlock} = PromptFunctions();
   const location = useLocation();
   const { formValues } = location.state;
 
@@ -48,37 +48,37 @@ const AdvancedResult = () => {
     htmlArray.push(localStorage.getItem("createTableSection") || "");
     htmlArray.push(localStorage.getItem("createFooter") || "");
     localStorage.setItem("completeArray", htmlArray.join(''));
-    await getHead(formValues, localStorage.getItem('completeArray') || "") || "";
+    await createHeadInfo(formValues, localStorage.getItem('completeArray') || "") || "";
     createHTML();
   };
 
   const editNavigationSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    await getHtmlBlock('createNavigation', formValues) || "";
+    await createHtmlBlock('createNavigation', formValues) || "";
     createHTML();
   };
 
   const editWelcomeSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    await getHtmlBlock('createWelcomeSection', formValues) || "";
+    await createHtmlBlock('createWelcomeSection', formValues) || "";
     createHTML();
   };
 
   const editMainSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    await getHtmlBlock('createMainSection', formValues) || "";
+    await createHtmlBlock('createMainSection', formValues) || "";
     createHTML();
   };
 
   const editTableSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    await getHtmlBlock('createTableSection', formValues) || "";
+    await createHtmlBlock('createTableSection', formValues) || "";
     createHTML();
   };
 
   const editFooterSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    await getHtmlBlock('createFooter', formValues) || "";
+    await createHtmlBlock('createFooter', formValues) || "";
     createHTML();
   };
 
@@ -141,7 +141,7 @@ const AdvancedResult = () => {
   return (
     <>
       <div className="w-full px-4">
-        {/*
+        {/* TODO: Make prompt window show only typed prompt not other sent information
         <div className="mb-8">
           <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-1/2">
             <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-center rounded-md">
@@ -270,7 +270,7 @@ const AdvancedResult = () => {
                 onClick={editHead}
                 className="bg-black text-white py-2 px-4 rounded m-1"
               >
-                Redo Head
+                Redo Head Tag Information
               </button>
               <button
                 onClick={editNavigationSection}
@@ -333,7 +333,7 @@ const AdvancedResult = () => {
               title="Code preview"
               sandbox="allow-same-origin"
               width="100%"
-              height={500}
+              height={800}
               className={previewVisible ? ('border-black bg-slate-100 resize-x') : ('hidden')} />
           </div>
           </div>

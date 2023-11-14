@@ -27,13 +27,13 @@ export type PromptTemplate =
 
     const promptTemplates = {
       createNavigation: `Topic: ${topic}.
- Create a fully functional navigation section <nav></nav> with approriate Site name on left and ${linkCount} links named ${linkNames}. make href for links using <a href="#section">Welcome</a>, <a href="#main">Main</a>, <a href="#table">Table</a> and <a href="#footer">Footer</a>.
+ Create a fully functional navigation section <nav></nav> with approriate Site name on left and ${linkCount} links named ${linkNames}.
+ Make href for links: Use exactly <a href="#section">Welcome</a>, <a href="#main">Main</a>, <a href="#table">Table</a> and <a href="#footer">Footer</a>.
  Use ${cssLibrary} for the UI styling.
  Use shadow and hover effects for links.
  Use flexbox and make navigation sticky.
  Make the navigation background dark and text light.
- Make the navigation responsive with working hamburger menu for mobile and create javascript for functionality.
- Make sure the navigation javascript is working correctly, check the selectors for correct id.
+ Change navigation to column in mobile view (under 600px) and justify and align content center.
  No imageplaceholders`,
  createWelcomeSection: `Topic: ${topic}.
  Use ${cssLibrary} for the UI styling.

@@ -17,26 +17,25 @@ const PromptFunctions = () => {
     const documentEnd = '\n</body>\n</html>';
     localStorage.setItem('documentEnd', documentEnd);
     try {
-      const navigationData = await getHtmlBlock('createNavigation', formValues) || "";
+      const navigationData = await createHtmlBlock('createNavigation', formValues) || "";
       htmlArray.push(navigationData);
-      const welcomeData = await getHtmlBlock('createWelcomeSection', formValues) || "";
+      const welcomeData = await createHtmlBlock('createWelcomeSection', formValues) || "";
       htmlArray.push(welcomeData);
-      const mainData = await getHtmlBlock('createMainSection', formValues) || "";
+      const mainData = await createHtmlBlock('createMainSection', formValues) || "";
       htmlArray.push(mainData);
-      const tableData = await getHtmlBlock('createTableSection', formValues) || "";
+      const tableData = await createHtmlBlock('createTableSection', formValues) || "";
       htmlArray.push(tableData);
-      const footerData = await getHtmlBlock('createFooter', formValues) || "";
+      const footerData = await createHtmlBlock('createFooter', formValues) || "";
       htmlArray.push(footerData);
       const completeArray = htmlArray.join('');
       localStorage.setItem('completeArray', completeArray);
-      await getHead(formValues, completeArray);
+      await createHeadInfo(formValues, completeArray);
     } catch (error) {
       console.log("error: ", error);
     }
   }
 
-  //test for universal html block
-  const getHtmlBlock = async (promptTemplate:PromptTemplate, formValues:FormValues) => {
+  const createHtmlBlock = async (promptTemplate:PromptTemplate, formValues:FormValues) => {
     const createHtmlBlock = getPromptTemplate(promptTemplate, formValues);
     try {
       const htmlData = await postQuestion("html_block", createHtmlBlock);
@@ -48,7 +47,7 @@ const PromptFunctions = () => {
     }
   };
 
-  const getHead = async (formValues:FormValues, completeArray:string) => {
+  const createHeadInfo = async (formValues:FormValues, completeArray:string) => {
     const CreateHead: PromptTemplate = 'CreateHead';
     const CreateHeadPrompt = getPromptTemplate(CreateHead, formValues);
     try {
@@ -67,7 +66,7 @@ const PromptFunctions = () => {
       console.log("error: ", error);
     }
   };
-  return {getHtmlBlock, createWebPage, getHead, removeHtmlMarkdown};
+  return {createHtmlBlock, createWebPage, createHeadInfo, removeHtmlMarkdown};
 }
 
 export {PromptFunctions}; 
