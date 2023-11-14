@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React from 'react';
 import PropTypes from 'prop-types';
 
-const AlertDialog = ({
+interface AlertDialogProps {
+  content: string;
+  onClose: () => void;
+}
+
+const AlertDialog: React.FC<AlertDialogProps> = ({
   content,
   onClose,
 }) => {
@@ -122,8 +127,8 @@ const AlertDialog = ({
 };
 
 AlertDialog.propTypes = {
-  content: PropTypes.string,
-  onClose: PropTypes.func,
+  content: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
 }
 
 export default AlertDialog;
