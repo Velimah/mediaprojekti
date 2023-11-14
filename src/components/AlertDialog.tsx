@@ -123,7 +123,7 @@ const AlertDialog = ({
 
 AlertDialog.propTypes = {
   content: PropTypes.string,
-  onClose: PropTypes.bool,
+  onClose: PropTypes.func,
 }
 
 export default AlertDialog;
