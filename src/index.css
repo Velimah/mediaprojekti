@@ -6,8 +6,11 @@
   body {
     @apply bg-20 bg-gridBg bg-white;
   }
-  header {
+  header, footer {
     @apply w-full;
+  }
+  main {
+    @apply w-full flex justify-center;
   }
 }
 
