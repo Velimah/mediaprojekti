@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
+import { getHtmlBlock } from "../utils/PromptFunctions";
+import { useLocation } from 'react-router-dom';
 
-const Result = () => {
+const AdvancedResult = () => {
   const { state } = useChat();
   const { question, answer /*, editedanswer*/ } = state;
   console.log("Question: ", question);
@@ -13,12 +15,68 @@ const Result = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(true);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
+  const { getNavigation, getFooter, getTable, getWelcome, getMainSection } = getHtmlBlock();
+  const location = useLocation();
+  const { formValues } = location.state;
+
+  const editMainSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  
+    const data3 = await getMainSection(formValues) || "";
+    localStorage.setItem("htmlMain", data3);
+    createHTML();
+  };
+
+  const editWelcomeSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  
+    const data3 = await getWelcome(formValues) || "";
+    localStorage.setItem("htmlWelcome", data3);
+    createHTML();
+  };
+
+  const editTableSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  
+    const data3 = await getTable(formValues) || "";
+    localStorage.setItem("htmlTable", data3);
+    createHTML();
+  };
+
+  const editFooterSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  
+    const data3 = await getFooter(formValues) || "";
+    localStorage.setItem("htmlFooter", data3);
+    createHTML();
+  };
+
+  const editNavigationSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  
+    const data3 = await getNavigation(formValues) || "";
+    localStorage.setItem("htmlNavigation", data3);
+    createHTML();
+  };
+
   useEffect(() => {
     // Update the code state with the current answer
     if (answer) {
-      setCode(answer);
+			createHTML();
     }
   }, [answer]);
+
+  const createHTML = () => {
+    const htmlArray: string[] = [];
+    htmlArray.push(localStorage.getItem("firstSlot") || "");
+    htmlArray.push(localStorage.getItem("htmlNavigation") || "");
+    htmlArray.push(localStorage.getItem("htmlWelcome") || "");
+    htmlArray.push(localStorage.getItem("htmlMain") || "");
+    htmlArray.push(localStorage.getItem("htmlTable") || "");
+    htmlArray.push(localStorage.getItem("htmlFooter") || "");
+    htmlArray.push(localStorage.getItem("lastSlot") || "");
+    setCode(htmlArray.join(''));
+  };
 
   const handleRunCode = () => {
     if (previewFrame.current) {
@@ -78,7 +136,7 @@ const Result = () => {
 
   return (
     <>
-      <div className="w-full lg:w-1/2 px-4">
+      <div className="w-full px-4">
         <div className="mb-8">
           <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-1/2">
             <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-center rounded-md">
@@ -171,6 +229,36 @@ const Result = () => {
               ) }
             <div className="py-4 space-x-2 flex flex-wrap justify-center">
               <button
+                onClick={editNavigationSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Navigation
+              </button>
+              <button
+                onClick={editWelcomeSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Welcome
+              </button>
+              <button
+                onClick={editMainSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Main
+              </button>
+              <button
+                onClick={editTableSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Table
+              </button>
+              <button
+                onClick={editFooterSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Footer
+              </button>
+              <button
                 onClick={handleUndo}
                 className="bg-black text-white py-2 px-4 rounded m-1"
               >
@@ -240,4 +328,4 @@ const Result = () => {
   );
 };
 
-export default Result;
+export default AdvancedResult;

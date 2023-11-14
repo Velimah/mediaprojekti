@@ -1,6 +1,6 @@
 export type PromptTemplate =
   | "createNavigation"
-  | "createHeroSection"
+  | "createWelcomeSection"
   | "createMainSection"
   | "createTableSection"
   | "createFooter"
@@ -12,7 +12,7 @@ export type PromptTemplate =
     colors: string;
     linkCount?: string;
     linkNames?: string;
-    heroParagraphCount?: string;
+    welcomeParagraphCount?: string;
     wordCount?: string;
     tableDetails?: string;
     mainParagraphCount?: string;
@@ -26,7 +26,7 @@ export type PromptTemplate =
       colors,
       linkCount,
       linkNames,
-      heroParagraphCount,
+      welcomeParagraphCount,
       wordCount,
       tableDetails,
       mainParagraphCount,
@@ -39,15 +39,15 @@ export type PromptTemplate =
  Use shadows and hover effects if appropriate.
  Use flexbox.
  Make the navigation background dark and text light.
- Create a fully functional navigation section <nav></nav> with ${linkCount} links named ${linkNames}. make href for links using <a href="#section">Hero</a> <a href="#main">Main</a> <a href="#table">Table</a> <a href="#footer">Footer</a>
+ Create a fully functional navigation section <nav></nav> with ${linkCount} links named ${linkNames}. make href for links using <a href="#section">Welcome</a> <a href="#main">Main</a> <a href="#table">Table</a> <a href="#footer">Footer</a>
  Make the navigation responsive with working hamburger menu for mobile and javascript for functionality. 
  No imageplaceholders`,
-      createHeroSection: `Topic: ${topic}.
+ createWelcomeSection: `Topic: ${topic}.
  Use ${cssLibrary} for the UI styling.
  Use shadows and hover effects if appropriate.
  Use flexbox.
  Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
- Create a fully functional hero section <section></section> with id #section and ${heroParagraphCount} paragraphs to welcome the user to the site. 
+ Create a fully functional welcome section <section></section> with id #section and ${welcomeParagraphCount} paragraphs to welcome the user to the site. 
  Minimum of total ${wordCount} words. 
  Create a image tag size 256x256px, image src is /image.webp . 
  Use real information and text, no lorem ipsum.`,

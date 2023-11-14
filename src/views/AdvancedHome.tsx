@@ -10,7 +10,7 @@ import AlertDialog from "../components/AlertDialog";
 
 const AdvancedHome = () => {
 
-  const { getNavigation, getFooter, getHead, getTable, getHero, getMainSection } = getHtmlBlock();
+  const { getNavigation, getFooter, getHead, getTable, getWelcome, getMainSection } = getHtmlBlock();
   const { postQuestion, loading } = useChatGPT();
   const [newQuestion, setNewQuestion] = useState("");
   const navigate = useNavigate();
@@ -22,8 +22,8 @@ const AdvancedHome = () => {
     cssLibrary: "tailwind",
     colors: "#88A0A8",
     linkCount: "4",
-    linkNames: "Hero,Main,Table,Footer",
-    heroParagraphCount: "3",
+    linkNames: "Welcome,Main,Table,Footer",
+    welcomeParagraphCount: "3",
     wordCount: "200",
     tableDetails: "Create a table with information about the topic",
     mainParagraphCount: "3",
@@ -50,7 +50,7 @@ const AdvancedHome = () => {
     try {
       const data1 = await getNavigation(formValues) || "";
       htmlArray.push(data1);
-      const data2 = await getHero(formValues) || "";
+      const data2 = await getWelcome(formValues) || "";
       htmlArray.push(data2);
       const data3 = await getMainSection(formValues) || "";
       htmlArray.push(data3);
@@ -64,7 +64,7 @@ const AdvancedHome = () => {
     } catch (e) {
       console.log("error: ", e);
     } finally {
-      navigate("/result", { state: { formValues } });
+      navigate("/advancedresult", { state: { formValues } });
     }
   };
 
@@ -193,11 +193,11 @@ const AdvancedHome = () => {
                   className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
-								<label className="relative"> Hero section paragraph count
+								<label className="relative"> Welcome section paragraph count
 								<select
-                      id="heroParagraphCount"
+                      id="welcomeParagraphCount"
                       className="w-full rounded-md bg-white p-2"
-											onChange={(e) => setFormValues({ ...formValues, heroParagraphCount: e.target.value })}
+											onChange={(e) => setFormValues({ ...formValues, welcomeParagraphCount: e.target.value })}
 											defaultValue={2}
                     >
                       <option value="1">1</option>
@@ -206,11 +206,11 @@ const AdvancedHome = () => {
                       <option value="4">4</option>
                 </select>
 								</label>
-								<label className="relative"> Hero section word count
+								<label className="relative"> Welcome section word count
 								<input
                   id="wordCount"
                   type="text"
-                  placeholder="Give me hero section word count..."
+                  placeholder="Give me welcome section word count..."
                   value={formValues.wordCount}
                   onChange={(e) => setFormValues({ ...formValues, wordCount: e.target.value })}
                   className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"

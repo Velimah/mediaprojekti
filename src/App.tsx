@@ -6,6 +6,7 @@ import Layout from './views/Layout';
 import ScrollToTop from './hooks/ScrollHook';
 import { ChatProvider } from './contexts/ChatContext';
 import AdvancedHome from './views/AdvancedHome';
+import AdvancedResult from './views/AdvancedResult';
 export function sum(a: number, b: number) {
   return a + b
 }
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/advanced" element={<AdvancedHome />} />
           <Route path="/result" element={<Result />} />
+          <Route path="/advancedresult" element={<AdvancedResult />} />
         </Route>
       </Routes>
     </HashRouter>
