@@ -4,13 +4,13 @@
 
 @layer base {
   body {
-    @apply bg-20 bg-gridBg bg-white;
+    @apply bg-20 bg-gridBg bg-white min-h-screen flex flex-col justify-between;
   }
   header, footer {
     @apply w-full;
   }
   main {
-    @apply w-full flex justify-center;
+    @apply w-full flex justify-center flex-1;
   }
 }
 
@@ -23,4 +23,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+#root {
+  flex: 1;
 }

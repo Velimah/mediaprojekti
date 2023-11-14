@@ -17,7 +17,6 @@ const Home = () => {
     // if question string is empty, show error before fetching
     // TODO: add form valitators instead
     if(newQuestion === ''){
-      console.log('yes');
       setError('Please give me instructions first!');
       setShowAlertDialog(true);
     } else {
@@ -43,7 +42,7 @@ const Home = () => {
   return (
     <>
     {showAlertDialog && (<AlertDialog content={error} onClose={handleToggleDialog} />)}
-      <article className="w-full h-[calc(100vh-10rem)] flex items-center justify-center">
+      <article className="w-full h-[calc(100vh-11rem)] flex items-center justify-center">
         <section className="flex flex-col w-[35rem] bg-white rounded-md shadow-lg">
           <div id="header">
             <figure className="bg-gray-200 h-36 rounded-t-md">

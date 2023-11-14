@@ -10,6 +10,9 @@ const Result = () => {
   const previewFrame = useRef<HTMLIFrameElement>(null);
   const codeTextarea = useRef<HTMLTextAreaElement>(null);
 
+  const [codeVisible, setCodeVisible] = useState<boolean>(true);
+  const [previewVisible, setPreviewVisible] = useState<boolean>(true);
+
   useEffect(() => {
     // Update the code state with the current answer
     if (answer) {
@@ -64,26 +67,109 @@ const Result = () => {
     URL.revokeObjectURL(url);
   };
 
+  /* toggle code frame's visibiltiy */
+  const toggleCodeVisibility = () => {
+    setCodeVisible(!codeVisible);
+  };
+  /* toggle preview frame's visibiltiy */
+  const togglePreviewVisibility = () => {
+    setPreviewVisible(!previewVisible);
+  };
+
   return (
     <>
-      <div className="w-full md:w-[90vw] mt-6 p-4">
+      <div className="w-full my-4 p-4">
         <div className="mb-4">
-          <div className="bg-white flex flex-col items-center border border-black rounded">
-            <h2 className="bg-black text-white text-lg font-bold w-full p-1">Code</h2>
-            <div className="w-full p-4">
-              <textarea
-                ref={codeTextarea}
-                id="code"
-                value={code}
-                onChange={(e) => {
-                  setCode(e.target.value);
-                }}
-                rows={15}
-                cols={50}
-                className="border p-2 w-full bg-slate-100 border-gray-300 rounded-lg overflow-y-scroll resize-none"
-              ></textarea>
+          <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg">
+            <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-center rounded-md">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 10"
+                strokeWidth="1.5"
+                stroke="black"
+                className="h-12 shrink-0"
+              >
+                <rect
+                  x="5"
+                  y="2"
+                  width="14"
+                  height="9"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="black"
+                />
+                <circle
+                  cx="8.5"
+                  cy="6.5"
+                  r="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="white"
+                  className="animate-pulse"
+                />
+                <circle
+                  cx="15.5"
+                  cy="6.5"
+                  r="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="white"
+                  className="animate-pulse"
+                />
+              </svg>
+              <span className="pr-4 font-bold">:</span>
+              <h2 className="text-lg font-bold uppercase">Your instructions</h2>
             </div>
-            <div className="mb-4 space-x-2 flex flex-wrap justify-center">
+            <div className="flex items-center rounded-md px-4">
+              <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="nonabsolutee"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
+                    />
+              </svg> 
+              <span className="p-4">{question}</span>
+            </div>
+          </div>
+        </div>
+        <div className="mb-4">
+          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer" onClick={toggleCodeVisibility}>
+            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase">
+              {codeVisible ? (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
+                  <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
+                </svg>              
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
+                  <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 111.06-1.06l6.22 6.22V3a.75.75 0 01.75-.75z" clipRule="evenodd" />
+                </svg>
+              )}
+              Code
+              </h2>
+              {codeVisible && (
+                <div className="w-full pt-4 px-4">
+                  <textarea
+                    ref={codeTextarea}
+                    id="code"
+                    value={code}
+                    onChange={(e) => {
+                      setCode(e.target.value);
+                    }}
+                    rows={15}
+                    cols={50}
+                    className="border pt-2 w-full bg-slate-100 border-gray-300 rounded-lg overflow-y-scroll resize-none"
+                  ></textarea>
+                </div>
+              ) }
+            <div className="py-4 space-x-2 flex flex-wrap justify-center">
               <button
                 onClick={handleUndo}
                 className="bg-black text-white py-2 px-4 rounded m-1"
@@ -126,17 +212,29 @@ const Result = () => {
             Show preview
           </button>
         </div>*/}
-        <div className="bg-white flex flex-col items-center border border-black rounded">
-          <h2 className="bg-black text-white text-lg font-bold w-full p-1">Preview</h2>
-          <iframe
-            ref={previewFrame}
-            title="Code preview"
-            sandbox="allow-same-origin"
-            width="100%"
-            height={500}
-            className="border-black bg-slate-100 resize-x"
-          ></iframe>
-        </div>
+        <div className="mb-4">
+          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer" onClick={togglePreviewVisibility}>
+            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase">
+            {previewVisible ? (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
+                  <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
+                </svg>              
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
+                  <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 111.06-1.06l6.22 6.22V3a.75.75 0 01.75-.75z" clipRule="evenodd" />
+                </svg>
+              )}
+              Preview
+            </h2>
+              <iframe
+              ref={previewFrame}
+              title="Code preview"
+              sandbox="allow-same-origin"
+              width="100%"
+              height={500}
+              className={previewVisible ? ('border-black bg-slate-100 resize-x') : ('hidden')} />
+          </div>
+          </div>
       </div>
     </>
   );
