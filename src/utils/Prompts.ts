@@ -4,6 +4,7 @@ export type PromptTemplate =
   | "createMainSection"
   | "createTableSection"
   | "createFooter"
+	| "createMap"
   | "CreateHead";
 
  export interface FormValues {
@@ -13,6 +14,8 @@ export type PromptTemplate =
     linkCount: string;
     linkNames: string;
     tableDetails: string;
+		mapAddress: string;
+		mapCity: string;
   }
 
   export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: FormValues): string => {
@@ -23,6 +26,8 @@ export type PromptTemplate =
       linkCount,
       linkNames,
       tableDetails,
+			mapAddress,
+			mapCity,
     } = formValues;
 
     const promptTemplates = {
@@ -32,8 +37,9 @@ export type PromptTemplate =
  Use ${cssLibrary} for the UI styling.
  Use shadow and hover effects for links.
  Use flexbox and make navigation sticky.
- Make the navigation background dark and text light.
- Change navigation to column in mobile view (under 600px) and justify and align content center.
+ Make the navigation background dark and all text white(including link color).
+ Justify content center and align content center under 600px width.
+ Do not make hamburger menu.
  No imageplaceholders`,
  createWelcomeSection: `Topic: ${topic}.
  Use ${cssLibrary} for the UI styling.
@@ -64,6 +70,7 @@ export type PromptTemplate =
  create a fully functional main section <main></main> with id #main paragraphs of information about the topic.
  miminum of 4 paragraphs and 300 words.
  No lorem ipsum, use real information.`,
+			createMap: `Generate a html block <div></div> that has exactly and only this inside: <iframe style="height:500px;width:1000px;" src="https://www.google.com/maps/embed/v1/place?q=${mapAddress}, ${mapCity}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&zoom=15&maptype=satellite"></iframe> . Justify content center.`,
       CreateHead: `update <head></head> tags with meta tags using correct information analyzing the site content:
 	(<!-- Basic Meta Tags -->
 	<meta charset="UTF-8">

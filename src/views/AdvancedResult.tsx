@@ -33,6 +33,7 @@ const AdvancedResult = () => {
     htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
     htmlArray.push(localStorage.getItem("createMainSection") || "");
     htmlArray.push(localStorage.getItem("createTableSection") || "");
+    htmlArray.push(localStorage.getItem("createMap") || "");
     htmlArray.push(localStorage.getItem("createFooter") || "");
     htmlArray.push(localStorage.getItem("documentEnd") || "");
     localStorage.setItem("completeArray", htmlArray.join(''));
@@ -46,6 +47,7 @@ const AdvancedResult = () => {
     htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
     htmlArray.push(localStorage.getItem("createMainSection") || "");
     htmlArray.push(localStorage.getItem("createTableSection") || "");
+    htmlArray.push(localStorage.getItem("createMap") || "");
     htmlArray.push(localStorage.getItem("createFooter") || "");
     localStorage.setItem("completeArray", htmlArray.join(''));
     await createHeadInfo(formValues, localStorage.getItem('completeArray') || "") || "";
@@ -73,6 +75,12 @@ const AdvancedResult = () => {
   const editTableSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     await createHtmlBlock('createTableSection', formValues) || "";
+    createHTML();
+  };
+
+  const editMapSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await createHtmlBlock('createMap', formValues) || "";
     createHTML();
   };
 
@@ -295,6 +303,12 @@ const AdvancedResult = () => {
                 className="bg-black text-white py-2 px-4 rounded m-1"
               >
                 Redo Table
+              </button>
+              <button
+                onClick={editMapSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Map
               </button>
               <button
                 onClick={editFooterSection}

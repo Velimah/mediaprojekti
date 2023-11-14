@@ -21,6 +21,8 @@ const AdvancedHome = () => {
     linkCount: "4",
     linkNames: "Welcome,Main,Table,Footer",
     tableDetails: "Create a table with information about the topic",
+    mapAddress: "Karaportti 2",
+    mapCity: "Espoo"
   });
 
   const handleForm = async (event: React.FormEvent) => {
@@ -170,6 +172,26 @@ const AdvancedHome = () => {
                   type="text"
                   placeholder="Give me table section details ..."
                   value={formValues.tableDetails}
+                  onChange={(event) => setFormValues({ ...formValues, tableDetails: event.target.value })}
+                  className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                />
+								</label>
+                <label className="relative"> Map Adress
+								<input
+                  id="mapAdress"
+                  type="text"
+                  placeholder="Give me table section details ..."
+                  value={formValues.mapAddress}
+                  onChange={(event) => setFormValues({ ...formValues, tableDetails: event.target.value })}
+                  className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                />
+								</label>
+                <label className="relative"> Map City
+								<input
+                  id="mapCity"
+                  type="text"
+                  placeholder="Give me table section details ..."
+                  value={formValues.mapCity}
                   onChange={(event) => setFormValues({ ...formValues, tableDetails: event.target.value })}
                   className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />

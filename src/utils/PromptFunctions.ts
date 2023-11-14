@@ -25,6 +25,8 @@ const PromptFunctions = () => {
       htmlArray.push(mainData);
       const tableData = await createHtmlBlock('createTableSection', formValues) || "";
       htmlArray.push(tableData);
+      const mapData = await createHtmlBlock('createMap', formValues) || "";
+      htmlArray.push(mapData);
       const footerData = await createHtmlBlock('createFooter', formValues) || "";
       htmlArray.push(footerData);
       const completeArray = htmlArray.join('');
