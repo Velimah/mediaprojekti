@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
+import { getHtmlBlock } from "../utils/PromptFunctions";
+import { useLocation } from 'react-router-dom';
 
 const Result = () => {
   const { state } = useChat();
@@ -13,10 +15,19 @@ const Result = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(true);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
+  const { getMainSection } = getHtmlBlock();
+  const location = useLocation();
+  const { formValues } = location.state;
+  const editMainSection = async () => {
+    const data3 = await getMainSection(formValues) || "";
+    localStorage.setItem("htmlMain", data3);
+    createHTML();
+  };
+
   useEffect(() => {
     // Update the code state with the current answer
     if (answer) {
-      setCode(answer);
+      createHTML();
     }
   }, [answer]);
 
@@ -74,6 +85,19 @@ const Result = () => {
   /* toggle preview frame's visibiltiy */
   const togglePreviewVisibility = () => {
     setPreviewVisible(!previewVisible);
+  };
+
+  const createHTML = () => {
+    const htmlArray: string[] = [];
+    htmlArray.push(localStorage.getItem("firstSlot") || "");
+    htmlArray.push(localStorage.getItem("htmlNavigation") || "");
+    htmlArray.push(localStorage.getItem("htmlHero") || "");
+    htmlArray.push(localStorage.getItem("htmlMain") || "");
+    htmlArray.push(localStorage.getItem("htmlTable") || "");
+    htmlArray.push(localStorage.getItem("htmlFooter") || "");
+    htmlArray.push(localStorage.getItem("lastSlot") || "");
+    setCode(htmlArray.join(''));
+    console.log(htmlArray.join(''));
   };
 
   return (
@@ -170,6 +194,12 @@ const Result = () => {
                 </div>
               ) }
             <div className="py-4 space-x-2 flex flex-wrap justify-center">
+            <button
+                onClick={editMainSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                editMainSection
+              </button>
               <button
                 onClick={handleUndo}
                 className="bg-black text-white py-2 px-4 rounded m-1"
