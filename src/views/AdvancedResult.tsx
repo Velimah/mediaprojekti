@@ -15,49 +15,9 @@ const AdvancedResult = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(true);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
-  const { getNavigation, getFooter, getTable, getWelcome, getMainSection } = PromptFunctions();
+  const {getHead, getHtmlBlock} = PromptFunctions();
   const location = useLocation();
   const { formValues } = location.state;
-
-  const editMainSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  
-    const data3 = await getMainSection(formValues) || "";
-    localStorage.setItem("htmlMain", data3);
-    createHTML();
-  };
-
-  const editWelcomeSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  
-    const data3 = await getWelcome(formValues) || "";
-    localStorage.setItem("htmlWelcome", data3);
-    createHTML();
-  };
-
-  const editTableSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  
-    const data3 = await getTable(formValues) || "";
-    localStorage.setItem("htmlTable", data3);
-    createHTML();
-  };
-
-  const editFooterSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  
-    const data3 = await getFooter(formValues) || "";
-    localStorage.setItem("htmlFooter", data3);
-    createHTML();
-  };
-
-  const editNavigationSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  
-    const data3 = await getNavigation(formValues) || "";
-    localStorage.setItem("htmlNavigation", data3);
-    createHTML();
-  };
 
   useEffect(() => {
     // Update the code state with the current answer
@@ -68,14 +28,51 @@ const AdvancedResult = () => {
 
   const createHTML = () => {
     const htmlArray: string[] = [];
-    htmlArray.push(localStorage.getItem("firstSlot") || "");
-    htmlArray.push(localStorage.getItem("htmlNavigation") || "");
-    htmlArray.push(localStorage.getItem("htmlWelcome") || "");
-    htmlArray.push(localStorage.getItem("htmlMain") || "");
-    htmlArray.push(localStorage.getItem("htmlTable") || "");
-    htmlArray.push(localStorage.getItem("htmlFooter") || "");
-    htmlArray.push(localStorage.getItem("lastSlot") || "");
+    htmlArray.push(localStorage.getItem("documentStart") || "");
+    htmlArray.push(localStorage.getItem("createNavigation") || "");
+    htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
+    htmlArray.push(localStorage.getItem("createMainSection") || "");
+    htmlArray.push(localStorage.getItem("createTableSection") || "");
+    htmlArray.push(localStorage.getItem("createFooter") || "");
+    htmlArray.push(localStorage.getItem("documentEnd") || "");
+    localStorage.setItem("completeArray", htmlArray.join(''));
     setCode(htmlArray.join(''));
+  };
+
+  const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await getHead(formValues, localStorage.getItem('completeArray') || "") || "";
+    createHTML();
+  };
+
+  const editNavigationSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await getHtmlBlock('createNavigation', formValues) || "";
+    createHTML();
+  };
+
+  const editWelcomeSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await getHtmlBlock('createWelcomeSection', formValues) || "";
+    createHTML();
+  };
+
+  const editMainSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await getHtmlBlock('createMainSection', formValues) || "";
+    createHTML();
+  };
+
+  const editTableSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await getHtmlBlock('createTableSection', formValues) || "";
+    createHTML();
+  };
+
+  const editFooterSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await getHtmlBlock('createFooter', formValues) || "";
+    createHTML();
   };
 
   const handleRunCode = () => {
@@ -260,7 +257,13 @@ const AdvancedResult = () => {
               </button>
             </div>
             <div className="py-4 space-x-2 flex flex-wrap justify-center">
-            <button
+              <button
+                onClick={editHead}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Head
+              </button>
+              <button
                 onClick={editNavigationSection}
                 className="bg-black text-white py-2 px-4 rounded m-1"
               >

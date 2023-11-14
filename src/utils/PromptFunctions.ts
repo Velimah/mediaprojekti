@@ -4,70 +4,45 @@ import {useChatGPT} from "../hooks/ApiHooks";
 const PromptFunctions = () => {
   const {postQuestion} = useChatGPT();
 
-const removeHtmlMarkdown = (inputString: string) => {
-    return inputString.replace(/```html|```/g, '');
-};
+  const removeHtmlMarkdown = (inputString: string) => {
+      return inputString.replace(/```html|```/g, '');
+  };
 
-const getNavigation = async (formValues:FormValues) => {
-    const createNavigation: PromptTemplate = 'createNavigation';
-    const createNavigationPrompt = getPromptTemplate(createNavigation, formValues);
+  const createWebPage = async (formValues:FormValues) => {
+    const htmlArray: string[] = [];
+
+    const documentStart = '<!DOCTYPE html>\n<html lang="en">\n<body>\n'
+    localStorage.setItem('documentStart', documentStart);
+
+    const documentEnd = '\n</body>\n</html>';
+    localStorage.setItem('documentEnd', documentEnd);
     try {
-      const navigationData = await postQuestion("html_block", createNavigationPrompt);
-			const sanitizedNavigationData = removeHtmlMarkdown(navigationData);
-      localStorage.setItem('htmlNavigation', sanitizedNavigationData);
-			return sanitizedNavigationData;
+      const navigationData = await getHtmlBlock('createNavigation', formValues) || "";
+      htmlArray.push(navigationData);
+      const welcomeData = await getHtmlBlock('createWelcomeSection', formValues) || "";
+      htmlArray.push(welcomeData);
+      const mainData = await getHtmlBlock('createMainSection', formValues) || "";
+      htmlArray.push(mainData);
+      const tableData = await getHtmlBlock('createTableSection', formValues) || "";
+      htmlArray.push(tableData);
+      const footerData = await getHtmlBlock('createFooter', formValues) || "";
+      htmlArray.push(footerData);
+      const completeArray = htmlArray.join('');
+      localStorage.setItem('completeArray', completeArray);
+      await getHead(formValues, completeArray);
     } catch (error) {
       console.log("error: ", error);
     }
-  };
+  }
 
-  const getWelcome = async (formValues:FormValues) => {
-    const createWelcomeSection: PromptTemplate = 'createWelcomeSection';
-    const createWelcomeSectionPrompt = getPromptTemplate(createWelcomeSection, formValues);
+  //test for universal html block
+  const getHtmlBlock = async (promptTemplate:PromptTemplate, formValues:FormValues) => {
+    const createHtmlBlock = getPromptTemplate(promptTemplate, formValues);
     try {
-      const welcomeData = await postQuestion("html_block", createWelcomeSectionPrompt);
-			const sanitizedWelcomeData = removeHtmlMarkdown(welcomeData);
-      localStorage.setItem('htmlWelcome', sanitizedWelcomeData);
-			return sanitizedWelcomeData;
-    } catch (error) {
-      console.log("error: ", error);
-    }
-  };
-
-  const getMainSection = async (formValues:FormValues) => {
-    const createMainSection: PromptTemplate = 'createMainSection';
-    const createMainSectionPrompt = getPromptTemplate(createMainSection, formValues);
-    try {
-      const mainData = await postQuestion("html_block", createMainSectionPrompt);
-			const sanitizedMainData = removeHtmlMarkdown(mainData);
-      localStorage.setItem('htmlMain', sanitizedMainData);
-			return sanitizedMainData;
-    } catch (error) {
-      console.log("error: ", error);
-    }
-  };
-
-  const getTable = async (formValues:FormValues) => {
-    const createTableSection: PromptTemplate = 'createTableSection';
-    const createTableSectionPrompt = getPromptTemplate(createTableSection, formValues);
-    try {
-      const tableData = await postQuestion("html_block", createTableSectionPrompt);
-			const sanitizedTableData = removeHtmlMarkdown(tableData);
-      localStorage.setItem('htmlTable', sanitizedTableData);
-			return sanitizedTableData;
-    } catch (error) {
-      console.log("error: ", error);
-    }
-  };
-
-  const getFooter = async (formValues:FormValues) => {
-    const createFooter: PromptTemplate = 'createFooter';
-    const createFooterPrompt = getPromptTemplate(createFooter, formValues);
-    try {
-      const footerData = await postQuestion("html_block", createFooterPrompt);
-			const sanitizedFooterData = removeHtmlMarkdown(footerData);
-      localStorage.setItem('htmlFooter', sanitizedFooterData);
-			return sanitizedFooterData;
+      const htmlData = await postQuestion("html_block", createHtmlBlock);
+      const sanitizedHtmlData = removeHtmlMarkdown(htmlData);
+      localStorage.setItem(promptTemplate, sanitizedHtmlData);
+      return sanitizedHtmlData;
     } catch (error) {
       console.log("error: ", error);
     }
@@ -78,21 +53,21 @@ const getNavigation = async (formValues:FormValues) => {
     const CreateHeadPrompt = getPromptTemplate(CreateHead, formValues);
     try {
       const headData = await postQuestion("create_head", CreateHeadPrompt+completeArray);
-			const sanitizedHeadData = removeHtmlMarkdown(headData);
+      const sanitizedHeadData = removeHtmlMarkdown(headData);
 
-			const firstSlot = `<!DOCTYPE html>
-			<html lang="en">
-			${sanitizedHeadData}
-			<body>
-			`;
-			localStorage.setItem('firstSlot', firstSlot);
-			
-			return sanitizedHeadData;
+      const documentStart = `<!DOCTYPE html>
+  <html lang="en">
+  ${sanitizedHeadData}
+  <body>
+  `;
+      localStorage.setItem('documentStart', documentStart);
+      
+      return sanitizedHeadData;
     } catch (error) {
       console.log("error: ", error);
     }
   };
-  return {getNavigation, getFooter, getHead, getTable, getWelcome, getMainSection};
+  return {getHtmlBlock, createWebPage, getHead, removeHtmlMarkdown};
 }
 
-  export {PromptFunctions}; 
+export {PromptFunctions}; 

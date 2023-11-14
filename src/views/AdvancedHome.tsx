@@ -8,7 +8,7 @@ import AlertDialog from "../components/AlertDialog";
 
 const AdvancedHome = () => {
 
-  const {getNavigation, getFooter, getHead, getTable, getWelcome, getMainSection} = PromptFunctions();
+  const {createWebPage} = PromptFunctions();
   const {loading} = useChatGPT();
   const navigate = useNavigate();
   const [error, setError] = useState('');
@@ -28,32 +28,8 @@ const AdvancedHome = () => {
 
 		console.log('formValues', formValues);
 
-    const htmlArray: string[] = [];
-
-    const firstSlot = `<!DOCTYPE html>
-<html lang="en">
-<body>
-`;
-    localStorage.setItem('firstSlot', firstSlot);
-    const lastSlot = `
-</body>
-</html>`;
-    localStorage.setItem('lastSlot', lastSlot);
-
     try {
-      const navigationData = await getNavigation(formValues) || "";
-      htmlArray.push(navigationData);
-      const welcomeData = await getWelcome(formValues) || "";
-      htmlArray.push(welcomeData);
-      const mainData = await getMainSection(formValues) || "";
-      htmlArray.push(mainData);
-      const tableData = await getTable(formValues) || "";
-      htmlArray.push(tableData);
-      const footerData = await getFooter(formValues) || "";
-      htmlArray.push(footerData);
-      const completeArray = htmlArray.join('');
-      await getHead(formValues, completeArray);
-
+      await createWebPage(formValues);
     } catch (error) {
       console.log("error: ", error);
       setError((error as Error).message);
