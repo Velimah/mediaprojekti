@@ -41,6 +41,13 @@ const AdvancedResult = () => {
 
   const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    const htmlArray: string[] = [];
+    htmlArray.push(localStorage.getItem("createNavigation") || "");
+    htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
+    htmlArray.push(localStorage.getItem("createMainSection") || "");
+    htmlArray.push(localStorage.getItem("createTableSection") || "");
+    htmlArray.push(localStorage.getItem("createFooter") || "");
+    localStorage.setItem("completeArray", htmlArray.join(''));
     await getHead(formValues, localStorage.getItem('completeArray') || "") || "";
     createHTML();
   };
@@ -134,6 +141,7 @@ const AdvancedResult = () => {
   return (
     <>
       <div className="w-full px-4">
+        {/*
         <div className="mb-8">
           <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-1/2">
             <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-center rounded-md">
@@ -195,6 +203,7 @@ const AdvancedResult = () => {
             </div>
           </div>
         </div>
+        */}
         <div className="mb-4">
           <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
             <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={toggleCodeVisibility}>
