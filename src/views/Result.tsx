@@ -78,9 +78,9 @@ const Result = () => {
 
   return (
     <>
-      <div className="w-full my-4 p-4">
-        <div className="mb-4">
-          <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg">
+      <div className="w-full lg:w-1/2 px-4">
+        <div className="mb-8">
+          <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-1/2">
             <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-center rounded-md">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -141,8 +141,8 @@ const Result = () => {
           </div>
         </div>
         <div className="mb-4">
-          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer" onClick={toggleCodeVisibility}>
-            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase">
+          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
+            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={toggleCodeVisibility}>
               {codeVisible ? (
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
                   <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
@@ -213,8 +213,8 @@ const Result = () => {
           </button>
         </div>*/}
         <div className="mb-4">
-          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer" onClick={togglePreviewVisibility}>
-            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase">
+          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
+            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={togglePreviewVisibility}>
             {previewVisible ? (
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
                   <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
