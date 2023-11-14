@@ -12,11 +12,7 @@ export type PromptTemplate =
     colors: string;
     linkCount?: string;
     linkNames?: string;
-    welcomeParagraphCount?: string;
-    wordCount?: string;
     tableDetails?: string;
-    mainParagraphCount?: string;
-    mainWordCount?: string;
   }
 
   export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: FormValues): string => {
@@ -26,11 +22,7 @@ export type PromptTemplate =
       colors,
       linkCount,
       linkNames,
-      welcomeParagraphCount,
-      wordCount,
       tableDetails,
-      mainParagraphCount,
-      mainWordCount,
     } = formValues;
 
     const promptTemplates = {
@@ -47,8 +39,7 @@ export type PromptTemplate =
  Use shadows and hover effects if appropriate.
  Use flexbox.
  Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
- Create a fully functional welcome section <section></section> with id #section and ${welcomeParagraphCount} paragraphs to welcome the user to the site. 
- Minimum of total ${wordCount} words. 
+ Create a fully functional welcome section <section></section> with id #section and and welcome the user to the site with welcome text and information.
  Create a image tag size 256x256px, image src is /image.webp . 
  Use real information and text, no lorem ipsum.`,
       createFooter: `Topic: ${topic}.
@@ -69,8 +60,7 @@ export type PromptTemplate =
  Use shadows and hover effects if appropriate.
  Use flexbox.
  Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
- create a fully functional main section <main></main> with id #main and ${mainParagraphCount} paragraphs of information about the game. 
- Minimum of total ${mainWordCount} words. 
+ create a fully functional main section <main></main> with id #main paragraphs of information about the topic.
  No lorem ipsum, use real information.`,
       CreateHead: `update <head></head> tags with search engine optimization meta tags. 
  Add content delivery network link for ${cssLibrary}. 

@@ -1,68 +1,63 @@
-import React, { useState } from "react";
-import { useChatGPT } from "../hooks/ApiHooks";
-import { useNavigate } from "react-router-dom";
+import React, {useState} from "react";
+import {useChatGPT} from "../hooks/ApiHooks";
+import {useNavigate} from "react-router-dom";
 import Loader from "../components/Loader";
-import { FormValues } from "../utils/Prompts";
-import { getHtmlBlock } from "../utils/PromptFunctions";
+import {FormValues} from "../utils/Prompts";
+import {PromptFunctions} from "../utils/PromptFunctions";
 import AlertDialog from "../components/AlertDialog";
-
-
 
 const AdvancedHome = () => {
 
-  const { getNavigation, getFooter, getHead, getTable, getWelcome, getMainSection } = getHtmlBlock();
-  const { postQuestion, loading } = useChatGPT();
-  const [newQuestion, setNewQuestion] = useState("");
+  const {getNavigation, getFooter, getHead, getTable, getWelcome, getMainSection} = PromptFunctions();
+  const {loading} = useChatGPT();
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [showAlertDialog, setShowAlertDialog] = useState(false);
 
 	const [formValues, setFormValues] = useState<FormValues>({
-    topic: "rpg games",
+    topic: "random topic",
     cssLibrary: "tailwind",
-    colors: "#88A0A8",
+    colors: "blue",
     linkCount: "4",
     linkNames: "Welcome,Main,Table,Footer",
-    welcomeParagraphCount: "3",
-    wordCount: "200",
     tableDetails: "Create a table with information about the topic",
-    mainParagraphCount: "3",
-    mainWordCount: "200",
   });
 
-  const handleForm = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleForm = async (event: React.FormEvent) => {
+    event.preventDefault();
 
 		console.log('formValues', formValues);
 
     const htmlArray: string[] = [];
 
     const firstSlot = `<!DOCTYPE html>
-    <html lang="en">
-    <body>
-    `;
-          localStorage.setItem('firstSlot', firstSlot);
-          const lastSlot = `
-    </body>
-    </html>`;
-          localStorage.setItem('lastSlot', lastSlot);
+<html lang="en">
+<body>
+`;
+    localStorage.setItem('firstSlot', firstSlot);
+    const lastSlot = `
+</body>
+</html>`;
+    localStorage.setItem('lastSlot', lastSlot);
 
     try {
-      const data1 = await getNavigation(formValues) || "";
-      htmlArray.push(data1);
-      const data2 = await getWelcome(formValues) || "";
-      htmlArray.push(data2);
-      const data3 = await getMainSection(formValues) || "";
-      htmlArray.push(data3);
-      const data4 = await getTable(formValues) || "";
-      htmlArray.push(data4);
-      const data5 = await getFooter(formValues) || "";
-      htmlArray.push(data5);
+      const navigationData = await getNavigation(formValues) || "";
+      htmlArray.push(navigationData);
+      const welcomeData = await getWelcome(formValues) || "";
+      htmlArray.push(welcomeData);
+      const mainData = await getMainSection(formValues) || "";
+      htmlArray.push(mainData);
+      const tableData = await getTable(formValues) || "";
+      htmlArray.push(tableData);
+      const footerData = await getFooter(formValues) || "";
+      htmlArray.push(footerData);
       const completeArray = htmlArray.join('');
       await getHead(formValues, completeArray);
 
-    } catch (e) {
-      console.log("error: ", e);
+    } catch (error) {
+      console.log("error: ", error);
+      setError((error as Error).message);
+      setShowAlertDialog(true);
     } finally {
       navigate("/advancedresult", { state: { formValues } });
     }
@@ -166,7 +161,7 @@ const AdvancedHome = () => {
                   type="text"
                   placeholder="Give me a topic for website ..."
                   value={formValues.topic}
-                  onChange={(e) => setFormValues({ ...formValues, topic: e.target.value })}
+                  onChange={(event) => setFormValues({ ...formValues, topic: event.target.value })}
                   className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
@@ -174,7 +169,7 @@ const AdvancedHome = () => {
 								<select
                       id="linkCount"
                       className="w-full rounded-md bg-white p-2"
-											onChange={(e) => setFormValues({ ...formValues, linkCount: e.target.value })}
+											onChange={(event) => setFormValues({ ...formValues, linkCount: event.target.value })}
 											defaultValue={4}
                     >
                       <option value="1">1</option>
@@ -189,53 +184,7 @@ const AdvancedHome = () => {
                   type="text"
                   placeholder="Give me navigation link names ..."
                   value={formValues.linkNames}
-									onChange={(e) => setFormValues({ ...formValues, linkNames: e.target.value })}
-                  className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
-                />
-								</label>
-								<label className="relative"> Welcome section paragraph count
-								<select
-                      id="welcomeParagraphCount"
-                      className="w-full rounded-md bg-white p-2"
-											onChange={(e) => setFormValues({ ...formValues, welcomeParagraphCount: e.target.value })}
-											defaultValue={2}
-                    >
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-											<option value="3">3</option>
-                      <option value="4">4</option>
-                </select>
-								</label>
-								<label className="relative"> Welcome section word count
-								<input
-                  id="wordCount"
-                  type="text"
-                  placeholder="Give me welcome section word count..."
-                  value={formValues.wordCount}
-                  onChange={(e) => setFormValues({ ...formValues, wordCount: e.target.value })}
-                  className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
-                />
-								</label>
-								<label className="relative"> Main section paragraph count
-								<select
-                      id="mainParagraphCount"
-                      className="w-full rounded-md bg-white p-2"
-											onChange={(e) => setFormValues({ ...formValues, mainParagraphCount: e.target.value })}
-											defaultValue={3}
-                    >
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-											<option value="3">3</option>
-                      <option value="4">4</option>
-                </select>
-								</label>
-								<label className="relative"> Main section word count
-								<input
-                  id="mainWordCount"
-                  type="text"
-                  placeholder="Give me main section word count ..."
-                  value={formValues.mainWordCount}
-                  onChange={(e) => setFormValues({ ...formValues, mainWordCount: e.target.value })}
+									onChange={(event) => setFormValues({ ...formValues, linkNames: event.target.value })}
                   className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
@@ -245,7 +194,7 @@ const AdvancedHome = () => {
                   type="text"
                   placeholder="Give me table section details ..."
                   value={formValues.tableDetails}
-                  onChange={(e) => setFormValues({ ...formValues, tableDetails: e.target.value })}
+                  onChange={(event) => setFormValues({ ...formValues, tableDetails: event.target.value })}
                   className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
                 />
 								</label>
@@ -256,7 +205,7 @@ const AdvancedHome = () => {
                     <select
                       id="userPromptCSS"
                       className="w-full rounded-md bg-white pl-1"
-											onChange={(e) => setFormValues({ ...formValues, cssLibrary: e.target.value })}
+											onChange={(event) => setFormValues({ ...formValues, cssLibrary: event.target.value })}
                     >
                       <option value="Tailwind">Tailwind</option>
 											<option value="Bootstrap">Bootstrap</option>
@@ -268,7 +217,7 @@ const AdvancedHome = () => {
                   </label>
                   <label className="flex flex-row items-center">
                     <span className="pr-2 font-bold">Primary color:</span>
-                    <input type="color" id="userPromptColor" className="grow" onChange={(e) => setFormValues({ ...formValues, colors: e.target.value })}/>
+                    <input type="color" id="userPromptColor" className="grow" onChange={(event) => setFormValues({ ...formValues, colors: event.target.value })}/>
                   </label>
                 </div>
                 <label className="grow pt-4 md:pl-4 md:pt-0">

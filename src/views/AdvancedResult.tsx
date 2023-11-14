@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
-import { getHtmlBlock } from "../utils/PromptFunctions";
+import { PromptFunctions } from "../utils/PromptFunctions";
 import { useLocation } from 'react-router-dom';
 
 const AdvancedResult = () => {
@@ -15,7 +15,7 @@ const AdvancedResult = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(true);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
-  const { getNavigation, getFooter, getTable, getWelcome, getMainSection } = getHtmlBlock();
+  const { getNavigation, getFooter, getTable, getWelcome, getMainSection } = PromptFunctions();
   const location = useLocation();
   const { formValues } = location.state;
 
@@ -229,36 +229,6 @@ const AdvancedResult = () => {
               ) }
             <div className="py-4 space-x-2 flex flex-wrap justify-center">
               <button
-                onClick={editNavigationSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Navigation
-              </button>
-              <button
-                onClick={editWelcomeSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Welcome
-              </button>
-              <button
-                onClick={editMainSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Main
-              </button>
-              <button
-                onClick={editTableSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Table
-              </button>
-              <button
-                onClick={editFooterSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Footer
-              </button>
-              <button
                 onClick={handleUndo}
                 className="bg-black text-white py-2 px-4 rounded m-1"
               >
@@ -289,6 +259,38 @@ const AdvancedResult = () => {
                 Save as HTML
               </button>
             </div>
+            <div className="py-4 space-x-2 flex flex-wrap justify-center">
+            <button
+                onClick={editNavigationSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Navigation
+              </button>
+              <button
+                onClick={editWelcomeSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Welcome
+              </button>
+              <button
+                onClick={editMainSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Main
+              </button>
+              <button
+                onClick={editTableSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Table
+              </button>
+              <button
+                onClick={editFooterSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Footer
+              </button>
+              </div>
           </div>
         </div>
         {/*
