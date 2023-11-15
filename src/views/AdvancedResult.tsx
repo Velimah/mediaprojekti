@@ -43,12 +43,9 @@ const AdvancedResult = () => {
   const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const htmlArray: string[] = [];
-    htmlArray.push(localStorage.getItem("createNavigation") || "");
     htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
     htmlArray.push(localStorage.getItem("createMainSection") || "");
-    htmlArray.push(localStorage.getItem("createTableSection") || "");
     htmlArray.push(localStorage.getItem("createMap") || "");
-    htmlArray.push(localStorage.getItem("createFooter") || "");
     localStorage.setItem("completeArray", htmlArray.join(''));
     await createHeadInfo(formValues, localStorage.getItem('completeArray') || "") || "";
     createHTML();
