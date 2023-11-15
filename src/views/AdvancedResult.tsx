@@ -6,7 +6,7 @@ import EditForms from "../components/EditForms";
 
 const AdvancedResult = () => {
   const { state } = useChat();
-  const { answer /*, editedanswer*/ } = state;
+  const { question, answer /*, editedanswer*/ } = state;
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
@@ -25,13 +25,14 @@ const AdvancedResult = () => {
     // Update the code state with the current answer
     if (answer) {
 			setCode(createHTML());
-			console.log('results', originalFormValues)
     }
   }, [answer]);
 
+  // useEffect backup didnt work in server?
 	useEffect(() => {
-    // Update the code state with the current answer
-			createHTML(); 
+    if (answer) {
+			setCode(createHTML());
+    } 
   }, []);
 
 
@@ -93,8 +94,7 @@ const AdvancedResult = () => {
 
   return (
     <>
-      <div className="w-full px-4">
-        {/* TODO: Make prompt window show only typed prompt not other sent information
+      <div className="w-3/4 px-4">
         <div className="mb-8">
           <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-1/2">
             <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-center rounded-md">
@@ -155,8 +155,7 @@ const AdvancedResult = () => {
               <span className="p-4">{question}</span>
             </div>
           </div>
-        </div>
-        */}
+        </div>     
         <div className="mb-4">
           <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
             <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={toggleCodeVisibility}>
@@ -249,7 +248,7 @@ const AdvancedResult = () => {
               title="Code preview"
               sandbox="allow-same-origin"
               width="100%"
-              height={800}
+              height={500}
               className={previewVisible ? ('border-black bg-slate-100 resize-x') : ('hidden')} />
           </div>
           </div>

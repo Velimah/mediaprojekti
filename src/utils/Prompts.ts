@@ -39,7 +39,6 @@ Make href for links: Use exactly <a href="#section">Welcome</a>, <a href="#main"
 Use ${cssLibrary} for the UI styling.
 Use shadow and hover effects for links.
 Use flexbox and make navigation sticky.
-Make the navigation background dark and all text white(including link color).
 Justify content center and align content center under 600px width.
 Do not make hamburger menu.
 No imageplaceholders.
