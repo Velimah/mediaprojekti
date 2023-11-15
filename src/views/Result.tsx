@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
+import { useNotification } from "../contexts/NotificationContext";
 
 const Result = () => {
   const { state } = useChat();
+  const { setNotification  } = useNotification();
   const { question, answer /*, editedanswer*/ } = state;
   console.log("Question: ", question);
 
@@ -33,6 +35,7 @@ const Result = () => {
 
   const handleUndo = () => {
     // Undo logic here
+    setNotification("default","Changes reversed");
   };
 
   const handleCopy = async () => {
@@ -40,19 +43,22 @@ const Result = () => {
     try {
       if (codeTextarea.current) {
         await navigator.clipboard.writeText(codeTextarea.current.value);
-        console.log("Copied");
+        setNotification("default", "Copied to clipboard");
       }
     } catch (error) {
       console.log("Error when copying to clipboard: ", error);
+      setNotification("error", "Something went wrong.");
     }
   };
 
   const handleBuild = () => {
     // Build logic here
+    setNotification("default","Built");
   };
 
   const handleSave = () => {
     // Save logic here
+    setNotification("default","Saved");
   };
 
   handleRunCode();
