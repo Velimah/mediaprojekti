@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PromptFunctions } from "../utils/PromptFunctions";
-import { FormValues } from "../utils/Prompts";
+import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
 
 interface EditFormsProps {
@@ -48,44 +48,9 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 		createHTML();
 	};
 
-	const handleNavigationForm = async (event: React.FormEvent) => {
+  const handleEditForm = async (htmlBlockName:PromptTemplate, event: React.FormEvent) => {
 		event.preventDefault();
-		await createHtmlBlock('createNavigation', formStateValues) || "";
-		createHTML();
-    dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
-	};
-
-	const handleWelcomeForm = async (event: React.FormEvent) => {
-		event.preventDefault();
-		await createHtmlBlock('createWelcomeSection', formStateValues) || "";
-		createHTML();
-    dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
-	};
-
-	const handleMainForm = async (event: React.FormEvent) => {
-		event.preventDefault();
-		await createHtmlBlock('createMainSection', formStateValues) || "";
-		createHTML();
-    dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
-	};
-
-		const handleTableForm = async (event: React.FormEvent) => {
-		event.preventDefault();
-		await createHtmlBlock('createTableSection', formStateValues) || "";
-		createHTML();
-    dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
-	};
-
-		const handleMapForm = async (event: React.FormEvent) => {
-		event.preventDefault();
-		await createHtmlBlock('createMap', formStateValues) || "";
-		createHTML();
-    dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
-	};
-
-		const handleFooterForm = async (event: React.FormEvent) => {
-		event.preventDefault();
-		await createHtmlBlock('createFooter', formStateValues) || "";
+		await createHtmlBlock(htmlBlockName, formStateValues) || "";
 		createHTML();
     dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
 	};
@@ -131,7 +96,7 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 			{activeSection === 'navigation' && (
 			<form
 			className="bg-gray-200 p-4 rounded-b-md"
-			onSubmit={handleNavigationForm}
+			onSubmit={(event) => handleEditForm('createNavigation', event)}
 			>
 				<label className="relative"> Navigation
 				<input
@@ -154,7 +119,7 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 			{activeSection === 'welcome' && (
 			<form
 			className="bg-gray-200 p-4 rounded-b-md"
-			onSubmit={handleWelcomeForm}
+			onSubmit={(event) => handleEditForm('createWelcomeSection', event)}
 			>
 				<label className="relative"> Welcome
 				<input
@@ -177,7 +142,7 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 			{activeSection === 'main' && (
 			<form
 			className="bg-gray-200 p-4 rounded-b-md"
-			onSubmit={handleMainForm}
+			onSubmit={(event) => handleEditForm('createMainSection', event)}
 			>
 				<label className="relative"> Main
 				<input
@@ -200,7 +165,7 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 			{activeSection === 'map' && (
 			<form
 			className="bg-gray-200 p-4 rounded-b-md"
-			onSubmit={handleMapForm}
+			onSubmit={(event) => handleEditForm('createMap', event)}
 			>
 				<label className="relative"> Map
 				<input
@@ -223,7 +188,7 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 			{activeSection === 'table' && (
 			<form
 			className="bg-gray-200 p-4 rounded-b-md"
-			onSubmit={handleTableForm}
+			onSubmit={(event) => handleEditForm('createTableSection', event)}
 			>
 				<label className="relative"> Table
 				<input
@@ -246,7 +211,7 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 			{activeSection === 'footer' && (
 			<form
 			className="bg-gray-200 p-4 rounded-b-md"
-			onSubmit={handleFooterForm}
+			onSubmit={(event) => handleEditForm('createFooter', event)}
 			>
 				<label className="relative"> Footer
 				<input
