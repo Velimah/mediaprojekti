@@ -37,6 +37,20 @@ const PromptFunctions = () => {
     }
   }
 
+	const createHTML = () => {
+		const htmlArray: string[] = [];
+		htmlArray.push(localStorage.getItem("documentStart") || "");
+		htmlArray.push(localStorage.getItem("createNavigation") || "");
+		htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
+		htmlArray.push(localStorage.getItem("createMainSection") || "");
+		htmlArray.push(localStorage.getItem("createTableSection") || "");
+		htmlArray.push(localStorage.getItem("createMap") || "");
+		htmlArray.push(localStorage.getItem("createFooter") || "");
+		htmlArray.push(localStorage.getItem("documentEnd") || "");
+		localStorage.setItem("completeArray", htmlArray.join(''));
+		return htmlArray.join('');
+	};
+
   const createHtmlBlock = async (promptTemplate:PromptTemplate, formValues:FormValues) => {
     const createHtmlBlock = getPromptTemplate(promptTemplate, formValues);
     try {
@@ -68,7 +82,7 @@ const PromptFunctions = () => {
       console.log("error: ", error);
     }
   };
-  return {createHtmlBlock, createWebPage, createHeadInfo, removeHtmlMarkdown};
+  return {createHtmlBlock, createHTML, createWebPage, createHeadInfo, removeHtmlMarkdown};
 }
 
 export {PromptFunctions}; 

@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
 import { PromptFunctions } from "../utils/PromptFunctions";
 import { useLocation } from 'react-router-dom';
+import EditForms from "../components/EditForms";
 
 const AdvancedResult = () => {
   const { state } = useChat();
-  const { question, answer /*, editedanswer*/ } = state;
-  console.log("Question: ", question);
+  const { answer /*, editedanswer*/ } = state;
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
@@ -15,77 +15,25 @@ const AdvancedResult = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(true);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
-  const {createHeadInfo, createHtmlBlock} = PromptFunctions();
+  const {createHTML} = PromptFunctions();
   const location = useLocation();
-  const { formValues } = location.state;
+
+	const originalFormValues = location.state || {};
+
 
   useEffect(() => {
     // Update the code state with the current answer
     if (answer) {
-			createHTML();
+			setCode(createHTML());
+			console.log('results', originalFormValues)
     }
   }, [answer]);
 
-  const createHTML = () => {
-    const htmlArray: string[] = [];
-    htmlArray.push(localStorage.getItem("documentStart") || "");
-    htmlArray.push(localStorage.getItem("createNavigation") || "");
-    htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
-    htmlArray.push(localStorage.getItem("createMainSection") || "");
-    htmlArray.push(localStorage.getItem("createTableSection") || "");
-    htmlArray.push(localStorage.getItem("createMap") || "");
-    htmlArray.push(localStorage.getItem("createFooter") || "");
-    htmlArray.push(localStorage.getItem("documentEnd") || "");
-    localStorage.setItem("completeArray", htmlArray.join(''));
-    setCode(htmlArray.join(''));
-  };
+	useEffect(() => {
+    // Update the code state with the current answer
+			createHTML(); 
+  }, []);
 
-  const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    const htmlArray: string[] = [];
-    htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
-    htmlArray.push(localStorage.getItem("createMainSection") || "");
-    htmlArray.push(localStorage.getItem("createMap") || "");
-    localStorage.setItem("completeArray", htmlArray.join(''));
-    await createHeadInfo(formValues, localStorage.getItem('completeArray') || "") || "";
-    createHTML();
-  };
-
-  const editNavigationSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    await createHtmlBlock('createNavigation', formValues) || "";
-    createHTML();
-  };
-
-  const editWelcomeSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    await createHtmlBlock('createWelcomeSection', formValues) || "";
-    createHTML();
-  };
-
-  const editMainSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    await createHtmlBlock('createMainSection', formValues) || "";
-    createHTML();
-  };
-
-  const editTableSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    await createHtmlBlock('createTableSection', formValues) || "";
-    createHTML();
-  };
-
-  const editMapSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    await createHtmlBlock('createMap', formValues) || "";
-    createHTML();
-  };
-
-  const editFooterSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    await createHtmlBlock('createFooter', formValues) || "";
-    createHTML();
-  };
 
   const handleRunCode = () => {
     if (previewFrame.current) {
@@ -270,50 +218,7 @@ const AdvancedResult = () => {
                 Save as HTML
               </button>
             </div>
-            <div className="py-4 space-x-2 flex flex-wrap justify-center">
-              <button
-                onClick={editHead}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Head Tag Information
-              </button>
-              <button
-                onClick={editNavigationSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Navigation
-              </button>
-              <button
-                onClick={editWelcomeSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Welcome
-              </button>
-              <button
-                onClick={editMainSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Main
-              </button>
-              <button
-                onClick={editTableSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Table
-              </button>
-              <button
-                onClick={editMapSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Map
-              </button>
-              <button
-                onClick={editFooterSection}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Redo Footer
-              </button>
-              </div>
+						<EditForms originalFormValues={originalFormValues} />
           </div>
         </div>
         {/*
