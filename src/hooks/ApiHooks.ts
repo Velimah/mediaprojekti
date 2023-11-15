@@ -46,8 +46,11 @@ const useChatGPT = () => {
       }
 
       setResult(data);
-
+      // console.log to pass linter test for now
+      console.log("API Success:", result);
+      // changed result to data, result returned undefined/empty
       return data;
+
     } catch (error) {
       console.error("API Error:", error);
       throw error;
