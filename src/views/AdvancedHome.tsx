@@ -22,7 +22,8 @@ const AdvancedHome = () => {
     linkNames: "Welcome,Main,Table,Footer",
     tableDetails: "Create a table with information about the topic",
     mapAddress: "Karaportti 2",
-    mapCity: "Espoo"
+    mapCity: "Espoo",
+		additionalInfo: "",
   });
 
   const handleForm = async (event: React.FormEvent) => {
