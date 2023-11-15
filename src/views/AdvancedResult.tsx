@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
+import { PromptFunctions } from "../utils/PromptFunctions";
+import { useLocation } from 'react-router-dom';
 
-const Result = () => {
+const AdvancedResult = () => {
   const { state } = useChat();
   const { question, answer /*, editedanswer*/ } = state;
   console.log("Question: ", question);
@@ -13,12 +15,77 @@ const Result = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(true);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
+  const {createHeadInfo, createHtmlBlock} = PromptFunctions();
+  const location = useLocation();
+  const { formValues } = location.state;
+
   useEffect(() => {
     // Update the code state with the current answer
     if (answer) {
-      setCode(answer);
+			createHTML();
     }
   }, [answer]);
+
+  const createHTML = () => {
+    const htmlArray: string[] = [];
+    htmlArray.push(localStorage.getItem("documentStart") || "");
+    htmlArray.push(localStorage.getItem("createNavigation") || "");
+    htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
+    htmlArray.push(localStorage.getItem("createMainSection") || "");
+    htmlArray.push(localStorage.getItem("createTableSection") || "");
+    htmlArray.push(localStorage.getItem("createMap") || "");
+    htmlArray.push(localStorage.getItem("createFooter") || "");
+    htmlArray.push(localStorage.getItem("documentEnd") || "");
+    localStorage.setItem("completeArray", htmlArray.join(''));
+    setCode(htmlArray.join(''));
+  };
+
+  const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    const htmlArray: string[] = [];
+    htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
+    htmlArray.push(localStorage.getItem("createMainSection") || "");
+    htmlArray.push(localStorage.getItem("createMap") || "");
+    localStorage.setItem("completeArray", htmlArray.join(''));
+    await createHeadInfo(formValues, localStorage.getItem('completeArray') || "") || "";
+    createHTML();
+  };
+
+  const editNavigationSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await createHtmlBlock('createNavigation', formValues) || "";
+    createHTML();
+  };
+
+  const editWelcomeSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await createHtmlBlock('createWelcomeSection', formValues) || "";
+    createHTML();
+  };
+
+  const editMainSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await createHtmlBlock('createMainSection', formValues) || "";
+    createHTML();
+  };
+
+  const editTableSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await createHtmlBlock('createTableSection', formValues) || "";
+    createHTML();
+  };
+
+  const editMapSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await createHtmlBlock('createMap', formValues) || "";
+    createHTML();
+  };
+
+  const editFooterSection = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    await createHtmlBlock('createFooter', formValues) || "";
+    createHTML();
+  };
 
   const handleRunCode = () => {
     if (previewFrame.current) {
@@ -78,7 +145,8 @@ const Result = () => {
 
   return (
     <>
-      <div className="w-full lg:w-1/2 px-4">
+      <div className="w-full px-4">
+        {/* TODO: Make prompt window show only typed prompt not other sent information
         <div className="mb-8">
           <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-1/2">
             <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-center rounded-md">
@@ -140,6 +208,7 @@ const Result = () => {
             </div>
           </div>
         </div>
+        */}
         <div className="mb-4">
           <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
             <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={toggleCodeVisibility}>
@@ -201,6 +270,50 @@ const Result = () => {
                 Save as HTML
               </button>
             </div>
+            <div className="py-4 space-x-2 flex flex-wrap justify-center">
+              <button
+                onClick={editHead}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Head Tag Information
+              </button>
+              <button
+                onClick={editNavigationSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Navigation
+              </button>
+              <button
+                onClick={editWelcomeSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Welcome
+              </button>
+              <button
+                onClick={editMainSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Main
+              </button>
+              <button
+                onClick={editTableSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Table
+              </button>
+              <button
+                onClick={editMapSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Map
+              </button>
+              <button
+                onClick={editFooterSection}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
+                Redo Footer
+              </button>
+              </div>
           </div>
         </div>
         {/*
@@ -231,7 +344,7 @@ const Result = () => {
               title="Code preview"
               sandbox="allow-same-origin"
               width="100%"
-              height={500}
+              height={800}
               className={previewVisible ? ('border-black bg-slate-100 resize-x') : ('hidden')} />
           </div>
           </div>
@@ -240,4 +353,4 @@ const Result = () => {
   );
 };
 
-export default Result;
+export default AdvancedResult;
