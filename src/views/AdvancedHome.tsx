@@ -7,19 +7,17 @@ import { PromptFunctions } from "../utils/PromptFunctions";
 import AlertDialog from "../components/AlertDialog";
 
 const AdvancedHome = () => {
-  const { createWebPage } = PromptFunctions();
+  const { createWebPage, progressCount, errorCount } = PromptFunctions();
   const { loading } = useChatGPT();
   const navigate = useNavigate();
-  const [error, setError] = useState("");
-  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [showAlertDialog, setShowAlertDialog] = useState<boolean>(false);
+  const [building, setBuilding] = useState<boolean>(false);
 
   const [formValues, setFormValues] = useState<FormValues>({
     topic: "random topic",
     cssLibrary: "tailwind",
     colors: "blue",
-    linkCount: "4",
-    linkNames: "Welcome,Main,Table,Footer",
-    tableDetails: "Create a table with information about the topic",
     mapAddress: "Karaportti 2",
     mapCity: "Espoo",
     additionalInfo: "",
@@ -143,60 +141,6 @@ const AdvancedHome = () => {
               </label>
               <label className='relative'>
                 {" "}
-                Number of nav links
-                <select
-                  id='linkCount'
-                  className='w-full rounded-md bg-white p-2'
-                  onChange={(event) =>
-                    setFormValues({
-                      ...formValues,
-                      linkCount: event.target.value,
-                    })
-                  }
-                  defaultValue={4}
-                >
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                  <option value='3'>3</option>
-                  <option value='4'>4</option>
-                </select>
-              </label>
-              <label className='relative'>
-                {" "}
-                Nav link names
-                <input
-                  id='linkNames'
-                  type='text'
-                  placeholder='Give me navigation link names ...'
-                  value={formValues.linkNames}
-                  onChange={(event) =>
-                    setFormValues({
-                      ...formValues,
-                      linkNames: event.target.value,
-                    })
-                  }
-                  className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-                />
-              </label>
-              <label className='relative'>
-                {" "}
-                Tables section details
-                <input
-                  id='tableDetails'
-                  type='text'
-                  placeholder='Give me table section details ...'
-                  value={formValues.tableDetails}
-                  onChange={(event) =>
-                    setFormValues({
-                      ...formValues,
-                      tableDetails: event.target.value,
-                    })
-                  }
-                  className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-                />
-              </label>
-              <label className='relative'>
-                {" "}
                 Map Adress
                 <input
                   id='mapAdress'
@@ -206,7 +150,7 @@ const AdvancedHome = () => {
                   onChange={(event) =>
                     setFormValues({
                       ...formValues,
-                      tableDetails: event.target.value,
+                      mapAddress: event.target.value,
                     })
                   }
                   className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
@@ -223,7 +167,7 @@ const AdvancedHome = () => {
                   onChange={(event) =>
                     setFormValues({
                       ...formValues,
-                      tableDetails: event.target.value,
+                      mapCity: event.target.value,
                     })
                   }
                   className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
@@ -271,16 +215,22 @@ const AdvancedHome = () => {
                     type='submit'
                     className='rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold'
                     value='BUILD!'
+                    onClick={() => setBuilding(true)}
                   />
                 </label>
               </div>
+              {building && (
+                <div className='flex items-center gap-2'>
+                  <span className='relative flex h-3 w-3'>
+                    <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                    <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                  </span>
+                  <p className='font-bold'>
+                    Building... {progressCount} Failed fetches: {errorCount}
+                  </p>
+                </div>
+              )}
             </form>
-            <button
-              className='rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold'
-              onClick={() => navigate("/")}
-            >
-              Home
-            </button>
           </section>
         </section>
         {loading && <Loader />}

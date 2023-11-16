@@ -1,8 +1,11 @@
 import { FormValues, PromptTemplate, getPromptTemplate } from "./Prompts";
 import { useChatGPT } from "../hooks/ApiHooks";
+import { useState } from "react";
 
 const PromptFunctions = () => {
   const { postQuestion } = useChatGPT();
+  const [progressCount, setProgressCount] = useState<string>("0 / 7");
+  const [errorCount, setErrorCount] = useState<number>(0);
 
   // function to remove markdown from html. Use | to separate multiple markdowns
   const removeHtmlMarkdown = (inputString: string) => {
@@ -30,21 +33,45 @@ const PromptFunctions = () => {
     try {
       const navigationData = (await createHtmlBlock("createNavigation", formValues)) || "";
       htmlArray.push(navigationData);
+      if (navigationData === "") {
+        setErrorCount((prevError) => prevError + 1);
+      }
+      setProgressCount("1 / 7");
       sleep(1000);
       const welcomeData = (await createHtmlBlock("createWelcomeSection", formValues)) || "";
       htmlArray.push(welcomeData);
+      if (welcomeData === "") {
+        setErrorCount((prevError) => prevError + 1);
+      }
+      setProgressCount("2 / 7");
       sleep(1000);
       const mainData = (await createHtmlBlock("createMainSection", formValues)) || "";
       htmlArray.push(mainData);
+      if (mainData === "") {
+        setErrorCount((prevError) => prevError + 1);
+      }
+      setProgressCount("3 / 7");
       sleep(1000);
       const tableData = (await createHtmlBlock("createTableSection", formValues)) || "";
       htmlArray.push(tableData);
+      if (tableData === "") {
+        setErrorCount((prevError) => prevError + 1);
+      }
+      setProgressCount("4 / 7");
       sleep(1000);
       const mapData = (await createHtmlBlock("createMap", formValues)) || "";
       htmlArray.push(mapData);
+      if (mapData === "") {
+        setErrorCount((prevError) => prevError + 1);
+      }
+      setProgressCount("5 / 7");
       sleep(1000);
       const footerData = (await createHtmlBlock("createFooter", formValues)) || "";
       htmlArray.push(footerData);
+      if (footerData === "") {
+        setErrorCount((prevError) => prevError + 1);
+      }
+      setProgressCount("6 / 7");
       sleep(1000);
 
       // join all html blocks in htmlArray together
@@ -53,6 +80,7 @@ const PromptFunctions = () => {
       localStorage.setItem("completeArray", completeArray);
       // create head info html block and save it to local storage
       await createHeadInfo(formValues, completeArray);
+      setProgressCount("0 / 7");
     } catch (error) {
       console.log("error: ", error);
     }
@@ -69,8 +97,10 @@ const PromptFunctions = () => {
     htmlArray.push(localStorage.getItem("createMap") || "");
     htmlArray.push(localStorage.getItem("createFooter") || "");
     htmlArray.push(localStorage.getItem("documentEnd") || "");
-    localStorage.setItem("completeArray", htmlArray.join(""));
-    return htmlArray.join("");
+    // join all html blocks in htmlArray together
+    const completeArray = htmlArray.join("");
+    localStorage.setItem("completeArray", completeArray);
+    return completeArray;
   };
 
   // function to create html block
@@ -83,7 +113,9 @@ const PromptFunctions = () => {
       // removes markdown from htmlstring
       const sanitizedHtmlData = removeHtmlMarkdown(htmlData);
       // saves sanitized htmlstring into localstorage named after prompt name
-      localStorage.setItem(promptTemplate, sanitizedHtmlData);
+      if (sanitizedHtmlData !== "") {
+        localStorage.setItem(promptTemplate, sanitizedHtmlData);
+      }
       // returns sanitized htmlstring
       return sanitizedHtmlData;
     } catch (error) {
@@ -114,6 +146,8 @@ ${sanitizedHeadData}
     }
   };
   return {
+    progressCount,
+    errorCount,
     createHtmlBlock,
     createHTML,
     createWebPage,
