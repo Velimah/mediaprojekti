@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
 
   const [activePage, setActivePage] = useState('Build');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // TODO: add router/page switch
   // TODO: if on loaded build -page and user is switching out of it, add a pop-up alert
@@ -28,6 +31,9 @@ const Header = () => {
           </svg>
           AI PAGEBUILDER
         </Link>
+        <button onClick={() => {location.pathname === '/' ? navigate("/advanced") : navigate("/")}}>
+            {location.pathname === '/' ? "ADVANCED" : "HOME"}
+        </button>
         <ul className="list-none flex items-center" id="navMenu">
           <li className="bg-black text-white p-2 rounded-md flex">
             <button onClick={() => setActivePage('Build')} className={'flex ' + (activePage === 'Build' ? 'active' : 'font-normal')}>

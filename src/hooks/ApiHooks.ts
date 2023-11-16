@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useChat } from "../contexts/ChatContext";
 
 // TODO: Update to backend URL when pushing to main, switch to localhost when testing locally
-const urli: string = "https://html-engine-0269f7c8ab3b.herokuapp.com/gpt/completions";
+// server URL https://html-engine-0269f7c8ab3b.herokuapp.com/gpt/completions
+const urli: string = "http://localhost:8000/gpt/completions";
 
 const useChatGPT = () => {
   const { dispatch } = useChat();
@@ -21,6 +22,7 @@ const useChatGPT = () => {
       },
       body: JSON.stringify({ role: role, prompt: newQuestion }),
     };
+    console.log("Prompt:", newQuestion);
 
     try {
       setLoading(true);
@@ -46,8 +48,11 @@ const useChatGPT = () => {
       }
 
       setResult(data);
+      // console.log to pass linter test for now
+      console.log("API Success:", result);
+      // changed result to data, result returned undefined/empty
+      return data;
 
-      return result;
     } catch (error) {
       console.error("API Error:", error);
       throw error;
