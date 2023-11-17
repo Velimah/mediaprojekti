@@ -89,14 +89,19 @@ const PromptFunctions = () => {
   // function to create full html file from html blocks saved in localstorage
   const createHTML = () => {
     const htmlArray: string[] = [];
-    htmlArray.push(localStorage.getItem("documentStart") || "");
-    htmlArray.push(localStorage.getItem("createNavigation") || "");
-    htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
-    htmlArray.push(localStorage.getItem("createMainSection") || "");
-    htmlArray.push(localStorage.getItem("createTableSection") || "");
-    htmlArray.push(localStorage.getItem("createMap") || "");
-    htmlArray.push(localStorage.getItem("createFooter") || "");
-    htmlArray.push(localStorage.getItem("documentEnd") || "");
+    let htmlBlocks = [
+      "documentStart",
+      "createNavigation",
+      "createWelcomeSection",
+      "createMainSection",
+      "createTableSection",
+      "createMap",
+      "createFooter",
+      "documentEnd",
+    ];
+    htmlBlocks.forEach((htmlBlockName) => {
+      htmlArray.push(localStorage.getItem(htmlBlockName) || "");
+    });
     // join all html blocks in htmlArray together
     const completeArray = htmlArray.join("");
     localStorage.setItem("completeArray", completeArray);

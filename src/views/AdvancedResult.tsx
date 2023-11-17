@@ -45,10 +45,6 @@ const AdvancedResult = () => {
     }
   };
 
-  const handleUndo = () => {
-    // Undo logic here
-  };
-
   const handleCopy = async () => {
     // TODO? show notification that says text was copied to clipboard
     try {
@@ -197,23 +193,17 @@ const AdvancedResult = () => {
               </div>
             )}
             <div className='py-4 space-x-2 flex flex-wrap justify-center'>
-              <button onClick={handleUndo} className='bg-black text-white py-2 px-4 rounded m-1'>
-                Undo
-              </button>
               <button onClick={handleCopy} className='bg-black text-white py-2 px-4 rounded m-1'>
                 Copy
               </button>
-              <button onClick={handleBuild} className='bg-black text-white py-2 px-4 rounded m-1'>
-                Build
-              </button>
-              <button onClick={handleSave} className='bg-black text-white py-2 px-4 rounded m-1'>
-                Save
-              </button>
-              <button onClick={handleSaveToFile} className='bg-black text-white py-2 px-4 rounded m-1'>
+              <button
+                onClick={handleSaveToFile}
+                className='bg-black text-white py-2 px-4 rounded m-1 hover:bg-green-500'
+              >
                 Save as HTML
               </button>
             </div>
-            <EditForms originalFormValues={originalFormValues} />
+            <EditForms originalFormValues={originalFormValues} setCode={setCode} />
           </div>
         </div>
         {/*

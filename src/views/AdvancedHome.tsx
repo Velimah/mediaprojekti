@@ -15,7 +15,6 @@ const AdvancedHome = () => {
   const [building, setBuilding] = useState<boolean>(false);
 
   const [formValues, setFormValues] = useState<FormValues>({
-    topic: "random topic",
     cssLibrary: "tailwind",
     colors: "blue",
     mapAddress: "Karaportti 2",
@@ -129,13 +128,13 @@ const AdvancedHome = () => {
             <form className='bg-gray-200 p-4 rounded-b-md' onSubmit={handleForm}>
               <label className='relative'>
                 {" "}
-                Topic
+                Information about the website
                 <input
                   id='topic'
                   type='text'
                   placeholder='Give me a topic for website ...'
-                  value={formValues.topic}
-                  onChange={(event) => setFormValues({ ...formValues, topic: event.target.value })}
+                  value={formValues.additionalInfo}
+                  onChange={(event) => setFormValues({ ...formValues, additionalInfo: event.target.value })}
                   className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
                 />
               </label>

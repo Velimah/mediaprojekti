@@ -8,7 +8,6 @@ export type PromptTemplate =
   | "CreateHead";
 
 export interface FormValues {
-  topic: string;
   cssLibrary: string;
   colors: string;
   mapAddress: string;
@@ -17,31 +16,28 @@ export interface FormValues {
 }
 
 export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: FormValues): string => {
-  const { topic, cssLibrary, colors, mapAddress, mapCity, additionalInfo } = formValues;
+  const { cssLibrary, colors, mapAddress, mapCity, additionalInfo } = formValues;
 
   const promptTemplates = {
-    createNavigation: `Topic: ${topic}.
-Create a fully functional navigation section <nav></nav>.
+    createNavigation: `Create a fully functional navigation section <nav></nav>.
 Use ${cssLibrary} css for html styling.
 Use shadow and hover effects for links.
-Use flexbox and make navigation sticky.
+Use flexbox.
 Justify content center and align content center under 600px width.
 Do not make hamburger menu.
 No imageplaceholders.
 Additional information: (${additionalInfo}).
 You must use additional information and generate ALL text with the language used in additional information!`,
-    createWelcomeSection: `Topic: ${topic}.
-Use ${cssLibrary} css for html styling.
+    createWelcomeSection: `Use ${cssLibrary} css for html styling.
 Use shadow and hover effects.
-Use flexbox. justify content on center. Place text on left and image on right.
+Use flexbox, width around 1100px. Place text on left and image on right.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
 Create a fully functional welcome section <section></section> with id #section. Welcome the user to the site with welcome text and additional information about the topic.
-Create a image tag size 300x300px. Use placekitten for image source. 
-Use real information and miminum of 3 paragraphs and 200 words, no lorem ipsum.
+Create a image tag width 400px, height 100%. 
+No lorem ipsum.
 Additional information: (${additionalInfo}).
 You must use additional information and generate ALL text with the language used in additional information!`,
-    createFooter: `Topic: ${topic}.
-Use ${cssLibrary} css for html styling.
+    createFooter: `Use ${cssLibrary} css for html styling.
 Use shadow and hover effects.
 Use flexbox.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
@@ -49,29 +45,31 @@ Create a fully functional footer section <footer></footer> with id #footer and w
 Create only the footer section, no other sections.
 Additional information: (${additionalInfo}).
 You must use additional information and generate ALL text with the language used in additional information!`,
-    createTableSection: `Topic: ${topic}.
-Use ${cssLibrary} css for html styling.
+    createTableSection: `Use ${cssLibrary} css for html styling, width around 1100px.
 Use shadow and hover effects.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
 Create a fully functional table section.
 Additional information: (${additionalInfo}).
 You must use additional information and generate ALL text with the language used in the additional information!`,
-    createMainSection: `Topic: ${topic}.
+    createMainSection: `
 Use ${cssLibrary} css for html styling.
 Use shadow and hover effects.
-Use flexbox.
+Use flexbox, width around 1100px.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
-create a fully functional main section <main></main> with id #main paragraphs of information about the topic.
-No lorem ipsum, use real information.
+create a fully functional main section <main></main> with id #main.
+No lorem ipsum.
 Additional information: (${additionalInfo}).
 You must use additional information and create ALL text with the language used in additional information!`,
-    createMap: `Generate a html block <div></div> that has exactly this inside, do not alter the iframe tag! : <iframe style="height:400px;width:100%;" src="https://www.google.com/maps/embed/v1/place?q=${mapAddress}, ${mapCity}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&zoom=15&maptype=satellite"></iframe> .
-Generate paragraph with location information that you find in city ${mapCity} and adress ${mapAddress} minimum 30 words no lorem ipsum.
-Use ${cssLibrary} css for html styling.
-Use flexbox: text on left and iframe on right.
-Justify content center, align content center and add margin 2rem to the div element.
-Additional information: (${additionalInfo}).
-You must use additional information and generate ALL text with the language used in additional information!`,
+    createMap: `Create an HTML block using a <div></div> element and employ flexbox for the container, setting its margin 2rem, width around 1100px, justify content to center, flex direction row, and align content to center. 
+Place the following <iframe> tag inside the <div></div>, ensuring not to modify it:
+<div style="display: flex; flex-direction: row;">
+  <p></p>
+  <iframe src="https://www.google.com/maps/embed/v1/place?q=${mapAddress}, ${mapCity}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&zoom=15&maptype=satellite"></iframe>
+</div>
+make p 50% width, 1rem padding right.
+make iframe 100% width, height close to 400px, and black border.
+Inside the <p></p>, generate text that offers information provided: ${additionalInfo}. Ensure that all generated text conforms to the language used in the provided information. 
+Apply styling to the HTML using the ${cssLibrary} CSS.`,
     CreateHead: `update <head></head> tags with provided meta tags using correct information you get by analyzing the code:
 (<!-- Basic Meta Tags -->
 <meta charset="UTF-8">

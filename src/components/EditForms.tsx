@@ -17,16 +17,18 @@ interface EditFormsProps {
       additionalInfo: string;
     };
   };
+  setCode: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
+const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) => {
   const { createHeadInfo, createHtmlBlock, createHTML } = PromptFunctions();
   const { dispatch } = useChat();
+  const [lastEdited, setLastEdited] = useState<string>("");
+  const [fetching, setFetching] = useState<boolean>(false);
 
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
   const [formStateValues, setFormStateValues] = useState<FormValues>({
-    topic: initialValues.topic || "",
     cssLibrary: initialValues.cssLibrary || "",
     colors: initialValues.colors || "",
     mapAddress: initialValues.mapAddress || "",
@@ -39,7 +41,6 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
     const htmlArray: string[] = [];
     htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
     htmlArray.push(localStorage.getItem("createMainSection") || "");
-    htmlArray.push(localStorage.getItem("createMap") || "");
     localStorage.setItem("completeArray", htmlArray.join(""));
     (await createHeadInfo(formStateValues, localStorage.getItem("completeArray") || "")) || "";
     createHTML();
@@ -47,17 +48,33 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 
   const handleEditForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
     event.preventDefault();
+    // get the current block you are editing and save it to local storage as previous to backup
+    localStorage.setItem(`${htmlBlockName}_previous`, localStorage.getItem(htmlBlockName) || "");
+    setLastEdited(htmlBlockName);
+    // set loading graphic
+    setFetching(true);
+    // get a new html block
     (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
     createHTML();
     dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
+    // remove loading graphic
+    setFetching(false);
   };
 
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-  // Toggle function to set the active section
+  // Undo last change
+  const undoChange = () => {
+    // set the current block to the previous block in localstorage
+    localStorage.setItem(`${lastEdited}`, localStorage.getItem(`${lastEdited}_previous`) || "");
+    setCode(createHTML());
+  };
+
+  const [activeSection, setActiveSection] = useState<string | null>("navigation");
+  // Toggle function to set the active edit form in ui
   const toggleSection = (section: any) => {
     setActiveSection((prevSection) => (prevSection === section ? null : section));
   };
 
+  // select options for edit forms
   const sections = [
     { value: "navigation", label: "Edit Navigation" },
     { value: "welcome", label: "Edit Welcome" },
@@ -72,6 +89,9 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
       <button onClick={editHead} className='bg-black text-white p-2 mb-4 rounded w-64  hover:bg-green-500'>
         Redo Head Tag Information
       </button>
+
+      {/* edit buttons for each section
+
       <div className='flex justify-center flex-wrap'>
         <button
           onClick={() => toggleSection("navigation")}
@@ -127,12 +147,12 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
           {activeSection === "footer" ? "Close Form" : "Edit Footer"}
         </button>
       </div>
-
+*/}
       <div className='flex justify-center flex-wrap'>
         <select
           value={activeSection || ""}
           onChange={(e) => toggleSection(e.target.value)}
-          className='py-2 px-4 rounded m-1 bg-black text-white'
+          className='p-2 rounded m-1 bg-black text-white hover:bg-green-500'
         >
           {sections.map((section) => (
             <option key={section.value} value={section.value}>
@@ -140,6 +160,9 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             </option>
           ))}
         </select>
+        <button onClick={undoChange} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+          Undo Last Change
+        </button>
       </div>
 
       {activeSection === "navigation" && (
@@ -160,6 +183,15 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
+          {fetching && (
+            <div className='flex items-center gap-2 mt-2'>
+              <span className='relative flex h-3 w-3'>
+                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+              </span>
+              <p className='font-bold'>Building...</p>
+            </div>
+          )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
             Redo Navigation
           </button>
@@ -184,6 +216,15 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
+          {fetching && (
+            <div className='flex items-center gap-2 mt-2'>
+              <span className='relative flex h-3 w-3'>
+                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+              </span>
+              <p className='font-bold'>Building...</p>
+            </div>
+          )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
             Redo Welcome
           </button>
@@ -208,6 +249,15 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
+          {fetching && (
+            <div className='flex items-center gap-2 mt-2'>
+              <span className='relative flex h-3 w-3'>
+                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+              </span>
+              <p className='font-bold'>Building...</p>
+            </div>
+          )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
             Redo Main
           </button>
@@ -232,6 +282,15 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
+          {fetching && (
+            <div className='flex items-center gap-2 mt-2'>
+              <span className='relative flex h-3 w-3'>
+                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+              </span>
+              <p className='font-bold'>Building...</p>
+            </div>
+          )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
             Redo Map
           </button>
@@ -256,6 +315,15 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
+          {fetching && (
+            <div className='flex items-center gap-2 mt-2'>
+              <span className='relative flex h-3 w-3'>
+                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+              </span>
+              <p className='font-bold'>Building...</p>
+            </div>
+          )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
             Redo Table
           </button>
@@ -280,6 +348,15 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
+          {fetching && (
+            <div className='flex items-center gap-2 mt-2'>
+              <span className='relative flex h-3 w-3'>
+                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+              </span>
+              <p className='font-bold'>Building...</p>
+            </div>
+          )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
             Redo Footer
           </button>
