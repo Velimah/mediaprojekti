@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
+import PromptDialog from "../components/PromptDialog";
 
 const Result = () => {
   const { state } = useChat();
@@ -10,8 +11,21 @@ const Result = () => {
   const previewFrame = useRef<HTMLIFrameElement>(null);
   const codeTextarea = useRef<HTMLTextAreaElement>(null);
 
-  const [codeVisible, setCodeVisible] = useState<boolean>(true);
+  const [codeVisible, setCodeVisible] = useState<boolean>(false);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
+
+  const [hasSaved, setHasSaved] = useState<boolean>(false);
+
+  /* add a warning when user is about to exit/refresh page IF not saved before new changes */
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.returnValue = 'Are you sure you want to leave? Your build may not be saved - please remember to save before leaving!';
+    };
+    !hasSaved && window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [hasSaved]);
 
   useEffect(() => {
     // Update the code state with the current answer
@@ -65,6 +79,8 @@ const Result = () => {
     fileLink.download = "your-website.html";
     fileLink.dispatchEvent(new MouseEvent("click"));
     URL.revokeObjectURL(url);
+    //change hasSaved to true
+    setHasSaved(true);
   };
 
   /* toggle code frame's visibiltiy */
@@ -78,68 +94,9 @@ const Result = () => {
 
   return (
     <>
-      <div className="w-full lg:w-1/2 px-4">
-        <div className="mb-8">
-          <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-1/2">
-            <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-center rounded-md">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 10"
-                strokeWidth="1.5"
-                stroke="black"
-                className="h-12 shrink-0"
-              >
-                <rect
-                  x="5"
-                  y="2"
-                  width="14"
-                  height="9"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="black"
-                />
-                <circle
-                  cx="8.5"
-                  cy="6.5"
-                  r="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="white"
-                  className="animate-pulse"
-                />
-                <circle
-                  cx="15.5"
-                  cy="6.5"
-                  r="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="white"
-                  className="animate-pulse"
-                />
-              </svg>
-              <span className="pr-4 font-bold">:</span>
-              <h2 className="text-lg font-bold uppercase">Your instructions</h2>
-            </div>
-            <div className="flex items-center rounded-md px-4">
-              <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="nonabsolutee"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-                    />
-              </svg> 
-              <span className="p-4">{question}</span>
-            </div>
-          </div>
-        </div>
+    <div className="flex flex-col w-full items-center">
+    <PromptDialog question={question} />
+      <div className="w-full lg:w-3/4 px-4">
         <div className="mb-4">
           <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
             <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={toggleCodeVisibility}>
@@ -165,7 +122,7 @@ const Result = () => {
                     }}
                     rows={15}
                     cols={50}
-                    className="border pt-2 w-full bg-slate-100 border-gray-300 rounded-lg overflow-y-scroll resize-none"
+                    className="font-mono border pt-2 w-full bg-slate-100 border-gray-300 rounded-lg overflow-y-scroll resize-none"
                   ></textarea>
                 </div>
               ) }
@@ -229,13 +186,14 @@ const Result = () => {
               <iframe
               ref={previewFrame}
               title="Code preview"
-              sandbox="allow-same-origin"
+              sandbox="allow-same-origin allow-scripts"
               width="100%"
               height={500}
-              className={previewVisible ? ('border-black bg-slate-100 resize-x') : ('hidden')} />
+              className={previewVisible ? ('border-black bg-slate-100 resize') : ('hidden')} />
           </div>
           </div>
-      </div>
+      </div>      
+    </div>
     </>
   );
 };
