@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       animation: {
-        'slidein-bottomleft': 'slidein-bottomleft 2.5s ease-in-out',
+        'slidein-bottomleft': 'slidein-bottomleft 2s ease-in-out',
       },
       backgroundSize: {
         '20': '20px 20px',

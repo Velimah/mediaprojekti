@@ -4,7 +4,7 @@ import { useNotification } from "../contexts/NotificationContext";
 
 const Result = () => {
   const { state } = useChat();
-  const { setNotification  } = useNotification();
+  const { setNotification } = useNotification();
   const { question, answer /*, editedanswer*/ } = state;
   console.log("Question: ", question);
 

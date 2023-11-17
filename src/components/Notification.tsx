@@ -3,33 +3,40 @@ import { useNotification } from "../contexts/NotificationContext";
 
 const Notification = () => {
   const { notificationReason, notificationMessage, setNotification } = useNotification();
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const time: number = 2000;
 
   useEffect(() => {
+    console.log("show noti");
     setVisible(true);
 
     const timeout = setTimeout(() => {
       setVisible(false);
-      setNotification("", "");
-    }, 2500);
+      console.log("hide noti");
+    }, time);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [notificationReason, notificationMessage, setNotification]);
+  }, [setNotification]);
 
-  let notiStyle = "";
-  if (notificationReason === "error") {
-    notiStyle =
-      "bg-red-500 text-center flex flex-row text-white bottom-0 left-10 fixed p-3 border rounded-xl transition-transform duration-3000 transform translate-y-full animate-slidein-bottomleft";
-  } else if (notificationReason === "default") {
-    notiStyle =
-      "bg-black text-center flex flex-row text-white bottom-0 left-10 fixed p-3 border rounded-xl transition-transform duration-3000 transform translate-y-full animate-slidein-bottomleft";
+  let notiStyle: string;
+
+  if (notificationReason === "default") {
+    notiStyle = `bg-black 
+                   text-center flex flex-row text-white bottom-0 left-10 
+                   fixed p-3 border rounded-xl transition-transform duration-[${time}ms] 
+                   transform translate-y-full animate-slidein-bottomleft`;
+  } else if (notificationReason === "error") {
+    notiStyle = `bg-red-500 
+                   text-center flex flex-row text-white bottom-0 left-10 
+                   fixed p-3 border rounded-xl transition-transform duration-[${time}ms] 
+                   transform translate-y-full animate-slidein-bottomleft`;
   } else {
-    notiStyle = "hidden"
+    notiStyle = "hidden";
   }
 
-  return notificationMessage !== "" && visible ? (
+  return visible ? (
     <div className={`notification ${notiStyle}`}>
       <svg
         xmlns="http://www.w3.org/2000/svg"

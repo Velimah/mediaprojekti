@@ -5,6 +5,7 @@ type NotificationReason = "default" | "error" | "";
 type NotificationContextType = {
   notificationReason: NotificationReason;
   notificationMessage: string;
+  notificationUpdate: boolean;
   setNotification: (reason: NotificationReason, message: string) => void;
 };
 
@@ -15,14 +16,16 @@ type NotificationProviderProps = { children: ReactNode };
 export const NotificationProvider = ({ children }: NotificationProviderProps) => {
   const [notificationReason, setNotificationReason] = useState<NotificationReason>("");
   const [notificationMessage, setNotificationMessage] = useState<string>("");
+  const [notificationUpdate, setNotificationUpdate] = useState<boolean>(false);
 
   const setNotification = (reason: NotificationReason, message: string) => {
     setNotificationReason(reason);
     setNotificationMessage(message);
+    setNotificationUpdate((prev) => !prev); // Update even if other values didn't change to make it show again
   };
 
   return (
-    <NotificationContext.Provider value={{ notificationReason, notificationMessage, setNotification }}>
+    <NotificationContext.Provider value={{ notificationReason, notificationMessage, setNotification, notificationUpdate }}>
       {children}
     </NotificationContext.Provider>
   );
