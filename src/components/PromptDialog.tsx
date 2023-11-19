@@ -11,38 +11,13 @@ const PromptDialog: React.FC<{ question: string }> = ({
 
     const [hide, setHide] = useState<boolean>(true);
 
+    /* hide prompt toggle */
     const hideToggle = () => {
         setHide(!hide);
-        handleResize(0);
     }
 
-    const [btnPosition, setBtnPosition] = useState<number>(0);
-
-    const resizeFrame = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        e.preventDefault();
-    
-        const initialX = e.clientX;
-    
-        const handleMouseMove = (e: MouseEvent) => {
-          const newWidth = btnPosition + (e.clientX - initialX);
-          handleResize(newWidth);
-        };
-    
-        const handleMouseUp = () => {
-          document.removeEventListener('mousemove', handleMouseMove);
-          document.removeEventListener('mouseup', handleMouseUp);
-        };
-    
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-    };
-    
-      const handleResize = (newWidth: number) => {
-        setBtnPosition(newWidth);
-      };
-
     return(
-        <div style={{bottom: btnPosition}} className="mb-8 fixed md:left-0 md:ml-8 mx-4 w-auto" id="userPrompt">
+        <div className="md:mb-8 bottom-0 fixed md:left-0 md:ml-8 mx-4 w-full md:auto" id="userPrompt">
         {hide ? (
         <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-[500px]">
         <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-between rounded-md">
@@ -86,7 +61,7 @@ const PromptDialog: React.FC<{ question: string }> = ({
                 <span className="pr-4 font-bold">:</span>
                 <h2 className="text-lg font-bold uppercase">Your instructions</h2>
             </div>
-            <div className="hover:text-white absolute right-2 cursor-pointer">
+            <div className="hover:text-white relative right-2 cursor-pointer">
                 <button onClick={hideToggle} className="rounded-md underline p-2 w-full hover:text-white font-bold cursor-pointer">Hide</button>
             </div>
         </div>
@@ -95,7 +70,7 @@ const PromptDialog: React.FC<{ question: string }> = ({
         </div>
         </div>
         ) : (
-        <button onMouseDown={resizeFrame} onClick={hideToggle} className="rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black border-2 border-black font-bold cursor-pointer">Show instructions</button>
+        <button onClick={hideToggle} className="rounded-md bg-black text-white p-3 hover:bg-white hover:text-black border-2 border-black font-bold cursor-pointer w-full md:w-auto">Show instructions</button>
         )}
         </div>
     );
