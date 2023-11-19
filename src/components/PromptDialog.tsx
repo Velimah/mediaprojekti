@@ -10,6 +10,7 @@ const PromptDialog: React.FC<{ question: string }> = ({
 }) => {
 
     const [hide, setHide] = useState<boolean>(true);
+    const [animation, setAnimation] = useState('');
 
     /* hide prompt toggle */
     const hideToggle = () => {
@@ -19,7 +20,7 @@ const PromptDialog: React.FC<{ question: string }> = ({
     return(
         <div className="md:mb-8 bottom-0 fixed md:left-0 md:ml-8 mx-4 w-full md:auto" id="userPrompt">
         {hide ? (
-        <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-[500px]">
+        <div className="flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-[500px] animate-fade-in">
         <div className="flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-between rounded-md">
             <div className='flex items-center'>
                 <svg

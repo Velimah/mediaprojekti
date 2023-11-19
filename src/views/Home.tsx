@@ -14,7 +14,7 @@ const Home = () => {
   const handleForm = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // if question string is empty, show error before fetching
+    // if question string is empty, show error
     // TODO: add form valitators instead
     if(newQuestion === ''){
       setError('Please give me instructions first!');

@@ -30,6 +30,7 @@ const AdvancedHome = () => {
 
     console.log("formValues", formValues);
 
+    /* TODO: fix so it doesn't navigate to result page if error occurs */
     try {
       await createWebPage(formValues);
     } catch (error) {

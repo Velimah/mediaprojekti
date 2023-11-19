@@ -3,6 +3,7 @@ import { useChat } from "../contexts/ChatContext";
 import { PromptFunctions } from "../utils/PromptFunctions";
 import { useLocation } from "react-router-dom";
 import EditForms from "../components/EditForms";
+import PromptDialog from "../components/PromptDialog";
 
 const AdvancedResult = () => {
   const { state } = useChat();
@@ -12,7 +13,7 @@ const AdvancedResult = () => {
   const previewFrame = useRef<HTMLIFrameElement>(null);
   const codeTextarea = useRef<HTMLTextAreaElement>(null);
 
-  const [codeVisible, setCodeVisible] = useState<boolean>(true);
+  const [codeVisible, setCodeVisible] = useState<boolean>(false);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
   const { createHTML } = PromptFunctions();
@@ -90,126 +91,76 @@ const AdvancedResult = () => {
     setPreviewVisible(!previewVisible);
   };
 
+  /* parse original form values for prompt dialog */
+  const parseFormValues = (obj: Record<string, object>): string => {
+    return Object.entries(obj)
+    .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+    .join(', ');
+  };
+
   return (
     <>
-      <div className='w-3/4 px-4'>
-        <div className='mb-8'>
-          <div className='flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-1/2'>
-            <div className='flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-center rounded-md'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 10'
-                strokeWidth='1.5'
-                stroke='black'
-                className='h-12 shrink-0'
-              >
-                <rect x='5' y='2' width='14' height='9' strokeLinecap='round' strokeLinejoin='round' fill='black' />
-                <circle
-                  cx='8.5'
-                  cy='6.5'
-                  r='2.5'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  fill='white'
-                  className='animate-pulse'
-                />
-                <circle
-                  cx='15.5'
-                  cy='6.5'
-                  r='2.5'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  fill='white'
-                  className='animate-pulse'
-                />
-              </svg>
-              <span className='pr-4 font-bold'>:</span>
-              <h2 className='text-lg font-bold uppercase'>Your instructions</h2>
-            </div>
-            <div className='flex items-center rounded-md px-4'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='nonabsolutee'
-                viewBox='0 0 24 24'
-                strokeWidth='1.5'
-                stroke='currentColor'
-                className='w-6 h-6'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z'
-                />
-              </svg>
-              <span className='p-4'>{question}</span>
-            </div>
-          </div>
-        </div>
-        <div className='mb-4'>
-          <div className='bg-white flex flex-col items-center border border-black rounded cursor-pointer'>
-            <h2
-              className='bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase'
-              onClick={toggleCodeVisibility}
-            >
+    <div className="flex flex-col w-full items-center">
+    <PromptDialog question={parseFormValues(originalFormValues.formValues)} />
+    <div className="w-full lg:w-3/4 px-4">
+        <div className="mb-4">
+          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
+            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={toggleCodeVisibility}>
               {codeVisible ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 24 24'
-                  fill='currentColor'
-                  className='w-7 h-7 pr-1'
-                >
-                  <path
-                    fillRule='evenodd'
-                    d='M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z'
-                    clipRule='evenodd'
-                  />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
+                  <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
+                </svg>              
               ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 24 24'
-                  fill='currentColor'
-                  className='w-7 h-7 pr-1'
-                >
-                  <path
-                    fillRule='evenodd'
-                    d='M12 2.25a.75.75 0 01.75.75v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 111.06-1.06l6.22 6.22V3a.75.75 0 01.75-.75z'
-                    clipRule='evenodd'
-                  />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
+                  <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 111.06-1.06l6.22 6.22V3a.75.75 0 01.75-.75z" clipRule="evenodd" />
                 </svg>
               )}
               Code
-            </h2>
-            {codeVisible && (
-              <div className='w-full pt-4 px-4'>
-                <textarea
-                  ref={codeTextarea}
-                  id='code'
-                  value={code}
-                  onChange={(e) => {
-                    setCode(e.target.value);
-                  }}
-                  rows={15}
-                  cols={50}
-                  className='border pt-2 w-full bg-slate-100 border-gray-300 rounded-lg overflow-y-scroll resize-none'
-                ></textarea>
-              </div>
-            )}
-            <div className='py-4 space-x-2 flex flex-wrap justify-center'>
-              <button onClick={handleUndo} className='bg-black text-white py-2 px-4 rounded m-1'>
+              </h2>
+              {codeVisible && (
+                <div className="w-full pt-4 px-4">
+                  <textarea
+                    ref={codeTextarea}
+                    id="code"
+                    value={code}
+                    onChange={(e) => {
+                      setCode(e.target.value);
+                    }}
+                    rows={15}
+                    cols={50}
+                    className="font-mono border pt-2 w-full bg-slate-100 border-gray-300 rounded-lg overflow-y-scroll resize-none"
+                  ></textarea>
+                </div>
+              ) }
+            <div className="py-4 space-x-2 flex flex-wrap justify-center">
+              <button
+                onClick={handleUndo}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
                 Undo
               </button>
-              <button onClick={handleCopy} className='bg-black text-white py-2 px-4 rounded m-1'>
+              <button
+                onClick={handleCopy}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
                 Copy
               </button>
-              <button onClick={handleBuild} className='bg-black text-white py-2 px-4 rounded m-1'>
+              <button
+                onClick={handleBuild}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
                 Build
               </button>
-              <button onClick={handleSave} className='bg-black text-white py-2 px-4 rounded m-1'>
+              <button
+                onClick={handleSave}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
                 Save
               </button>
-              <button onClick={handleSaveToFile} className='bg-black text-white py-2 px-4 rounded m-1'>
+              <button
+                onClick={handleSaveToFile}
+                className="bg-black text-white py-2 px-4 rounded m-1"
+              >
                 Save as HTML
               </button>
             </div>
@@ -225,51 +176,45 @@ const AdvancedResult = () => {
             Show preview
           </button>
         </div>*/}
-        <div className='mb-4'>
-          <div className='bg-white flex flex-col items-center border border-black rounded cursor-pointer'>
-            <h2
-              className='bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase'
-              onClick={togglePreviewVisibility}
-            >
-              {previewVisible ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 24 24'
-                  fill='currentColor'
-                  className='w-7 h-7 pr-1'
-                >
-                  <path
-                    fillRule='evenodd'
-                    d='M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z'
-                    clipRule='evenodd'
-                  />
-                </svg>
+        <div className="mb-4">
+          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
+            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={togglePreviewVisibility}>
+            {previewVisible ? (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
+                  <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
+                </svg>              
               ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 24 24'
-                  fill='currentColor'
-                  className='w-7 h-7 pr-1'
-                >
-                  <path
-                    fillRule='evenodd'
-                    d='M12 2.25a.75.75 0 01.75.75v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 111.06-1.06l6.22 6.22V3a.75.75 0 01.75-.75z'
-                    clipRule='evenodd'
-                  />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
+                  <path fillRule="evenodd" d="M12 2.25a.75.75 0 01.75.75v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 111.06-1.06l6.22 6.22V3a.75.75 0 01.75-.75z" clipRule="evenodd" />
                 </svg>
               )}
               Preview
             </h2>
-            <iframe
+              <iframe
               ref={previewFrame}
-              title='Code preview'
-              sandbox='allow-same-origin'
-              width='100%'
+              title="Code preview"
+              sandbox="allow-same-origin allow-scripts"
+              width="100%"
               height={500}
-              className={previewVisible ? "border-black bg-slate-100 resize-x" : "hidden"}
-            />
+              className={previewVisible ? ('border-black bg-slate-100 resize') : ('hidden')} />
           </div>
-        </div>
+          {previewVisible && (
+            <div id="resizePreview" className="pt-1 w-full flex flex-row-reverse">
+              <button className="rounded-md p-1 hover:bg-black hover:text-white hover:border-2 border-black font-bold cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path fillRule="evenodd" d="M2.25 5.25a3 3 0 013-3h13.5a3 3 0 013 3V15a3 3 0 01-3 3h-3v.257c0 .597.237 1.17.659 1.591l.621.622a.75.75 0 01-.53 1.28h-9a.75.75 0 01-.53-1.28l.621-.622a2.25 2.25 0 00.659-1.59V18h-3a3 3 0 01-3-3V5.25zm1.5 0v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5z" clipRule="evenodd" />
+                </svg>
+              </button>
+              <button className="rounded-md p-1 hover:bg-black hover:text-white border-2 border-transparent border-black font-bold cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path d="M10.5 18.75a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" />
+                  <path fillRule="evenodd" d="M8.625.75A3.375 3.375 0 005.25 4.125v15.75a3.375 3.375 0 003.375 3.375h6.75a3.375 3.375 0 003.375-3.375V4.125A3.375 3.375 0 0015.375.75h-6.75zM7.5 4.125C7.5 3.504 8.004 3 8.625 3H9.75v.375c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V3h1.125c.621 0 1.125.504 1.125 1.125v15.75c0 .621-.504 1.125-1.125 1.125h-6.75A1.125 1.125 0 017.5 19.875V4.125z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          )}
+          </div>
+      </div>
       </div>
     </>
   );
