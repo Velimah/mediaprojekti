@@ -7,7 +7,7 @@ import PromptDialog from "../components/PromptDialog";
 
 const AdvancedResult = () => {
   const { state } = useChat();
-  const { question, answer /*, editedanswer*/ } = state;
+  const { /* question,*/ answer /*, editedanswer*/ } = state;
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);

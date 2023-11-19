@@ -10,7 +10,6 @@ const PromptDialog: React.FC<{ question: string }> = ({
 }) => {
 
     const [hide, setHide] = useState<boolean>(true);
-    const [animation, setAnimation] = useState('');
 
     /* hide prompt toggle */
     const hideToggle = () => {
