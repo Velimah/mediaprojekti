@@ -37,10 +37,9 @@ const useChatGPT = () => {
 
       console.log(data);
 
-      // if GPT's answer start with sorry or I, throw a new error
-      // TODO: fix this from backend, change GPT response when it doesn't understand/can't do the task
-      if (data.startsWith("Sorry") || data.startsWith("I")) {
-        throw new Error("Request failed: " + data);
+      // if GPT's answer start with sorry/I/Of, throw a new error
+      if (data.startsWith("Sorry") || data.startsWith("I") || data.startsWith("Of")) {
+        throw new Error("Sorry, I don't undertand. Could you please rephrase?");
       }
 
       setResult(data);

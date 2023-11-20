@@ -26,11 +26,11 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
   const [formStateValues, setFormStateValues] = useState<FormValues>({
-    cssLibrary: initialValues.cssLibrary || "",
-    colors: initialValues.colors || "",
-    mapAddress: initialValues.mapAddress || "",
-    mapCity: initialValues.mapCity || "",
-    additionalInfo: initialValues.additionalInfo || "",
+    cssLibrary: initialValues?.cssLibrary || "",
+    colors: initialValues?.colors || "",
+    mapAddress: initialValues?.mapAddress || "",
+    mapCity: initialValues?.mapCity || "",
+    additionalInfo: initialValues?.additionalInfo || "",
   });
 
   const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {

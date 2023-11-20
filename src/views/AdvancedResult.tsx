@@ -78,6 +78,9 @@ const AdvancedResult = () => {
 
   /* parse original form values for prompt dialog */
   const parseFormValues = (obj: Record<string, object>): string => {
+    if (!obj) {
+      return "";
+    }
     return Object.entries(obj)
       .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
       .join(", ");
@@ -138,19 +141,21 @@ const AdvancedResult = () => {
                   ></textarea>
                 </div>
               )}
-              {/*
+
               <div className='py-4 space-x-2 flex flex-wrap justify-center'>
-                <button className='bg-black text-white py-2 px-4 rounded m-1'>Undo</button>
+                <button className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'>Undo</button>
                 <button onClick={handleCopy} className='bg-black text-white py-2 px-4 rounded m-1'>
                   Copy
                 </button>
-                <button className='bg-black text-white py-2 px-4 rounded m-1'>Build</button>
-                <button className='bg-black text-white py-2 px-4 rounded m-1'>Save</button>
-                <button onClick={handleSaveToFile} className='bg-black text-white py-2 px-4 rounded m-1'>
+                <button className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'>Build</button>
+                <button className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'>Save</button>
+                <button
+                  onClick={handleSaveToFile}
+                  className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'
+                >
                   Save as HTML
                 </button>
               </div>
-              */}
               <EditForms originalFormValues={originalFormValues} />
             </div>
           </div>
