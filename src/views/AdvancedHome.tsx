@@ -129,7 +129,8 @@ const AdvancedHome = () => {
                 </span>
               </div>
             </div>
-            <form className='bg-gray-200 p-4 rounded-b-md' onSubmit={handleForm}>
+            <div className='bg-gray-200 p-4 rounded-b-md' >
+            <form onSubmit={handleForm}>
               <label className='relative'>
                 {" "}
                 Topic
@@ -275,15 +276,16 @@ const AdvancedHome = () => {
                   />
                 </label>
               </div>
-              <button  onClick={() => {location.pathname === '/' ? navigate("/") : navigate("/")}} className="rounded-md p-1 w-full hover:bg-black hover:text-white border-2 border-transparent font-bold cursor-pointer">
+            </form>
+            <button  onClick={() => {location.pathname === '/' ? navigate("/") : navigate("/")}} className="rounded-md p-1 w-full hover:bg-black hover:text-white border-2 border-transparent font-bold cursor-pointer">
                 <span className="flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 pr-2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
                   </svg>
                   Switch to Basic
                 </span>
-              </button>
-            </form>
+            </button>
+            </div>
           </section>
         </section>
         {loading && <Loader />}
