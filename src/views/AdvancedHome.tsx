@@ -50,7 +50,7 @@ const AdvancedHome = () => {
   return (
     <>
       {showAlertDialog && <AlertDialog content={error} onClose={handleToggleDialog} />}
-      <article className='w-full flex items-center justify-center'>
+      <article className='w-full flex items-center justify-center py-4'>
         <section className='flex flex-col w-[35rem] bg-white rounded-md shadow-lg'>
           <div id='header'>
             <figure className='bg-gray-200 h-36 rounded-t-md'>
@@ -124,7 +124,7 @@ const AdvancedHome = () => {
               </svg>
               <div className='ml-4 flex items-center'>
                 <span className='text-lg pr-4'>:</span>
-                <span className='bg-gray-200 p-3 rounded-md shrink'>
+                <span className='bg-gray-200 p-3 rounded-md shrink font-mono'>
                   Hello! How can I assist you in building your dream webpage today?
                 </span>
               </div>
@@ -139,7 +139,7 @@ const AdvancedHome = () => {
                   placeholder='Give me a topic for website ...'
                   value={formValues.topic}
                   onChange={(event) => setFormValues({ ...formValues, topic: event.target.value })}
-                  className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+                  className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-2 w-full'
                 />
               </label>
               <label className='relative'>
@@ -236,7 +236,7 @@ const AdvancedHome = () => {
                     <span className='pr-2 font-bold'>CSS:</span>
                     <select
                       id='userPromptCSS'
-                      className='w-full rounded-md bg-white pl-1'
+                      className='w-full rounded-md bg-white pl-1 cursor-pointer'
                       onChange={(event) =>
                         setFormValues({
                           ...formValues,
@@ -257,7 +257,7 @@ const AdvancedHome = () => {
                     <input
                       type='color'
                       id='userPromptColor'
-                      className='grow'
+                      className='grow cursor-pointer'
                       onChange={(event) =>
                         setFormValues({
                           ...formValues,
@@ -270,18 +270,20 @@ const AdvancedHome = () => {
                 <label className='grow pt-4 md:pl-4 md:pt-0'>
                   <input
                     type='submit'
-                    className='rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold'
+                    className='cursor-pointer rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold'
                     value='BUILD!'
                   />
                 </label>
               </div>
+              <button  onClick={() => {location.pathname === '/' ? navigate("/") : navigate("/")}} className="rounded-md p-1 w-full hover:bg-black hover:text-white border-2 border-transparent font-bold cursor-pointer">
+                <span className="flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 pr-2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                  </svg>
+                  Switch to Basic
+                </span>
+              </button>
             </form>
-            <button
-              className='rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold'
-              onClick={() => navigate("/")}
-            >
-              Home
-            </button>
           </section>
         </section>
         {loading && <Loader />}

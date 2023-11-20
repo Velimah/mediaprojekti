@@ -122,7 +122,7 @@ const Result = () => {
                     }}
                     rows={15}
                     cols={50}
-                    className="font-mono border pt-2 w-full bg-slate-100 border-gray-300 rounded-lg overflow-y-scroll resize-none"
+                    className="font-mono border focus:outline-none focus:border-black focus:ring-black focus:ring-2 p-2 w-full bg-slate-100 border-gray-300 rounded-md overflow-y-scroll resize-none"
                   ></textarea>
                 </div>
               ) }
