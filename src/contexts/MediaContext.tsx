@@ -1,25 +1,42 @@
-import React, { useState, createContext, ReactNode } from 'react';
+import React, { useState, createContext, Dispatch, SetStateAction } from "react";
 
-interface MediaContextProps {
-    user: null | any;
-    setUser: React.Dispatch<React.SetStateAction<null | any>>;
+interface HtmlBlock {
+  id: string;
+  content: string;
 }
 
-const MediaContext = createContext<MediaContextProps | null>(null);
+interface MediaContextProps {
+  user?: null | any;
+  setUser: Dispatch<SetStateAction<null | any>>;
+  htmlArray: HtmlBlock[];
+  setHtmlArray: Dispatch<SetStateAction<HtmlBlock[]>>;
+}
 
-const MediaProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<null | any>(null);
+const MediaContext = createContext<MediaContextProps>({
+  user: null,
+  setUser: () => {},
+  htmlArray: [],
+  setHtmlArray: () => {},
+});
 
-    return (
-        <MediaContext.Provider
-            value={{
-                user,
-                setUser,
-            }}
-        >
-            {children}
-        </MediaContext.Provider>
-    );
+const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<null | any>(null);
+  const [htmlArray, setHtmlArray] = useState<HtmlBlock[]>([
+    { id: "documentStart", content: '<!DOCTYPE html>\n<html lang="en">\n<body style="margin: auto;">\n' },
+    { id: "documentEnd", content: "\n</body>\n</html>" },
+  ]);
+  return (
+    <MediaContext.Provider
+      value={{
+        user,
+        setUser,
+        htmlArray,
+        setHtmlArray,
+      }}
+    >
+      {children}
+    </MediaContext.Provider>
+  );
 };
 
 export { MediaContext, MediaProvider };

@@ -10,11 +10,7 @@ const useChatGPT = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
 
-  const postQuestion = async (
-    role: string,
-    newQuestion: string
-  ): Promise<string> => {
-    
+  const postQuestion = async (role: string, newQuestion: string): Promise<string> => {
     const options: RequestInit = {
       method: "POST",
       headers: {
@@ -27,7 +23,7 @@ const useChatGPT = () => {
     try {
       setLoading(true);
 
-      dispatch({ type: "SET_QUESTION", payload: newQuestion });
+      //dispatch({ type: "SET_QUESTION", payload: newQuestion });
 
       const response = await fetch(urli, options);
 
@@ -41,9 +37,10 @@ const useChatGPT = () => {
 
       console.log(data);
 
-      // if GPT's answer start with sorry/I/Of, throw a new error
-      if(data.startsWith('Sorry') || data.startsWith('I') || data.startsWith('Of')){
-        throw new Error("Sorry, I don't undertand. Could you please rephrase?");
+      // if GPT's answer start with sorry or I, throw a new error
+      // TODO: fix this from backend, change GPT response when it doesn't understand/can't do the task
+      if (data.startsWith("Sorry") || data.startsWith("I")) {
+        throw new Error("Request failed: " + data);
       }
 
       setResult(data);
@@ -51,7 +48,6 @@ const useChatGPT = () => {
       console.log("API Success:", result);
       // changed result to data, result returned undefined/empty
       return data;
-
     } catch (error) {
       console.error("API Error:", error);
       throw error;
@@ -62,6 +58,5 @@ const useChatGPT = () => {
 
   return { postQuestion, loading };
 };
-
 
 export { useChatGPT };
