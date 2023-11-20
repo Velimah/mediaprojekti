@@ -27,6 +27,7 @@ const AdvancedHome = () => {
 
     console.log("formValues", formValues);
 
+    /* TODO: fix so it doesn't navigate to result page if error occurs */
     try {
       await createWebPage(formValues);
     } catch (error) {
@@ -46,7 +47,7 @@ const AdvancedHome = () => {
   return (
     <>
       {showAlertDialog && <AlertDialog content={error} onClose={handleToggleDialog} />}
-      <article className='w-full flex items-center justify-center'>
+      <article className='w-full flex items-center justify-center py-4'>
         <section className='flex flex-col w-[35rem] bg-white rounded-md shadow-lg'>
           <div id='header'>
             <figure className='bg-gray-200 h-36 rounded-t-md'>
@@ -120,116 +121,142 @@ const AdvancedHome = () => {
               </svg>
               <div className='ml-4 flex items-center'>
                 <span className='text-lg pr-4'>:</span>
-                <span className='bg-gray-200 p-3 rounded-md shrink'>
+                <span className='bg-gray-200 p-3 rounded-md shrink font-mono'>
                   Hello! How can I assist you in building your dream webpage today?
                 </span>
               </div>
             </div>
-            <form className='bg-gray-200 p-4 rounded-b-md' onSubmit={handleForm}>
-              <label className='relative'>
-                {" "}
-                Information about the website
-                <input
-                  id='topic'
-                  type='text'
-                  placeholder='Give me a topic for website ...'
-                  value={formValues.additionalInfo}
-                  onChange={(event) => setFormValues({ ...formValues, additionalInfo: event.target.value })}
-                  className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-                />
-              </label>
-              <label className='relative'>
-                {" "}
-                Map Adress
-                <input
-                  id='mapAdress'
-                  type='text'
-                  placeholder='Give me table section details ...'
-                  value={formValues.mapAddress}
-                  onChange={(event) =>
-                    setFormValues({
-                      ...formValues,
-                      mapAddress: event.target.value,
-                    })
-                  }
-                  className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-                />
-              </label>
-              <label className='relative'>
-                {" "}
-                Map City
-                <input
-                  id='mapCity'
-                  type='text'
-                  placeholder='Give me table section details ...'
-                  value={formValues.mapCity}
-                  onChange={(event) =>
-                    setFormValues({
-                      ...formValues,
-                      mapCity: event.target.value,
-                    })
-                  }
-                  className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-                />
-              </label>
-              <div className='flex py-4 md:flex-row flex-col items-stretch md:items-center'>
-                <div>
-                  <label className='flex flex-row pb-2'>
-                    <span className='pr-2 font-bold'>CSS:</span>
-                    <select
-                      id='userPromptCSS'
-                      className='w-full rounded-md bg-white pl-1'
-                      onChange={(event) =>
-                        setFormValues({
-                          ...formValues,
-                          cssLibrary: event.target.value,
-                        })
-                      }
-                    >
-                      <option value='Tailwind'>Tailwind</option>
-                      <option value='Bootstrap'>Bootstrap</option>
-                      <option value='Materialize'>Materialize</option>
-                      <option value='Bulma'>Bulma</option>
-                      <option value='Foundation'>Foundation</option>
-                      <option value='Vanilla'>Vanilla</option>
-                    </select>
-                  </label>
-                  <label className='flex flex-row items-center'>
-                    <span className='pr-2 font-bold'>Primary color:</span>
+            <div className='bg-gray-200 p-4 rounded-b-md'>
+              <form onSubmit={handleForm}>
+                <label className='relative'>
+                  {" "}
+                  Information about the website
+                  <input
+                    id='topic'
+                    type='text'
+                    placeholder='Give me a topic for website ...'
+                    value={formValues.additionalInfo}
+                    onChange={(event) => setFormValues({ ...formValues, additionalInfo: event.target.value })}
+                    className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+                  />
+                </label>
+                <label className='relative'>
+                  {" "}
+                  Map Adress
+                  <input
+                    id='mapAdress'
+                    type='text'
+                    placeholder='Give me table section details ...'
+                    value={formValues.mapAddress}
+                    onChange={(event) =>
+                      setFormValues({
+                        ...formValues,
+                        mapAddress: event.target.value,
+                      })
+                    }
+                    className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+                  />
+                </label>
+                <label className='relative'>
+                  {" "}
+                  Map City
+                  <input
+                    id='mapCity'
+                    type='text'
+                    placeholder='Give me table section details ...'
+                    value={formValues.mapCity}
+                    onChange={(event) =>
+                      setFormValues({
+                        ...formValues,
+                        mapCity: event.target.value,
+                      })
+                    }
+                    className='rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+                  />
+                </label>
+                <div className='flex py-4 md:flex-row flex-col items-stretch md:items-center'>
+                  <div>
+                    <label className='flex flex-row pb-2'>
+                      <span className='pr-2 font-bold'>CSS:</span>
+                      <select
+                        id='userPromptCSS'
+                        className='w-full rounded-md bg-white pl-1 cursor-pointer'
+                        onChange={(event) =>
+                          setFormValues({
+                            ...formValues,
+                            cssLibrary: event.target.value,
+                          })
+                        }
+                      >
+                        <option value='Tailwind'>Tailwind</option>
+                        <option value='Bootstrap'>Bootstrap</option>
+                        <option value='Materialize'>Materialize</option>
+                        <option value='Bulma'>Bulma</option>
+                        <option value='Foundation'>Foundation</option>
+                        <option value='Vanilla'>Vanilla</option>
+                      </select>
+                    </label>
+                    <label className='flex flex-row items-center'>
+                      <span className='pr-2 font-bold'>Primary color:</span>
+                      <input
+                        type='color'
+                        id='userPromptColor'
+                        className='grow cursor-pointer'
+                        onChange={(event) =>
+                          setFormValues({
+                            ...formValues,
+                            colors: event.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <label className='grow pt-4 md:pl-4 md:pt-0'>
                     <input
-                      type='color'
-                      id='userPromptColor'
-                      className='grow'
-                      onChange={(event) =>
-                        setFormValues({
-                          ...formValues,
-                          colors: event.target.value,
-                        })
-                      }
+                      type='submit'
+                      className='cursor-pointer rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold'
+                      value='BUILD!'
+                      onClick={() => setBuilding(true)}
                     />
                   </label>
                 </div>
-                <label className='grow pt-4 md:pl-4 md:pt-0'>
-                  <input
-                    type='submit'
-                    className='rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black hover:border-2 hover:border-black font-bold'
-                    value='BUILD!'
-                    onClick={() => setBuilding(true)}
-                  />
-                </label>
-              </div>
-              {building && (
-                <div className='flex items-center gap-2'>
-                  <span className='relative flex h-3 w-3'>
-                    <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                    <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-                  </span>
-                  <p className='font-bold'>
-                    Building... {progressCount} Failed fetches: {errorCount}
-                  </p>
-                </div>
-              )}
-            </form>
+                {building && (
+                  <div className='flex items-center gap-2'>
+                    <span className='relative flex h-3 w-3'>
+                      <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                      <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                    </span>
+                    <p className='font-bold'>
+                      Building... {progressCount} Failed fetches: {errorCount}
+                    </p>
+                  </div>
+                )}
+              </form>
+              <button
+                onClick={() => {
+                  location.pathname === "/" ? navigate("/") : navigate("/");
+                }}
+                className='rounded-md p-1 w-full hover:bg-black hover:text-white border-2 border-transparent font-bold cursor-pointer'
+              >
+                <span className='flex items-center justify-center'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='w-8 h-8 pr-2'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      d='M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5'
+                    />
+                  </svg>
+                  Switch to Basic
+                </span>
+              </button>
+            </div>
           </section>
         </section>
         {loading && <Loader />}

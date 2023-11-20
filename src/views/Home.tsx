@@ -7,6 +7,8 @@ import AlertDialog from "../components/AlertDialog";
 const Home = () => {
   const { postQuestion, loading } = useChatGPT();
   const [newQuestion, setNewQuestion] = useState("");
+  const [newCSS, setNewCSS] = useState('');
+  const [newColor, setNewColor] = useState('');
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [showAlertDialog, setShowAlertDialog] = useState(false);
@@ -14,14 +16,14 @@ const Home = () => {
   const handleForm = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // if question string is empty, show error before fetching
+    // if question string is empty, show error
     // TODO: add form valitators instead
     if(newQuestion === ''){
       setError('Please give me instructions first!');
       setShowAlertDialog(true);
     } else {
       try {
-        const data = await postQuestion("html", newQuestion);
+        const data = await postQuestion("html", newQuestion + addCSSprompt(newCSS) + addColorPrompt(newColor));
         console.log(data);
         navigate("/result");
         setNewQuestion("");
@@ -34,6 +36,33 @@ const Home = () => {
 
   };
 
+  // Add new CSS prompt, returns string
+  const addCSSprompt = (selectedValue: string) => {
+    switch (selectedValue) {
+      case 'Tailwind':
+        return " (using Tailwind CSS)"
+        break;
+      case 'Bootstrap':
+        return " (using Bootstrap CSS)"
+        break;
+      case 'Materialize':
+        return " (using Materialize CSS)"
+        break;
+      case 'Bulma':
+        return " (using Bulma CSS)"
+        break;
+      case 'Foundation':
+        return " (using Foundation CSS)"
+        break;
+      default:
+        return ''
+        break;
+    }
+  }
+  // Add primary colour prompt, returns string if selectedValue isn't empty
+  const addColorPrompt = (selectedValue: string): string => (selectedValue !== '') ? ' (using ' + selectedValue + ' as a primary colour)' : '';
+
+
   // Toggle alert dialog on and off
   const handleToggleDialog = () => {
     setShowAlertDialog((prev) => !prev);
@@ -42,7 +71,7 @@ const Home = () => {
   return (
     <>
     {showAlertDialog && (<AlertDialog content={error} onClose={handleToggleDialog} />)}
-      <article className="w-full h-[calc(100vh-11rem)] flex items-center justify-center">
+      <article className="w-full h-[calc(100vh-11rem)] flex items-center justify-center py-4">
         <section className="flex flex-col w-[35rem] bg-white rounded-md shadow-lg">
           <div id="header">
             <figure className="bg-gray-200 h-36 rounded-t-md">
@@ -116,14 +145,14 @@ const Home = () => {
               </svg>
               <div className="ml-4 flex items-center">
                 <span className="text-lg pr-4">:</span>
-                <span className="bg-gray-200 p-3 rounded-md shrink">
+                <span className="bg-gray-200 p-3 rounded-md shrink font-mono">
                   Hello! How can I assist you in building your dream webpage
                   today?
                 </span>
               </div>
             </div>
+            <div className="bg-gray-200 p-4 rounded-b-md">
             <form
-              className="bg-gray-200 p-4 rounded-b-md"
               onSubmit={handleForm}
             >
               <label className="relative">
@@ -133,7 +162,7 @@ const Home = () => {
                   placeholder="Give me a webpage with two div's next to each other ..."
                   value={newQuestion}
                   onChange={(e) => setNewQuestion(e.target.value)}
-                  className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full"
+                  className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-2 w-full"
                 />
                 <span className="absolute left-0 top-0 px-3">
                   <svg
@@ -158,15 +187,21 @@ const Home = () => {
                     <span className="pr-2 font-bold">CSS:</span>
                     <select
                       id="userPromptCSS"
-                      className="w-full rounded-md bg-white pl-1"
+                      className="w-full rounded-md bg-white pl-1 cursor-pointer"
+                      onChange={(e) => setNewCSS(e.target.value)}
                     >
-                      <option value="bootstrap">Bootstrap</option>
-                      <option value="vanilla">Vanilla</option>
+                      <option value='Vanilla'>Vanilla/Default</option>
+                      <option value='Tailwind'>Tailwind</option>
+                      <option value='Bootstrap'>Bootstrap</option>
+                      <option value='Materialize'>Materialize</option>
+                      <option value='Bulma'>Bulma</option>
+                      <option value='Foundation'>Foundation</option>
                     </select>
                   </label>
                   <label className="flex flex-row items-center">
                     <span className="pr-2 font-bold">Primary color:</span>
-                    <input type="color" id="userPromptColor" className="grow" />
+                    <input type="color" id="userPromptColor" className="grow cursor-pointer" 
+                      onChange={(e) => setNewColor(e.target.value)} />
                   </label>
                 </div>
                 <label className="grow pt-4 md:pl-4 md:pt-0">
@@ -178,6 +213,15 @@ const Home = () => {
                 </label>
               </div>
             </form>
+            <button  onClick={() => {location.pathname === '/' ? navigate("/advanced") : navigate("/")}} className="rounded-md p-1 w-full hover:bg-black hover:text-white border-2 border-transparent font-bold cursor-pointer">
+                <span className="flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 pr-2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                  </svg>
+                  Switch to Advanced
+                </span>
+            </button>
+            </div>
           </section>
         </section>
         {loading && <Loader />}
