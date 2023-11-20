@@ -138,6 +138,7 @@ const AdvancedResult = () => {
                   ></textarea>
                 </div>
               )}
+              {/*
               <div className='py-4 space-x-2 flex flex-wrap justify-center'>
                 <button className='bg-black text-white py-2 px-4 rounded m-1'>Undo</button>
                 <button onClick={handleCopy} className='bg-black text-white py-2 px-4 rounded m-1'>
@@ -149,6 +150,7 @@ const AdvancedResult = () => {
                   Save as HTML
                 </button>
               </div>
+              */}
               <EditForms originalFormValues={originalFormValues} />
             </div>
           </div>

@@ -26,49 +26,49 @@ Use flexbox.
 Justify content center, and align content center under 600px width.
 Do not make hamburger menu.
 No imageplaceholders.
-Additional information: (${additionalInfo}).
+Additional information: ${additionalInfo}.
 You must use additional information and generate ALL text with the language used in additional information!`,
     createWelcomeSection: `Use ${cssLibrary} css for html styling.
 Use shadows and hover effects.
-Use flexbox, width around 1100px. Place text on left, and place image on right and use placekitten for source.
+Use flexbox, width around 1100px margin top 2rem. Place text on left, and place image on right and use placekitten for source.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
 Create a fully functional welcome section <section></section> with id #section. Welcome the user to the site with welcome text and additional information about the topic.
 Create an image tag width 300px. 
 No lorem ipsum.
-Additional information: (${additionalInfo}).
+Additional information: ${additionalInfo}.
 You must use additional information and generate ALL text with the language used in additional information!`,
     createFooter: `Use ${cssLibrary} css for html styling.
 Use shadows and hover effects.
 Use flexbox.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
-Create a fully functional footer section <footer></footer> with id #footer and with legal information and appropriate links.
+Create a fully functional footer section <footer></footer> with id #footer, margin top 2rem, and with legal information and appropriate links.
 Create only the footer section, no other sections.
-Additional information: (${additionalInfo}).
+Additional information: ${additionalInfo}.
 You must use additional information and generate ALL text with the language used in additional information!`,
-    createTableSection: `Use ${cssLibrary} css for html styling, width around 1100px.
+    createTableSection: `Use ${cssLibrary} css for html styling, width around 1100px margin top 2rem.
 Use shadow and hover effects.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
 Create a fully functional table section.
-Additional information: (${additionalInfo}).
+Additional information: ${additionalInfo}.
 You must use additional information and generate ALL text with the language used in the additional information!`,
     createMainSection: `
-Use ${cssLibrary} css for html styling.
+Use ${cssLibrary} css for html styling, margin top 2rem.
 Use shadows and hover effects.
 Use flexbox, width around 1100px.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
 create a fully functional main section <main></main> with id #main.
 No lorem ipsum.
-Additional information: (${additionalInfo}).
+Additional information: ${additionalInfo}.
 You must use additional information and create ALL text with the language used in additional information!`,
-    createMap: `Create an HTML block using a <div></div> element and employ flexbox for the container, setting its margin 2rem, width around 1100px, justify content to center, flex direction row, and align content to center. 
-Place the following <iframe> tag inside the <div></div>, ensuring not to modify it:
-<div">
+    createMap: `Create an HTML block using a <div></div> element and employ flexbox for the container, setting its margin top 2rem, width around 1100px, center. 
+Place the following <iframe> tag inside the <div></div>, ensuring not to modify content of iframe tag:
+<div>
   <p></p>
   <iframe src="https://www.google.com/maps/embed/v1/place?q=${mapAddress}, ${mapCity}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&zoom=15&maptype=satellite"></iframe>
 </div>
-make p 50% width, 1rem padding right.
-make iframe 100% width, height close to 400px, and black border.
-Inside the <p></p>, generate text that offers information provided: ${additionalInfo}. Ensure that all generated text conforms to the language used in the provided information. 
+make p 50% width, 1rem padding right, and center text.
+make iframe 50% width, height close to 400px, and black border.
+Inside the <p></p>, generate text paragraph that offers information: ${additionalInfo}. Ensure that all generated text conforms to the language used in the provided information. 
 Apply styling to the HTML using the ${cssLibrary} CSS.`,
     CreateHead: `update <head></head> tags with provided meta tags using correct information you get by analyzing the code:
 (<!-- Basic Meta Tags -->
