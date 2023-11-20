@@ -21,8 +21,10 @@ const MediaContext = createContext<MediaContextProps>({
 
 const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<null | any>(null);
-  const [htmlArray, setHtmlArray] = useState<HtmlBlock[]>([]);
-
+  const [htmlArray, setHtmlArray] = useState<HtmlBlock[]>([
+    { id: "documentStart", content: '<!DOCTYPE html>\n<html lang="en">\n<body style="margin: auto;">\n' },
+    { id: "documentEnd", content: "\n</body>\n</html>" },
+  ]);
   return (
     <MediaContext.Provider
       value={{

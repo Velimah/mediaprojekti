@@ -29,12 +29,10 @@ const PromptFunctions = () => {
     setHtmlArray([]);
 
     // html block that contains the start of the document
-    const documentStart = '<!DOCTYPE html>\n<html lang="en">\n<body>\n';
-    localStorage.setItem("documentStart", documentStart);
+    const documentStart = '<!DOCTYPE html>\n<html lang="en">\n<body style="margin: auto;">\n';
 
     // html block that contains the end of the document
     const documentEnd = "\n</body>\n</html>";
-    localStorage.setItem("documentEnd", documentEnd);
 
     //fetch all html blocks and save them to htmlArray array
     const createAndPushHtmlBlock = async (
@@ -67,8 +65,6 @@ const PromptFunctions = () => {
       ];
 
       const completeArrayString = newArray.map((block) => block.content).join("");
-      localStorage.setItem("completeArray", completeArrayString);
-
       const newHead = await createHeadInfo(formValues, completeArrayString);
       // checks if there is an old document start html block and removes it and replaces it with new one
       if (newArray.length > 0) {
@@ -96,10 +92,7 @@ const PromptFunctions = () => {
       const htmlData = await postQuestion("html_block", createHtmlBlock);
       // removes markdown from htmlstring
       const sanitizedHtmlData = removeHtmlMarkdown(htmlData);
-      // saves sanitized htmlstring into localstorage named after prompt name
-      if (sanitizedHtmlData !== "") {
-        localStorage.setItem(promptTemplate, sanitizedHtmlData);
-      }
+
       // returns sanitized htmlstring
       return sanitizedHtmlData;
     } catch (error) {
@@ -121,9 +114,8 @@ const PromptFunctions = () => {
       const documentStart = `<!DOCTYPE html>
 <html lang="en">
 ${sanitizedHeadData}
-<body>
+<body style="margin: auto;">
 `;
-      localStorage.setItem("documentStart", documentStart);
       // returns sanitized head htmlstring
       return { id: "documentStart", content: documentStart };
     } catch (error) {

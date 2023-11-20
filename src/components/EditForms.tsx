@@ -33,10 +33,6 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
     additionalInfo: initialValues.additionalInfo || "",
   });
 
-  const redoElement = () => {
-    setRedo(true);
-  };
-
   const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     let newArray = [...htmlArray];
@@ -52,24 +48,23 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 
   const handleEditForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
     event.preventDefault();
-    localStorage.setItem(`${htmlBlockName}_previous`, localStorage.getItem(htmlBlockName) || "");
-    setFetching(true);
-
     let newArray = [...htmlArray];
+    let indexToReplace = -1; // Initialize indexToReplace outside the if block
 
     if (redo) {
-      const indexToReplace = newArray.findIndex((item) => item.id === htmlBlockName);
-
+      indexToReplace = newArray.findIndex((item) => item.id === htmlBlockName);
       if (indexToReplace !== -1) {
         newArray.splice(indexToReplace, 1);
       }
     }
 
+    setFetching(true);
     const sanitizedHtmlData = (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
 
     // Conditionally choose the insertion index
-    const insertIndex = redo ? newArray.findIndex((item) => item.id === htmlBlockName) : newArray.length - 1;
+    const insertIndex = redo ? indexToReplace : newArray.length - 1;
     newArray.splice(insertIndex, 0, { id: htmlBlockName, content: sanitizedHtmlData });
+
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
     setHtmlArray(newArray);
     dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
@@ -99,6 +94,10 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
   // Toggle function to set the active edit form in ui
   const toggleSection = (section: any) => {
     setActiveSection((prevSection) => (prevSection === section ? null : section));
+  };
+
+  const redoElement = () => {
+    setRedo(true);
   };
 
   // select options for edit forms
@@ -222,16 +221,18 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
               <p className='font-bold'>Building...</p>
             </div>
           )}
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Add Navigation
-          </button>
-          <button
-            type='submit'
-            onClick={redoElement}
-            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
-          >
-            Redo
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add Navigation
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Redo Navigation
+            </button>
+          </div>
         </form>
       )}
 
@@ -262,16 +263,18 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
               <p className='font-bold'>Building...</p>
             </div>
           )}
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Add Welcome
-          </button>
-          <button
-            type='submit'
-            onClick={redoElement}
-            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
-          >
-            Redo
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add Welcome
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Redo Welcome
+            </button>
+          </div>
         </form>
       )}
 
@@ -302,16 +305,18 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
               <p className='font-bold'>Building...</p>
             </div>
           )}
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Add Main
-          </button>
-          <button
-            type='submit'
-            onClick={redoElement}
-            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
-          >
-            Redo
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add Main
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Redo Main
+            </button>
+          </div>
         </form>
       )}
 
@@ -342,16 +347,18 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
               <p className='font-bold'>Building...</p>
             </div>
           )}
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Add Map
-          </button>
-          <button
-            type='submit'
-            onClick={redoElement}
-            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
-          >
-            Redo
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add Map
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Redo Map
+            </button>
+          </div>
         </form>
       )}
 
@@ -382,16 +389,18 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
               <p className='font-bold'>Building...</p>
             </div>
           )}
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Add Table
-          </button>
-          <button
-            type='submit'
-            onClick={redoElement}
-            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
-          >
-            Redo
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add Table
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Redo Table
+            </button>
+          </div>
         </form>
       )}
 
@@ -422,16 +431,18 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
               <p className='font-bold'>Building...</p>
             </div>
           )}
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Add Footer
-          </button>
-          <button
-            type='submit'
-            onClick={redoElement}
-            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
-          >
-            Redo
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add Footer
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Redo Footer
+            </button>
+          </div>
         </form>
       )}
     </div>

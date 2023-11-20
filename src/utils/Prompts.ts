@@ -23,22 +23,22 @@ export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: Fo
 Use ${cssLibrary} css for html styling.
 Use shadow and hover effects for links.
 Use flexbox.
-Justify content center and align content center under 600px width.
+Justify content center, and align content center under 600px width.
 Do not make hamburger menu.
 No imageplaceholders.
 Additional information: (${additionalInfo}).
 You must use additional information and generate ALL text with the language used in additional information!`,
     createWelcomeSection: `Use ${cssLibrary} css for html styling.
-Use shadow and hover effects.
-Use flexbox, width around 1100px. Place text on left and image on right.
+Use shadows and hover effects.
+Use flexbox, width around 1100px. Place text on left, and place image on right and use placekitten for source.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
 Create a fully functional welcome section <section></section> with id #section. Welcome the user to the site with welcome text and additional information about the topic.
-Create a image tag width 400px, height 100%. 
+Create an image tag width 300px. 
 No lorem ipsum.
 Additional information: (${additionalInfo}).
 You must use additional information and generate ALL text with the language used in additional information!`,
     createFooter: `Use ${cssLibrary} css for html styling.
-Use shadow and hover effects.
+Use shadows and hover effects.
 Use flexbox.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
 Create a fully functional footer section <footer></footer> with id #footer and with legal information and appropriate links.
@@ -53,7 +53,7 @@ Additional information: (${additionalInfo}).
 You must use additional information and generate ALL text with the language used in the additional information!`,
     createMainSection: `
 Use ${cssLibrary} css for html styling.
-Use shadow and hover effects.
+Use shadows and hover effects.
 Use flexbox, width around 1100px.
 Use color code ${colors} as a primary theme color. Take into account color contrast and white text on dark background, black text on light background.
 create a fully functional main section <main></main> with id #main.
@@ -62,7 +62,7 @@ Additional information: (${additionalInfo}).
 You must use additional information and create ALL text with the language used in additional information!`,
     createMap: `Create an HTML block using a <div></div> element and employ flexbox for the container, setting its margin 2rem, width around 1100px, justify content to center, flex direction row, and align content to center. 
 Place the following <iframe> tag inside the <div></div>, ensuring not to modify it:
-<div style="display: flex; flex-direction: row;">
+<div">
   <p></p>
   <iframe src="https://www.google.com/maps/embed/v1/place?q=${mapAddress}, ${mapCity}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&zoom=15&maptype=satellite"></iframe>
 </div>
