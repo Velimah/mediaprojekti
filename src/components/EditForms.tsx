@@ -1,30 +1,27 @@
-import { useState } from "react";
-import { PromptFunctions } from "../utils/PromptFunctions";
+import { useState, useContext } from "react";
+import { PromptFunctions, HtmlBlock } from "../utils/PromptFunctions";
 import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
-
+import { MediaContext } from "../contexts/MediaContext";
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
-      topic: string;
       cssLibrary: string;
       colors: string;
-      linkCount: string;
-      linkNames: string;
-      tableDetails: string;
       mapAddress: string;
       mapCity: string;
       additionalInfo: string;
     };
   };
-  setCode: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) => {
-  const { createHeadInfo, createHtmlBlock, createHTML } = PromptFunctions();
+const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
+  const { createHeadInfo, createHtmlBlock } = PromptFunctions();
   const { dispatch } = useChat();
-  const [lastEdited, setLastEdited] = useState<string>("");
   const [fetching, setFetching] = useState<boolean>(false);
+  const [redo, setRedo] = useState<boolean>(false);
+  const { htmlArray, setHtmlArray } = useContext(MediaContext);
+  const [pastHtmlArrays, setPastHtmlArrays] = useState<HtmlBlock[][]>([]);
 
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
@@ -36,36 +33,66 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) =>
     additionalInfo: initialValues.additionalInfo || "",
   });
 
+  const redoElement = () => {
+    setRedo(true);
+  };
+
   const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const htmlArray: string[] = [];
-    htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
-    htmlArray.push(localStorage.getItem("createMainSection") || "");
-    localStorage.setItem("completeArray", htmlArray.join(""));
-    (await createHeadInfo(formStateValues, localStorage.getItem("completeArray") || "")) || "";
-    createHTML();
+    let newArray = [...htmlArray];
+    setFetching(true);
+
+    const sanitizedHtmlData =
+      (await createHeadInfo(formStateValues, htmlArray.map((block) => block.content).join(""))) || "";
+    newArray[0] = sanitizedHtmlData;
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
+    setHtmlArray(newArray);
+    setFetching(false);
   };
 
   const handleEditForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
     event.preventDefault();
-    // get the current block you are editing and save it to local storage as previous to backup
     localStorage.setItem(`${htmlBlockName}_previous`, localStorage.getItem(htmlBlockName) || "");
-    setLastEdited(htmlBlockName);
-    // set loading graphic
     setFetching(true);
-    // get a new html block
-    (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
-    createHTML();
+
+    let newArray = [...htmlArray];
+
+    if (redo) {
+      const indexToReplace = newArray.findIndex((item) => item.id === htmlBlockName);
+
+      if (indexToReplace !== -1) {
+        newArray.splice(indexToReplace, 1);
+      }
+    }
+
+    const sanitizedHtmlData = (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
+
+    // Conditionally choose the insertion index
+    const insertIndex = redo ? newArray.findIndex((item) => item.id === htmlBlockName) : newArray.length - 1;
+    newArray.splice(insertIndex, 0, { id: htmlBlockName, content: sanitizedHtmlData });
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
+    setHtmlArray(newArray);
     dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
-    // remove loading graphic
     setFetching(false);
+    setRedo(false);
   };
 
-  // Undo last change
-  const undoChange = () => {
-    // set the current block to the previous block in localstorage
-    localStorage.setItem(`${lastEdited}`, localStorage.getItem(`${lastEdited}_previous`) || "");
-    setCode(createHTML());
+  const removeHtmlBlock = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    const newArray = [...htmlArray];
+    if (newArray.length > 2) {
+      newArray.splice(-2, 1);
+    }
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state
+    setHtmlArray(newArray);
+  };
+
+  const undoLastChange = () => {
+    if (pastHtmlArrays.length > 0) {
+      const lastHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];
+      setHtmlArray(lastHtmlArray);
+      setPastHtmlArrays(pastHtmlArrays.slice(0, -1)); // Remove the last state
+    }
   };
 
   const [activeSection, setActiveSection] = useState<string | null>("navigation");
@@ -160,8 +187,11 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) =>
             </option>
           ))}
         </select>
-        <button onClick={undoChange} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+        <button onClick={undoLastChange} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
           Undo Last Change
+        </button>
+        <button onClick={removeHtmlBlock} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+          Remove bottom block
         </button>
       </div>
 
@@ -193,7 +223,14 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) =>
             </div>
           )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Navigation
+            Add Navigation
+          </button>
+          <button
+            type='submit'
+            onClick={redoElement}
+            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
+          >
+            Redo
           </button>
         </form>
       )}
@@ -226,7 +263,14 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) =>
             </div>
           )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Welcome
+            Add Welcome
+          </button>
+          <button
+            type='submit'
+            onClick={redoElement}
+            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
+          >
+            Redo
           </button>
         </form>
       )}
@@ -259,7 +303,14 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) =>
             </div>
           )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Main
+            Add Main
+          </button>
+          <button
+            type='submit'
+            onClick={redoElement}
+            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
+          >
+            Redo
           </button>
         </form>
       )}
@@ -292,7 +343,14 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) =>
             </div>
           )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Map
+            Add Map
+          </button>
+          <button
+            type='submit'
+            onClick={redoElement}
+            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
+          >
+            Redo
           </button>
         </form>
       )}
@@ -325,7 +383,14 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) =>
             </div>
           )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Table
+            Add Table
+          </button>
+          <button
+            type='submit'
+            onClick={redoElement}
+            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
+          >
+            Redo
           </button>
         </form>
       )}
@@ -358,7 +423,14 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues, setCode }) =>
             </div>
           )}
           <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Footer
+            Add Footer
+          </button>
+          <button
+            type='submit'
+            onClick={redoElement}
+            className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'
+          >
+            Redo
           </button>
         </form>
       )}

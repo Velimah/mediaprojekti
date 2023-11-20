@@ -1,12 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
-import { PromptFunctions } from "../utils/PromptFunctions";
 import { useLocation } from "react-router-dom";
 import EditForms from "../components/EditForms";
+import { MediaContext } from "../contexts/MediaContext";
 
 const AdvancedResult = () => {
   const { state } = useChat();
-  const { question, answer /*, editedanswer*/ } = state;
+  const { question } = state;
+  const { htmlArray } = useContext(MediaContext);
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
@@ -15,22 +16,21 @@ const AdvancedResult = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(true);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
-  const { createHTML } = PromptFunctions();
   const location = useLocation();
 
   const originalFormValues = location.state || {};
 
   useEffect(() => {
     // Update the code state with the current answer
-    if (answer) {
-      setCode(createHTML());
+    if (htmlArray) {
+      setCode(htmlArray.map((block) => block.content).join(""));
     }
-  }, [answer]);
+  }, [htmlArray]);
 
-  // useEffect backup didnt work in server?
   useEffect(() => {
-    if (answer) {
-      setCode(createHTML());
+    // Update the code state with the current answer
+    if (htmlArray) {
+      setCode(htmlArray.map((block) => block.content).join(""));
     }
   }, []);
 
@@ -55,14 +55,6 @@ const AdvancedResult = () => {
     } catch (error) {
       console.log("Error when copying to clipboard: ", error);
     }
-  };
-
-  const handleBuild = () => {
-    // Build logic here
-  };
-
-  const handleSave = () => {
-    // Save logic here
   };
 
   handleRunCode();
@@ -203,7 +195,7 @@ const AdvancedResult = () => {
                 Save as HTML
               </button>
             </div>
-            <EditForms originalFormValues={originalFormValues} setCode={setCode} />
+            <EditForms originalFormValues={originalFormValues} />
           </div>
         </div>
         {/*
