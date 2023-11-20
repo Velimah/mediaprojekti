@@ -108,7 +108,9 @@ const PromptFunctions = () => {
     const CreateHeadPrompt = getPromptTemplate(CreateHead, formValues);
     // fetch for the head html block, joins CreateHeadPrompt with full htmlstring for gpt to analyze
     try {
-      const headData = await postQuestion("create_head", CreateHeadPrompt + completeArray);
+      const data = CreateHeadPrompt+completeArray;
+      console.log('testi',data);
+      const headData = await postQuestion("html", data);
       const sanitizedHeadData = removeHtmlMarkdown(headData);
       // creates document start html block and injects sanitized head data into it and saves it to local storage
       const documentStart = `<!DOCTYPE html>
