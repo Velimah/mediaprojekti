@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useChat } from "../contexts/ChatContext";
 import PromptDialog from "../components/PromptDialog";
+import { useLocation } from "react-router-dom";
 
 const Result = () => {
   const { state } = useChat();
-  const { question, answer /*, editedanswer*/ } = state;
-  console.log("Question: ", question);
+  const { /*question,*/ answer /*, editedanswer*/ } = state;
+  const originalPrompt = useLocation().state || {};
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
@@ -95,7 +96,7 @@ const Result = () => {
   return (
     <>
     <div className="flex flex-col w-full items-center">
-    <PromptDialog question={question} />
+    <PromptDialog question={originalPrompt} />
       <div className="w-full lg:w-3/4 px-4">
         <div className="mb-4">
           <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
