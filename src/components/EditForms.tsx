@@ -112,68 +112,17 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 
   return (
     <div className='py-4 space-x-2 flex flex-col flex-wrap justify-center items-center'>
-      <button onClick={editHead} className='bg-black text-white p-2 mb-4 rounded w-64  hover:bg-green-500'>
-        Redo Head Tag Information
-      </button>
-
-      {/* edit buttons for each section
-
-      <div className='flex justify-center flex-wrap'>
-        <button
-          onClick={() => toggleSection("navigation")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "navigation" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "navigation" ? "Close Form" : "Edit Navigation"}
+      <div className='flex flex-wrap gap-2 m-2'>
+        <button onClick={editHead} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+          Reroll Head Tag Information
         </button>
-
-        <button
-          onClick={() => toggleSection("welcome")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "welcome" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "welcome" ? "Close Form" : "Edit Welcome"}
+        <button onClick={undoLastChange} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+          Undo Last Change
         </button>
-
-        <button
-          onClick={() => toggleSection("main")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "main" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "main" ? "Close Form" : "Edit Main"}
-        </button>
-
-        <button
-          onClick={() => toggleSection("table")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "table" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "table" ? "Close Form" : "Edit Table"}
-        </button>
-
-        <button
-          onClick={() => toggleSection("map")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "map" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "map" ? "Close Form" : "Edit Map"}
-        </button>
-
-        <button
-          onClick={() => toggleSection("footer")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "footer" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "footer" ? "Close Form" : "Edit Footer"}
+        <button onClick={removeHtmlBlock} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+          Remove bottom block
         </button>
       </div>
-*/}
       <div className='flex justify-center flex-wrap'>
         <select
           value={activeSection || ""}
@@ -186,12 +135,6 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             </option>
           ))}
         </select>
-        <button onClick={undoLastChange} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
-          Undo Last Change
-        </button>
-        <button onClick={removeHtmlBlock} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
-          Remove bottom block
-        </button>
       </div>
 
       {activeSection === "navigation" && (
@@ -212,26 +155,26 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          {fetching && (
-            <div className='flex items-center gap-2 mt-2'>
-              <span className='relative flex h-3 w-3'>
-                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-              </span>
-              <p className='font-bold'>Building...</p>
-            </div>
-          )}
           <div className='flex gap-2 w-96'>
             <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add Navigation
+              Add a new navigation
             </button>
             <button
               type='submit'
               onClick={redoElement}
               className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
             >
-              Redo Navigation
+              Reroll current navigation
             </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
           </div>
         </form>
       )}
@@ -254,26 +197,26 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          {fetching && (
-            <div className='flex items-center gap-2 mt-2'>
-              <span className='relative flex h-3 w-3'>
-                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-              </span>
-              <p className='font-bold'>Building...</p>
-            </div>
-          )}
           <div className='flex gap-2 w-96'>
             <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add Welcome
+              Add a new Welcome
             </button>
             <button
               type='submit'
               onClick={redoElement}
               className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
             >
-              Redo Welcome
+              Reroll current Welcome
             </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
           </div>
         </form>
       )}
@@ -296,26 +239,26 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          {fetching && (
-            <div className='flex items-center gap-2 mt-2'>
-              <span className='relative flex h-3 w-3'>
-                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-              </span>
-              <p className='font-bold'>Building...</p>
-            </div>
-          )}
           <div className='flex gap-2 w-96'>
             <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add Main
+              Add a new Main
             </button>
             <button
               type='submit'
               onClick={redoElement}
               className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
             >
-              Redo Main
+              Reroll current Main
             </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
           </div>
         </form>
       )}
@@ -338,26 +281,26 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          {fetching && (
-            <div className='flex items-center gap-2 mt-2'>
-              <span className='relative flex h-3 w-3'>
-                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-              </span>
-              <p className='font-bold'>Building...</p>
-            </div>
-          )}
           <div className='flex gap-2 w-96'>
             <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add Map
+              Add a new Map
             </button>
             <button
               type='submit'
               onClick={redoElement}
               className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
             >
-              Redo Map
+              Reroll current Map
             </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
           </div>
         </form>
       )}
@@ -380,26 +323,26 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          {fetching && (
-            <div className='flex items-center gap-2 mt-2'>
-              <span className='relative flex h-3 w-3'>
-                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-              </span>
-              <p className='font-bold'>Building...</p>
-            </div>
-          )}
           <div className='flex gap-2 w-96'>
             <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add Table
+              Add a new Table
             </button>
             <button
               type='submit'
               onClick={redoElement}
               className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
             >
-              Redo Table
+              Reroll current Table
             </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
           </div>
         </form>
       )}
@@ -422,26 +365,26 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          {fetching && (
-            <div className='flex items-center gap-2 mt-2'>
-              <span className='relative flex h-3 w-3'>
-                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-              </span>
-              <p className='font-bold'>Building...</p>
-            </div>
-          )}
           <div className='flex gap-2 w-96'>
             <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add Footer
+              Add a Footer
             </button>
             <button
               type='submit'
               onClick={redoElement}
               className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
             >
-              Redo Footer
+              Reroll current Footer
             </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
           </div>
         </form>
       )}
