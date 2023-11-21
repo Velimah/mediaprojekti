@@ -104,8 +104,8 @@ const Result = () => {
     <PromptDialog question={originalPrompt} />
       <div className="w-full lg:w-3/4 px-4">
         <div className="mb-4">
-          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
-            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={toggleCodeVisibility}>
+          <div className="bg-white flex flex-col items-center border border-black rounded">
+            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase cursor-pointer" onClick={toggleCodeVisibility}>
               {codeVisible ? (
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
                   <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
@@ -176,8 +176,8 @@ const Result = () => {
           </button>
         </div>*/}
         <div className="mb-4">
-          <div className="bg-white flex flex-col items-center border border-black rounded cursor-pointer">
-            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase" onClick={togglePreviewVisibility}>
+          <div className="bg-white flex flex-col items-center border border-black rounded">
+            <h2 className="bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase cursor-pointer" onClick={togglePreviewVisibility}>
             {previewVisible ? (
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 pr-1">
                   <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06l-6.22-6.22V21a.75.75 0 01-1.5 0V4.81l-6.22 6.22a.75.75 0 11-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
