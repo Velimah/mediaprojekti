@@ -1,17 +1,13 @@
-import { useState } from "react";
-import { PromptFunctions } from "../utils/PromptFunctions";
+import { useState, useContext } from "react";
+import { PromptFunctions, HtmlBlock } from "../utils/PromptFunctions";
 import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
-
+import { MediaContext } from "../contexts/MediaContext";
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
-      topic: string;
       cssLibrary: string;
       colors: string;
-      linkCount: string;
-      linkNames: string;
-      tableDetails: string;
       mapAddress: string;
       mapCity: string;
       additionalInfo: string;
@@ -20,47 +16,91 @@ interface EditFormsProps {
 }
 
 const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
-  const { createHeadInfo, createHtmlBlock, createHTML } = PromptFunctions();
+  const { createHeadInfo, createHtmlBlock } = PromptFunctions();
   const { dispatch } = useChat();
+  const [fetching, setFetching] = useState<boolean>(false);
+  const [redo, setRedo] = useState<boolean>(false);
+  const { htmlArray, setHtmlArray } = useContext(MediaContext);
+  const [pastHtmlArrays, setPastHtmlArrays] = useState<HtmlBlock[][]>([]);
 
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
   const [formStateValues, setFormStateValues] = useState<FormValues>({
-    topic: initialValues.topic || "",
-    cssLibrary: initialValues.cssLibrary || "",
-    colors: initialValues.colors || "",
-    linkCount: initialValues.linkCount || "",
-    linkNames: initialValues.linkNames || "",
-    tableDetails: initialValues.tableDetails || "",
-    mapAddress: initialValues.mapAddress || "",
-    mapCity: initialValues.mapCity || "",
-    additionalInfo: initialValues.additionalInfo || "",
+    cssLibrary: initialValues?.cssLibrary || "",
+    colors: initialValues?.colors || "",
+    mapAddress: initialValues?.mapAddress || "",
+    mapCity: initialValues?.mapCity || "",
+    additionalInfo: initialValues?.additionalInfo || "",
   });
 
   const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const htmlArray: string[] = [];
-    htmlArray.push(localStorage.getItem("createWelcomeSection") || "");
-    htmlArray.push(localStorage.getItem("createMainSection") || "");
-    htmlArray.push(localStorage.getItem("createMap") || "");
-    localStorage.setItem("completeArray", htmlArray.join(""));
-    (await createHeadInfo(formStateValues, localStorage.getItem("completeArray") || "")) || "";
-    createHTML();
+    let newArray = [...htmlArray];
+    setFetching(true);
+
+    const sanitizedHtmlData =
+      (await createHeadInfo(formStateValues, htmlArray.map((block) => block.content).join(""))) || "";
+    newArray[0] = sanitizedHtmlData;
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
+    setHtmlArray(newArray);
+    setFetching(false);
   };
 
   const handleEditForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
     event.preventDefault();
-    (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
-    createHTML();
+    let newArray = [...htmlArray];
+    let indexToReplace = -1; // Initialize indexToReplace outside the if block
+
+    if (redo) {
+      indexToReplace = newArray.findIndex((item) => item.id === htmlBlockName);
+      if (indexToReplace !== -1) {
+        newArray.splice(indexToReplace, 1);
+      }
+    }
+
+    setFetching(true);
+    const sanitizedHtmlData = (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
+
+    // Conditionally choose the insertion index
+    const insertIndex = redo ? indexToReplace : newArray.length - 1;
+    newArray.splice(insertIndex, 0, { id: htmlBlockName, content: sanitizedHtmlData });
+
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
+    setHtmlArray(newArray);
     dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
+    setFetching(false);
+    setRedo(false);
   };
 
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-  // Toggle function to set the active section
+  const removeHtmlBlock = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    const newArray = [...htmlArray];
+    if (newArray.length > 2) {
+      newArray.splice(-2, 1);
+    }
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state
+    setHtmlArray(newArray);
+  };
+
+  const undoLastChange = () => {
+    if (pastHtmlArrays.length > 0) {
+      const lastHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];
+      setHtmlArray(lastHtmlArray);
+      setPastHtmlArrays(pastHtmlArrays.slice(0, -1)); // Remove the last state
+    }
+  };
+
+  const [activeSection, setActiveSection] = useState<string | null>("navigation");
+  // Toggle function to set the active edit form in ui
   const toggleSection = (section: any) => {
     setActiveSection((prevSection) => (prevSection === section ? null : section));
   };
 
+  const redoElement = () => {
+    setRedo(true);
+  };
+
+  // select options for edit forms
   const sections = [
     { value: "navigation", label: "Edit Navigation" },
     { value: "welcome", label: "Edit Welcome" },
@@ -72,70 +112,22 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 
   return (
     <div className='py-4 space-x-2 flex flex-col flex-wrap justify-center items-center'>
-      <button onClick={editHead} className='bg-black text-white p-2 mb-4 rounded w-64  hover:bg-green-500'>
-        Redo Head Tag Information
-      </button>
-      <div className='flex justify-center flex-wrap'>
-        <button
-          onClick={() => toggleSection("navigation")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "navigation" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "navigation" ? "Close Form" : "Edit Navigation"}
+      <div className='flex flex-wrap gap-2 m-2'>
+        <button onClick={editHead} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+          Reroll Head Tag Information
         </button>
-
-        <button
-          onClick={() => toggleSection("welcome")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "welcome" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "welcome" ? "Close Form" : "Edit Welcome"}
+        <button onClick={undoLastChange} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+          Undo Last Change
         </button>
-
-        <button
-          onClick={() => toggleSection("main")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "main" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "main" ? "Close Form" : "Edit Main"}
-        </button>
-
-        <button
-          onClick={() => toggleSection("table")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "table" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "table" ? "Close Form" : "Edit Table"}
-        </button>
-
-        <button
-          onClick={() => toggleSection("map")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "map" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "map" ? "Close Form" : "Edit Map"}
-        </button>
-
-        <button
-          onClick={() => toggleSection("footer")}
-          className={`py-2 px-4 rounded m-1 hover:bg-green-500 ${
-            activeSection === "footer" ? "bg-green-500 text-white" : "bg-black text-white"
-          }`}
-        >
-          {activeSection === "footer" ? "Close Form" : "Edit Footer"}
+        <button onClick={removeHtmlBlock} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+          Remove bottom block
         </button>
       </div>
-
       <div className='flex justify-center flex-wrap'>
         <select
           value={activeSection || ""}
           onChange={(e) => toggleSection(e.target.value)}
-          className='py-2 px-4 rounded m-1 bg-black text-white'
+          className='p-2 rounded m-1 bg-black text-white hover:bg-green-500'
         >
           {sections.map((section) => (
             <option key={section.value} value={section.value}>
@@ -163,9 +155,27 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Navigation
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add a new navigation
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Reroll current navigation
+            </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
+          </div>
         </form>
       )}
 
@@ -187,9 +197,27 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Welcome
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add a new Welcome
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Reroll current Welcome
+            </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
+          </div>
         </form>
       )}
 
@@ -211,9 +239,27 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Main
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add a new Main
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Reroll current Main
+            </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
+          </div>
         </form>
       )}
 
@@ -235,9 +281,27 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Map
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add a new Map
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Reroll current Map
+            </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
+          </div>
         </form>
       )}
 
@@ -259,9 +323,27 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Table
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add a new Table
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Reroll current Table
+            </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
+          </div>
         </form>
       )}
 
@@ -283,9 +365,27 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
             }
             className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
           />
-          <button type='submit' className='bg-black text-white py-2 rounded mt-2 hover:bg-green-500'>
-            Redo Footer
-          </button>
+          <div className='flex gap-2 w-96'>
+            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
+              Add a Footer
+            </button>
+            <button
+              type='submit'
+              onClick={redoElement}
+              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
+            >
+              Reroll current Footer
+            </button>
+            {fetching && (
+              <div className='flex items-center gap-2 mt-2'>
+                <span className='relative flex h-3 w-3'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                </span>
+                <p className='font-bold'>Building...</p>
+              </div>
+            )}
+          </div>
         </form>
       )}
     </div>
