@@ -14,7 +14,7 @@
   }
 }
 
-@keyframes slidein-bottomleft {
+@keyframes slide-up {
   0% {
     opacity: 0;
     margin: 15px;

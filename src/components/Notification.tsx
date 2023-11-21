@@ -36,15 +36,15 @@ const Notification: React.FC = () => {
   switch (notificationReason) {
     case "default":
       notiStyle = `bg-black 
-                   text-center flex flex-row text-white bottom-0 left-10 
+                   text-center flex flex-row text-white bottom-0 right-10 
                    fixed p-3 border rounded-xl transition-transform duration-[${time}ms] 
-                   transform translate-y-full animate-slidein-bottomleft`;
+                   transform translate-y-full animate-slide-up`;
       break;
     case "error":
       notiStyle = `bg-red-500 
-                   text-center flex flex-row text-white bottom-0 left-10 
+                   text-center flex flex-row text-white bottom-0 right-10 
                    fixed p-3 border rounded-xl transition-transform duration-[${time}ms] 
-                   transform translate-y-full animate-slidein-bottomleft`;
+                   transform translate-y-full animate-slide-up`;
       break;
     default:
       notiStyle = "hidden";

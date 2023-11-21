@@ -6,9 +6,6 @@ export default {
   ],
   theme: {
     extend: {
-      animation: {
-        'slidein-bottomleft': 'slidein-bottomleft 2s ease-in-out',
-      },
       backgroundSize: {
         '20': '20px 20px',
       },
@@ -28,6 +25,7 @@ export default {
       animation: {
         'fade-in': 'opacity 0.5s ease-in-out',
         'fade-out': 'fadeOutopacity 0.5s ease-in-out',
+        'slide-up': 'slide-up 2s ease-in-out',
       },
     },
   },
