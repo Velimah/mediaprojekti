@@ -39,7 +39,6 @@ const Result = () => {
   };
 
   const handleCopy = async () => {
-    // TODO? show notification that says text was copied to clipboard
     try {
       if (codeTextarea.current) {
         await navigator.clipboard.writeText(codeTextarea.current.value);
