@@ -35,7 +35,7 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 
   const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    let newArray = [...htmlArray];
+    const newArray = [...htmlArray];
     setFetching(true);
 
     const sanitizedHtmlData =
@@ -48,7 +48,7 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 
   const handleEditForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
     event.preventDefault();
-    let newArray = [...htmlArray];
+    const newArray = [...htmlArray];
     let indexToReplace = -1; // Initialize indexToReplace outside the if block
 
     if (redo) {
@@ -63,11 +63,11 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 
     // Conditionally choose the insertion index
     const insertIndex = redo ? indexToReplace : newArray.length - 1;
-    newArray.splice(insertIndex, 0, { id: htmlBlockName, content: sanitizedHtmlData });
+    newArray.splice(insertIndex, 0, { id: insertIndex, name: htmlBlockName, content: sanitizedHtmlData });
 
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
     setHtmlArray(newArray);
-    dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
+    //dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
     setFetching(false);
     setRedo(false);
   };

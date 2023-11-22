@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import EditForms from "../components/EditForms";
 import { MediaContext } from "../contexts/MediaContext";
 import PromptDialog from "../components/PromptDialog";
+import DragDropList from "../components/DragDropList";
 
 const AdvancedResult = () => {
   const { htmlArray } = useContext(MediaContext);
@@ -156,6 +157,7 @@ const AdvancedResult = () => {
                   Save as HTML
                 </button>
               </div>
+              <DragDropList />
               <EditForms originalFormValues={originalFormValues} />
             </div>
           </div>
