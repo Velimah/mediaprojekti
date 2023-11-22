@@ -83,7 +83,7 @@ const PromptFunctions = () => {
   };
 
   // function to create html block
-  const createHtmlBlock = async (promptTemplate: PromptTemplate, formValues: FormValues): Promise<string> => {
+  const createHtmlBlock = async (promptTemplate: PromptTemplate, formValues: FormValues) => {
     // gets the correct template for prompt and injects values from form into the template
     const createHtmlBlock = getPromptTemplate(promptTemplate, formValues);
     // fetch for the html block
@@ -96,7 +96,6 @@ const PromptFunctions = () => {
       return sanitizedHtmlData;
     } catch (error) {
       console.log("error: ", error);
-      return "";
     }
   };
 

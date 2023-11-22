@@ -5,6 +5,7 @@ import { MediaContext } from "../contexts/MediaContext";
 import PromptDialog from "../components/PromptDialog";
 import DragDropList from "../components/DragDropList";
 import { PromptTemplate } from "../utils/Prompts";
+import { HtmlBlock } from "../contexts/MediaContext";
 
 const AdvancedResult = () => {
   const { htmlArray } = useContext(MediaContext);
@@ -18,6 +19,7 @@ const AdvancedResult = () => {
 
   const [lastHtmlBlockIndex, setLastHtmlBlockIndex] = useState<number>(0); // The index of the last edited html block in htmlArray
   const [selectedSection, setSelectedSection] = useState<PromptTemplate>("createNavigation");
+  const [pastHtmlArrays, setPastHtmlArrays] = useState<HtmlBlock[][]>([]);
 
   const location = useLocation();
 
@@ -91,6 +93,26 @@ const AdvancedResult = () => {
       .join(", ");
   };
 
+  // template for section details
+  const getSectionDetails = (selectedSection: PromptTemplate) => {
+    switch (selectedSection) {
+      case "createNavigation":
+        return "Navigation";
+      case "createWelcomeSection":
+        return "Text | Image";
+      case "createMainSection":
+        return "Text";
+      case "createTableSection":
+        return "Table";
+      case "createMap":
+        return "Text | Map";
+      case "createFooter":
+        return "Footer";
+      default:
+        return "Unknown Section";
+    }
+  };
+
   return (
     <>
       <div className='flex flex-col w-full items-center'>
@@ -148,12 +170,9 @@ const AdvancedResult = () => {
               )}
 
               <div className='py-4 space-x-2 flex flex-wrap justify-center'>
-                <button className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'>Undo</button>
                 <button onClick={handleCopy} className='bg-black text-white py-2 px-4 rounded m-1'>
                   Copy
                 </button>
-                <button className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'>Build</button>
-                <button className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'>Save</button>
                 <button
                   onClick={handleSaveToFile}
                   className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'
@@ -161,18 +180,26 @@ const AdvancedResult = () => {
                   Save as HTML
                 </button>
               </div>
-              <DragDropList
-                lastHtmlBlockIndex={lastHtmlBlockIndex}
-                setLastHtmlBlockIndex={setLastHtmlBlockIndex}
-                setSelectedSection={setSelectedSection}
-              />
-              <EditForms
-                originalFormValues={originalFormValues}
-                lastHtmlBlockIndex={lastHtmlBlockIndex}
-                setLastHtmlBlockIndex={setLastHtmlBlockIndex}
-                setSelectedSection={setSelectedSection}
-                selectedSection={selectedSection}
-              />
+              <div className='flex'>
+                <EditForms
+                  originalFormValues={originalFormValues}
+                  lastHtmlBlockIndex={lastHtmlBlockIndex}
+                  setLastHtmlBlockIndex={setLastHtmlBlockIndex}
+                  setSelectedSection={setSelectedSection}
+                  selectedSection={selectedSection}
+                  getSectionDetails={getSectionDetails}
+                  pastHtmlArrays={pastHtmlArrays}
+                  setPastHtmlArrays={setPastHtmlArrays}
+                />
+                <DragDropList
+                  lastHtmlBlockIndex={lastHtmlBlockIndex}
+                  setLastHtmlBlockIndex={setLastHtmlBlockIndex}
+                  setSelectedSection={setSelectedSection}
+                  getSectionDetails={getSectionDetails}
+                  pastHtmlArrays={pastHtmlArrays}
+                  setPastHtmlArrays={setPastHtmlArrays}
+                />
+              </div>
             </div>
           </div>
           {/*

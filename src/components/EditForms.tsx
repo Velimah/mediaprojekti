@@ -18,6 +18,9 @@ interface EditFormsProps {
   setLastHtmlBlockIndex: (params: number) => void;
   setSelectedSection: (params: PromptTemplate) => void;
   selectedSection: PromptTemplate;
+  getSectionDetails: (params: PromptTemplate) => string;
+  pastHtmlArrays: HtmlBlock[][];
+  setPastHtmlArrays: (params: HtmlBlock[][]) => void;
 }
 
 const EditForms: React.FC<EditFormsProps> = ({
@@ -26,12 +29,14 @@ const EditForms: React.FC<EditFormsProps> = ({
   setLastHtmlBlockIndex,
   setSelectedSection,
   selectedSection,
+  getSectionDetails,
+  pastHtmlArrays,
+  setPastHtmlArrays,
 }) => {
   const { createHeadInfo, createHtmlBlock } = PromptFunctions();
   const { dispatch } = useChat();
   const [fetching, setFetching] = useState<boolean>(false);
   const { htmlArray, setHtmlArray } = useContext(MediaContext);
-  const [pastHtmlArrays, setPastHtmlArrays] = useState<HtmlBlock[][]>([]);
 
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
@@ -61,10 +66,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     const newArray = [...htmlArray];
 
     setFetching(true);
-    console.log("htmlBlockName", htmlBlockName);
     const sanitizedHtmlData = (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
-
-    // Conditionally choose the insertion index
     const insertIndex = newArray.length - 1;
     newArray.splice(insertIndex, 0, { id: insertIndex, name: htmlBlockName, content: sanitizedHtmlData });
     setLastHtmlBlockIndex(insertIndex);
@@ -78,8 +80,8 @@ const EditForms: React.FC<EditFormsProps> = ({
     event.preventDefault();
     const newArray = [...htmlArray];
     const htmlBlockName: PromptTemplate = newArray[lastHtmlBlockIndex].name as PromptTemplate;
-    setFetching(true);
 
+    setFetching(true);
     const sanitizedHtmlData = (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
     newArray[lastHtmlBlockIndex].content = sanitizedHtmlData;
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
@@ -89,56 +91,44 @@ const EditForms: React.FC<EditFormsProps> = ({
 
   const undoLastChange = () => {
     if (pastHtmlArrays.length > 0) {
+      console.log("pastHtmlArrays", pastHtmlArrays);
       const lastHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];
       setHtmlArray(lastHtmlArray);
       setPastHtmlArrays(pastHtmlArrays.slice(0, -1)); // Remove the last state
     }
   };
 
-  // select options for edit forms
+  // select options for forms
   const sections = [
-    { value: "createNavigation", label: "Add Navigation" },
-    { value: "createWelcomeSection", label: "Add Welcome" },
-    { value: "createMainSection", label: "Add Main" },
-    { value: "createTableSection", label: "Add Table" },
-    { value: "createMap", label: "Add Map" },
-    { value: "createFooter", label: "Add Footer" },
+    { value: "createNavigation", label: "Navigation" },
+    { value: "createWelcomeSection", label: "Text | Image" },
+    { value: "createMainSection", label: "Text" },
+    { value: "createTableSection", label: "Table" },
+    { value: "createMap", label: "Text | Map" },
+    { value: "createFooter", label: "Footer" },
   ];
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log("event.target.value", event.target.value);
     setSelectedSection(event.target.value as PromptTemplate);
+    setLastHtmlBlockIndex(99999);
   };
 
   return (
     <div className='py-4 space-x-2 flex flex-col flex-wrap justify-center items-center'>
-      <div className='flex flex-wrap gap-2 m-2'>
-        <button onClick={editHead} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+      <div className='flex gap-2 m-2'>
+        <button onClick={editHead} className='p-3 bg-black text-white rounded hover:bg-green-500'>
           Generate Head Tag Information
         </button>
-        <button onClick={undoLastChange} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+        <button onClick={undoLastChange} className='p-3 bg-black text-white rounded hover:bg-green-500'>
           Undo Fetch
-        </button>
-        <button onClick={reRollHtmlBlock} className='w-full bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-          Redo Fetch
         </button>
       </div>
 
-      <div className='py-4 space-x-2 flex flex-col flex-wrap justify-center items-center'>
+      <div className='flex flex-col flex-wrap justify-center items-center'>
         {/* ... (your other buttons) */}
 
         <div className='flex justify-center flex-wrap'>
-          <select
-            value={selectedSection}
-            onChange={handleSelectChange}
-            className='p-2 rounded m-1 bg-black text-white hover:bg-green-500'
-          >
-            {sections.map((section) => (
-              <option key={section.value} value={section.value}>
-                {section.label}
-              </option>
-            ))}
-          </select>
-
           <form
             className='bg-gray-200 p-4 m-2 rounded-md flex flex-col'
             onSubmit={(event) => handleCreateHtmlBlockForm(selectedSection, event)}
@@ -156,10 +146,26 @@ const EditForms: React.FC<EditFormsProps> = ({
               }
               className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
             />
-            <div className='flex gap-4'>
-              <button type='submit' className='w-full bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-                Submit {selectedSection}
+            <div className='flex gap-2 mt-2'>
+              <select
+                value={selectedSection}
+                onChange={handleSelectChange}
+                className='w-full bg-black text-white p-2 rounded hover:bg-green-500'
+              >
+                {sections.map((section) => (
+                  <option key={section.value} value={section.value}>
+                    {section.label}
+                  </option>
+                ))}
+              </select>
+              <button type='submit' className='w-full bg-black text-white p-2 rounded hover:bg-green-500'>
+                Add New {getSectionDetails(selectedSection)}
               </button>
+              {lastHtmlBlockIndex !== 99999 && (
+                <button onClick={reRollHtmlBlock} className='w-full bg-black text-white p-2 rounded hover:bg-green-500'>
+                  Refetch {getSectionDetails(selectedSection)}
+                </button>
+              )}
               {fetching && (
                 <div className='flex items-center gap-2 mt-2'>
                   <span className='relative flex h-3 w-3'>
