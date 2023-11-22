@@ -60,7 +60,7 @@ const PromptFunctions = () => {
         await createAndPushHtmlBlock("createTableSection", formValues, "4 / 7", currentId++),
         await createAndPushHtmlBlock("createMap", formValues, "5 / 7", currentId++),
         await createAndPushHtmlBlock("createFooter", formValues, "6 / 7", currentId++),
-        { id: currentId++, name: "documentEnd", content: documentEnd },
+        { id: 1000, name: "documentEnd", content: documentEnd },
       ];
 
       const completeArrayString = newArray.map((block) => block.content).join("");
