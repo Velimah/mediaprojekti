@@ -1,12 +1,11 @@
 import { useState, useContext, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import { MediaContext } from "../contexts/MediaContext";
-import { HtmlBlock } from "../contexts/MediaContext";
+import { MediaContext, HtmlBlock } from "../contexts/MediaContext";
 import { PromptTemplate } from "../utils/Prompts";
 
 interface DragDropListProps {
-  setLastHtmlBlockIndex: (params: number) => void;
-  lastHtmlBlockIndex: number;
+  setLastHtmlBlockIndex: (params: number | null) => void;
+  lastHtmlBlockIndex: number | null;
   setSelectedSection: (params: PromptTemplate) => void;
   getSectionDetails: (params: PromptTemplate) => string;
   pastHtmlArrays: HtmlBlock[][];
@@ -33,58 +32,48 @@ const DragDropList: React.FC<DragDropListProps> = ({
     if (destination === undefined || destination === null) return null;
     if (source.droppableId === destination.droppableId && destination.index === source.index) return null;
     const indexToRemove = source.index;
-    setLastHtmlBlockIndex(destination.index + 1);
+    console.log("lastHtmlBlockIndex", lastHtmlBlockIndex);
 
     const reorderedItems = Array.from(htmlArray.slice(1, -1));
     const [movedItem] = reorderedItems.splice(source.index, 1);
     reorderedItems.splice(destination.index, 0, movedItem);
-    const updatedReorderedItemsWithConsecutiveIds = reorderedItems.map((item, index) => ({
-      ...item,
-      id: index + 1,
-    }));
 
     // Add the first and last items back to htmlArray
     const firstItem = htmlArray[0];
     const lastItem = htmlArray[htmlArray.length - 1];
-    const updatedHtmlArray = [firstItem, ...updatedReorderedItemsWithConsecutiveIds, lastItem];
+    const updatedHtmlArray = [firstItem, ...reorderedItems, lastItem];
 
     setRenderedItems([...reorderedItems]);
-    setHtmlArray(updatedHtmlArray);
-    console.log("updatedHtmlArray", updatedHtmlArray);
+    setHtmlArray([...updatedHtmlArray]);
 
     if (destination && destination.droppableId === "removeArea") {
       // The item was dragged into the remove area, remove it from the list
       console.log("indexToRemove", indexToRemove);
-      console.log("renderedItems", renderedItems);
 
       const updatedItems = renderedItems.slice(); // Create a copy
       updatedItems.splice(indexToRemove, 1);
 
-      // Update the IDs to be consecutive
-      const updatedItemsWithConsecutiveIds = updatedItems.map((item, index) => ({
-        ...item,
-        id: index + 1,
-      }));
-
-      setRenderedItems(updatedItemsWithConsecutiveIds);
+      setRenderedItems([...updatedItems]);
 
       // Update the htmlArray without the removed item
-      const updatedHtmlArray = [htmlArray[0], ...updatedItemsWithConsecutiveIds, htmlArray[htmlArray.length - 1]];
+      const updatedHtmlArray = [htmlArray[0], ...updatedItems, htmlArray[htmlArray.length - 1]];
       console.log("updatedHtmlArray", updatedHtmlArray);
       setHtmlArray(updatedHtmlArray);
       setPastHtmlArrays([...pastHtmlArrays, updatedHtmlArray]);
+      setLastHtmlBlockIndex(null);
     }
   };
 
   const handleItemClick = (item: HtmlBlock, event: React.MouseEvent) => {
     event.preventDefault();
+
     if (item.id !== lastHtmlBlockIndex) {
       setLastHtmlBlockIndex(item.id);
       setSelectedSection(item.name as PromptTemplate);
       return;
     }
     if (item.id === lastHtmlBlockIndex) {
-      setLastHtmlBlockIndex(99999);
+      setLastHtmlBlockIndex(null);
       return;
     }
   };
@@ -117,7 +106,9 @@ const DragDropList: React.FC<DragDropListProps> = ({
                       {...provided.dragHandleProps}
                     >
                       {item.name === item.name ? (
-                        <p className='flex text-center'>{getSectionDetails(item.name as PromptTemplate)}</p>
+                        <p className='flex text-center'>
+                          {item.id} {getSectionDetails(item.name as PromptTemplate)}
+                        </p>
                       ) : (
                         <p>Do something else when name is falsy</p>
                       )}

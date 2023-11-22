@@ -1,11 +1,10 @@
 import { useState, useContext, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import EditForms from "../components/EditForms";
-import { MediaContext } from "../contexts/MediaContext";
-import PromptDialog from "../components/PromptDialog";
-import DragDropList from "../components/DragDropList";
+import { MediaContext, HtmlBlock } from "../contexts/MediaContext";
 import { PromptTemplate } from "../utils/Prompts";
-import { HtmlBlock } from "../contexts/MediaContext";
+import PromptDialog from "../components/PromptDialog";
+import EditForms from "../components/EditForms";
+import DragDropList from "../components/DragDropList";
 
 const AdvancedResult = () => {
   const { htmlArray } = useContext(MediaContext);
@@ -17,7 +16,7 @@ const AdvancedResult = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(false);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
-  const [lastHtmlBlockIndex, setLastHtmlBlockIndex] = useState<number>(0); // The index of the last edited html block in htmlArray
+  const [lastHtmlBlockIndex, setLastHtmlBlockIndex] = useState<number | null>(1); // The index of the last edited html block in htmlArray
   const [selectedSection, setSelectedSection] = useState<PromptTemplate>("createNavigation");
   const [pastHtmlArrays, setPastHtmlArrays] = useState<HtmlBlock[][]>([]);
 
@@ -33,11 +32,8 @@ const AdvancedResult = () => {
   }, [htmlArray]);
 
   useEffect(() => {
-    // Update the code state with the current answer
-    if (htmlArray) {
-      setCode(htmlArray.map((block) => block.content).join(""));
-    }
-  }, []);
+    handleRunCode();
+  }, [code]);
 
   const handleRunCode = () => {
     if (previewFrame.current) {

@@ -2,8 +2,7 @@ import { useState, useContext } from "react";
 import { PromptFunctions } from "../utils/PromptFunctions";
 import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
-import { MediaContext } from "../contexts/MediaContext";
-import { HtmlBlock } from "../contexts/MediaContext";
+import { MediaContext, HtmlBlock } from "../contexts/MediaContext";
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
@@ -14,8 +13,8 @@ interface EditFormsProps {
       additionalInfo: string;
     };
   };
-  lastHtmlBlockIndex: number;
-  setLastHtmlBlockIndex: (params: number) => void;
+  lastHtmlBlockIndex: number | null;
+  setLastHtmlBlockIndex: (params: number | null) => void;
   setSelectedSection: (params: PromptTemplate) => void;
   selectedSection: PromptTemplate;
   getSectionDetails: (params: PromptTemplate) => string;
@@ -53,40 +52,74 @@ const EditForms: React.FC<EditFormsProps> = ({
     const newArray = [...htmlArray];
     setFetching(true);
 
-    const sanitizedHtmlData =
-      (await createHeadInfo(formStateValues, htmlArray.map((block) => block.content).join(""))) || "";
+    const sanitizedHtmlData = await createHeadInfo(
+      formStateValues,
+      htmlArray
+        .slice(1)
+        .map((block) => block.content)
+        .join("")
+    );
     newArray[0] = sanitizedHtmlData;
+    newArray[htmlArray.length - 1] = { id: 1000, name: "documentEnd", content: "\n</body>\n</html>" };
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
     setHtmlArray(newArray);
     setFetching(false);
+  };
+
+  const checkForFreeId = (newArray: { id: number }[]) => {
+    for (let i = 1; i < 1000; i++) {
+      const isDuplicateId = newArray.some((element: { id: number }) => element.id === i);
+      if (!isDuplicateId) {
+        if (typeof i === "number") return i; // Return the first available ID
+      }
+    }
   };
 
   const handleCreateHtmlBlockForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
     event.preventDefault();
     const newArray = [...htmlArray];
-
     setFetching(true);
-    const sanitizedHtmlData = (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
-    const insertIndex = newArray.length - 1;
-    newArray.splice(insertIndex, 0, { id: insertIndex, name: htmlBlockName, content: sanitizedHtmlData });
-    setLastHtmlBlockIndex(insertIndex);
-    setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
-    setHtmlArray(newArray);
-    //dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
-    setFetching(false);
+    try {
+      const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
+      const insertIndex = newArray.length - 1;
+      if (typeof sanitizedHtmlData === "string") {
+        const newId = checkForFreeId(newArray);
+        if (typeof newId === "number") {
+          newArray.splice(insertIndex, 0, { id: newId, name: htmlBlockName, content: sanitizedHtmlData });
+          setLastHtmlBlockIndex(insertIndex);
+          setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
+          setHtmlArray(newArray);
+        }
+      }
+      //dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
+      setFetching(false);
+      console.log("newArray", newArray);
+    } catch (error) {
+      console.log("error", error);
+      setFetching(false);
+    }
   };
 
   const reRollHtmlBlock = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const newArray = [...htmlArray];
-    const htmlBlockName: PromptTemplate = newArray[lastHtmlBlockIndex].name as PromptTemplate;
-
-    setFetching(true);
-    const sanitizedHtmlData = (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
-    newArray[lastHtmlBlockIndex].content = sanitizedHtmlData;
-    setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
-    setHtmlArray(newArray);
-    setFetching(false);
+    if (typeof lastHtmlBlockIndex === "number") {
+      const index = newArray.findIndex((item) => item.id === lastHtmlBlockIndex);
+      const htmlBlockName: PromptTemplate = newArray[index].name as PromptTemplate;
+      setFetching(true);
+      try {
+        const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
+        if (typeof sanitizedHtmlData === "string") {
+          newArray[index].content = sanitizedHtmlData;
+          setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
+          setHtmlArray(newArray);
+        }
+        setFetching(false);
+      } catch (error) {
+        console.log("error", error);
+        setFetching(false);
+      }
+    }
   };
 
   const undoLastChange = () => {
@@ -109,9 +142,10 @@ const EditForms: React.FC<EditFormsProps> = ({
   ];
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
     console.log("event.target.value", event.target.value);
     setSelectedSection(event.target.value as PromptTemplate);
-    setLastHtmlBlockIndex(99999);
+    setLastHtmlBlockIndex(null);
   };
 
   return (
@@ -161,7 +195,7 @@ const EditForms: React.FC<EditFormsProps> = ({
               <button type='submit' className='w-full bg-black text-white p-2 rounded hover:bg-green-500'>
                 Add New {getSectionDetails(selectedSection)}
               </button>
-              {lastHtmlBlockIndex !== 99999 && (
+              {lastHtmlBlockIndex && (
                 <button onClick={reRollHtmlBlock} className='w-full bg-black text-white p-2 rounded hover:bg-green-500'>
                   Refetch {getSectionDetails(selectedSection)}
                 </button>

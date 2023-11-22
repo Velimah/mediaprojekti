@@ -1,8 +1,7 @@
+import { useState, useContext } from "react";
 import { FormValues, PromptTemplate, getPromptTemplate } from "./Prompts";
 import { useChatGPT } from "../hooks/ApiHooks";
-import { useState, useContext } from "react";
-import { MediaContext } from "../contexts/MediaContext";
-import { HtmlBlock } from "../contexts/MediaContext";
+import { MediaContext, HtmlBlock } from "../contexts/MediaContext";
 
 const PromptFunctions = () => {
   const { postQuestion } = useChatGPT();
@@ -53,7 +52,7 @@ const PromptFunctions = () => {
     try {
       let currentId = 1; // Initialize the ID counter
       const newArray: HtmlBlock[] = [
-        { id: currentId++, name: "documentStart", content: documentStart },
+        { id: 0, name: "documentStart", content: documentStart },
         await createAndPushHtmlBlock("createNavigation", formValues, "1 / 7", currentId++),
         await createAndPushHtmlBlock("createWelcomeSection", formValues, "2 / 7", currentId++),
         await createAndPushHtmlBlock("createMainSection", formValues, "3 / 7", currentId++),
