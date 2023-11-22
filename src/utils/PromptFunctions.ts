@@ -103,8 +103,7 @@ const PromptFunctions = () => {
   // creates <head></head> info html block and saves it to local storage
   const createHeadInfo = async (formValues: FormValues, completeArray: string): Promise<HtmlBlock> => {
     // choose correct prompt template and take values from form and inject them into the template
-    const CreateHead: PromptTemplate = "CreateHead";
-    const CreateHeadPrompt = getPromptTemplate(CreateHead, formValues);
+    const CreateHeadPrompt = getPromptTemplate("CreateHead", formValues);
     // fetch for the head html block, joins CreateHeadPrompt with full htmlstring for gpt to analyze
 
     const documentStart = `<!DOCTYPE html>

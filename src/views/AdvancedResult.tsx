@@ -4,6 +4,7 @@ import EditForms from "../components/EditForms";
 import { MediaContext } from "../contexts/MediaContext";
 import PromptDialog from "../components/PromptDialog";
 import DragDropList from "../components/DragDropList";
+import { PromptTemplate } from "../utils/Prompts";
 
 const AdvancedResult = () => {
   const { htmlArray } = useContext(MediaContext);
@@ -14,6 +15,9 @@ const AdvancedResult = () => {
 
   const [codeVisible, setCodeVisible] = useState<boolean>(false);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
+
+  const [lastHtmlBlockIndex, setLastHtmlBlockIndex] = useState<number>(0); // The index of the last edited html block in htmlArray
+  const [selectedSection, setSelectedSection] = useState<PromptTemplate>("createNavigation");
 
   const location = useLocation();
 
@@ -157,8 +161,18 @@ const AdvancedResult = () => {
                   Save as HTML
                 </button>
               </div>
-              <DragDropList />
-              <EditForms originalFormValues={originalFormValues} />
+              <DragDropList
+                lastHtmlBlockIndex={lastHtmlBlockIndex}
+                setLastHtmlBlockIndex={setLastHtmlBlockIndex}
+                setSelectedSection={setSelectedSection}
+              />
+              <EditForms
+                originalFormValues={originalFormValues}
+                lastHtmlBlockIndex={lastHtmlBlockIndex}
+                setLastHtmlBlockIndex={setLastHtmlBlockIndex}
+                setSelectedSection={setSelectedSection}
+                selectedSection={selectedSection}
+              />
             </div>
           </div>
           {/*
