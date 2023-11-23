@@ -1,13 +1,13 @@
 import { useState, useContext, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { MediaContext, HtmlBlock } from "../contexts/MediaContext";
+import { HtmlContext } from "../contexts/HtmlContext";
 import { PromptTemplate } from "../utils/Prompts";
 import PromptDialog from "../components/PromptDialog";
 import EditForms from "../components/EditForms";
 import DragDropList from "../components/DragDropList";
 
 const AdvancedResult = () => {
-  const { htmlArray } = useContext(MediaContext);
+  const { htmlArray } = useContext(HtmlContext);
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
@@ -16,9 +16,7 @@ const AdvancedResult = () => {
   const [codeVisible, setCodeVisible] = useState<boolean>(false);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
 
-  const [lastHtmlBlockIndex, setLastHtmlBlockIndex] = useState<number | null>(1); // The index of the last edited html block in htmlArray
   const [selectedSection, setSelectedSection] = useState<PromptTemplate>("createNavigation");
-  const [pastHtmlArrays, setPastHtmlArrays] = useState<HtmlBlock[][]>([]);
 
   const location = useLocation();
 
@@ -171,7 +169,7 @@ const AdvancedResult = () => {
                 </button>
                 <button
                   onClick={handleSaveToFile}
-                  className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'
+                  className='bg-black hover:bg-green-500 duration-150 text-white py-2 px-4 rounded m-1'
                 >
                   Save as HTML
                 </button>
@@ -179,22 +177,11 @@ const AdvancedResult = () => {
               <div className='flex'>
                 <EditForms
                   originalFormValues={originalFormValues}
-                  lastHtmlBlockIndex={lastHtmlBlockIndex}
-                  setLastHtmlBlockIndex={setLastHtmlBlockIndex}
                   setSelectedSection={setSelectedSection}
                   selectedSection={selectedSection}
                   getSectionDetails={getSectionDetails}
-                  pastHtmlArrays={pastHtmlArrays}
-                  setPastHtmlArrays={setPastHtmlArrays}
                 />
-                <DragDropList
-                  lastHtmlBlockIndex={lastHtmlBlockIndex}
-                  setLastHtmlBlockIndex={setLastHtmlBlockIndex}
-                  setSelectedSection={setSelectedSection}
-                  getSectionDetails={getSectionDetails}
-                  pastHtmlArrays={pastHtmlArrays}
-                  setPastHtmlArrays={setPastHtmlArrays}
-                />
+                <DragDropList setSelectedSection={setSelectedSection} getSectionDetails={getSectionDetails} />
               </div>
             </div>
           </div>

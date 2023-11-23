@@ -1,26 +1,16 @@
 import { useState, useContext, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import { MediaContext, HtmlBlock } from "../contexts/MediaContext";
+import { HtmlContext, HtmlBlock } from "../contexts/HtmlContext";
 import { PromptTemplate } from "../utils/Prompts";
 
 interface DragDropListProps {
-  setLastHtmlBlockIndex: (params: number | null) => void;
-  lastHtmlBlockIndex: number | null;
   setSelectedSection: (params: PromptTemplate) => void;
   getSectionDetails: (params: PromptTemplate) => string;
-  pastHtmlArrays: HtmlBlock[][];
-  setPastHtmlArrays: (params: HtmlBlock[][]) => void;
 }
 
-const DragDropList: React.FC<DragDropListProps> = ({
-  setLastHtmlBlockIndex,
-  lastHtmlBlockIndex,
-  setSelectedSection,
-  getSectionDetails,
-  pastHtmlArrays,
-  setPastHtmlArrays,
-}) => {
-  const { htmlArray, setHtmlArray } = useContext(MediaContext);
+const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSectionDetails }) => {
+  const { htmlArray, setHtmlArray, pastHtmlArrays, setPastHtmlArrays, lastHtmlBlockId, setLastHtmlBlockId } =
+    useContext(HtmlContext);
   const [renderedItems, setRenderedItems] = useState<HtmlBlock[]>([]);
 
   useEffect(() => {
@@ -32,19 +22,18 @@ const DragDropList: React.FC<DragDropListProps> = ({
     if (destination === undefined || destination === null) return null;
     if (source.droppableId === destination.droppableId && destination.index === source.index) return null;
     const indexToRemove = source.index;
-    console.log("lastHtmlBlockIndex", lastHtmlBlockIndex);
 
     const reorderedItems = Array.from(htmlArray.slice(1, -1));
     const [movedItem] = reorderedItems.splice(source.index, 1);
     reorderedItems.splice(destination.index, 0, movedItem);
+    setRenderedItems(reorderedItems);
 
     // Add the first and last items back to htmlArray
     const firstItem = htmlArray[0];
     const lastItem = htmlArray[htmlArray.length - 1];
-    const updatedHtmlArray = [firstItem, ...reorderedItems, lastItem];
-
-    setRenderedItems([...reorderedItems]);
-    setHtmlArray([...updatedHtmlArray]);
+    const newHtmlArray = [firstItem, ...reorderedItems, lastItem];
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
+    setHtmlArray(newHtmlArray);
 
     if (destination && destination.droppableId === "removeArea") {
       // The item was dragged into the remove area, remove it from the list
@@ -52,39 +41,37 @@ const DragDropList: React.FC<DragDropListProps> = ({
 
       const updatedItems = renderedItems.slice(); // Create a copy
       updatedItems.splice(indexToRemove, 1);
-
-      setRenderedItems([...updatedItems]);
+      setRenderedItems(updatedItems);
 
       // Update the htmlArray without the removed item
       const updatedHtmlArray = [htmlArray[0], ...updatedItems, htmlArray[htmlArray.length - 1]];
-      console.log("updatedHtmlArray", updatedHtmlArray);
+      setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
       setHtmlArray(updatedHtmlArray);
-      setPastHtmlArrays([...pastHtmlArrays, updatedHtmlArray]);
-      setLastHtmlBlockIndex(null);
+      setLastHtmlBlockId(null);
     }
   };
 
   const handleItemClick = (item: HtmlBlock, event: React.MouseEvent) => {
     event.preventDefault();
 
-    if (item.id !== lastHtmlBlockIndex) {
-      setLastHtmlBlockIndex(item.id);
+    if (item.id !== lastHtmlBlockId) {
+      setLastHtmlBlockId(item.id);
       setSelectedSection(item.name as PromptTemplate);
       return;
     }
-    if (item.id === lastHtmlBlockIndex) {
-      setLastHtmlBlockIndex(null);
+    if (item.id === lastHtmlBlockId) {
+      setLastHtmlBlockId(null);
       return;
     }
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className='flex flex-col m-2 py-4 justify-end'>
+      <div className='flex flex-col m-2 py-4 justify-end '>
         <Droppable droppableId='droppable'>
           {(provided) => (
             <div
-              className='bg-gray-200 p-4 pt-2 rounded-md flex flex-col'
+              className='bg-gray-200 p-2 pt-2 rounded-md flex flex-col'
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
@@ -93,12 +80,12 @@ const DragDropList: React.FC<DragDropListProps> = ({
                 <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                   {(provided, snapshot) => (
                     <div
-                      className={`w-full p-4 mt-2 rounded cursor-pointer ${
+                      className={`w-full p-2 mt-2 rounded cursor-pointer ${
                         snapshot.isDragging
                           ? "bg-green-800 text-white"
-                          : lastHtmlBlockIndex === item.id
+                          : lastHtmlBlockId === item.id
                           ? "bg-green-500 text-white"
-                          : "bg-black text-white hover:bg-green-800"
+                          : "bg-black text-white hover:bg-green-800 duration-150"
                       }`}
                       onClick={(event) => handleItemClick(item, event)}
                       ref={provided.innerRef}
@@ -123,7 +110,7 @@ const DragDropList: React.FC<DragDropListProps> = ({
         <Droppable droppableId='removeArea' direction='horizontal'>
           {(provided) => (
             <div
-              className='w-full h-14 p-4 sticky bg-red-500 text-white text-center rounded mt-2 hover:bg-red-800'
+              className='w-full p-2 sticky bg-red-500 text-white text-center rounded mt-2 hover:bg-red-800'
               {...provided.droppableProps}
               ref={provided.innerRef}
             >

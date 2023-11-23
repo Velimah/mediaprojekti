@@ -1,8 +1,8 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { PromptFunctions } from "../utils/PromptFunctions";
 import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
-import { MediaContext, HtmlBlock } from "../contexts/MediaContext";
+import { HtmlContext } from "../contexts/HtmlContext";
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
@@ -13,29 +13,22 @@ interface EditFormsProps {
       additionalInfo: string;
     };
   };
-  lastHtmlBlockIndex: number | null;
-  setLastHtmlBlockIndex: (params: number | null) => void;
   setSelectedSection: (params: PromptTemplate) => void;
   selectedSection: PromptTemplate;
   getSectionDetails: (params: PromptTemplate) => string;
-  pastHtmlArrays: HtmlBlock[][];
-  setPastHtmlArrays: (params: HtmlBlock[][]) => void;
 }
 
 const EditForms: React.FC<EditFormsProps> = ({
   originalFormValues,
-  lastHtmlBlockIndex,
-  setLastHtmlBlockIndex,
   setSelectedSection,
   selectedSection,
   getSectionDetails,
-  pastHtmlArrays,
-  setPastHtmlArrays,
 }) => {
   const { createHeadInfo, createHtmlBlock } = PromptFunctions();
   const { dispatch } = useChat();
   const [fetching, setFetching] = useState<boolean>(false);
-  const { htmlArray, setHtmlArray } = useContext(MediaContext);
+  const { htmlArray, setHtmlArray, pastHtmlArrays, setPastHtmlArrays, lastHtmlBlockId, setLastHtmlBlockId } =
+    useContext(HtmlContext);
 
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
@@ -77,23 +70,25 @@ const EditForms: React.FC<EditFormsProps> = ({
 
   const handleCreateHtmlBlockForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
     event.preventDefault();
-    const newArray = [...htmlArray];
+    const newHtmlArray = [...htmlArray];
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
     setFetching(true);
     try {
       const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
-      const insertIndex = newArray.length - 1;
       if (typeof sanitizedHtmlData === "string") {
-        const newId = checkForFreeId(newArray);
+        const newId = checkForFreeId(newHtmlArray);
         if (typeof newId === "number") {
-          newArray.splice(insertIndex, 0, { id: newId, name: htmlBlockName, content: sanitizedHtmlData });
-          setLastHtmlBlockIndex(insertIndex);
-          setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
-          setHtmlArray(newArray);
+          newHtmlArray.splice(newHtmlArray.length - 1, 0, {
+            id: newId,
+            name: htmlBlockName,
+            content: sanitizedHtmlData,
+          });
+          setLastHtmlBlockId(newId);
+          setHtmlArray(newHtmlArray);
         }
       }
-      //dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
+      dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
       setFetching(false);
-      console.log("newArray", newArray);
     } catch (error) {
       console.log("error", error);
       setFetching(false);
@@ -102,17 +97,17 @@ const EditForms: React.FC<EditFormsProps> = ({
 
   const reRollHtmlBlock = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const newArray = [...htmlArray];
-    if (typeof lastHtmlBlockIndex === "number") {
-      const index = newArray.findIndex((item) => item.id === lastHtmlBlockIndex);
-      const htmlBlockName: PromptTemplate = newArray[index].name as PromptTemplate;
+    const newHtmlArray = [...htmlArray];
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
+    if (typeof lastHtmlBlockId === "number") {
+      const index = newHtmlArray.findIndex((item) => item.id === lastHtmlBlockId);
+      const htmlBlockName: PromptTemplate = newHtmlArray[index].name as PromptTemplate;
       setFetching(true);
       try {
         const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
         if (typeof sanitizedHtmlData === "string") {
-          newArray[index].content = sanitizedHtmlData;
-          setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
-          setHtmlArray(newArray);
+          newHtmlArray[index].content = sanitizedHtmlData;
+          setHtmlArray(newHtmlArray);
         }
         setFetching(false);
       } catch (error) {
@@ -123,12 +118,15 @@ const EditForms: React.FC<EditFormsProps> = ({
   };
 
   const undoLastChange = () => {
+    console.log("undo1", pastHtmlArrays);
     if (pastHtmlArrays.length > 0) {
-      console.log("pastHtmlArrays", pastHtmlArrays);
-      const lastHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];
-      setHtmlArray(lastHtmlArray);
-      setPastHtmlArrays(pastHtmlArrays.slice(0, -1)); // Remove the last state
+      const previousHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];
+      const previousHtmlArrays = [...pastHtmlArrays];
+      setPastHtmlArrays(previousHtmlArrays.slice(0, -1));
+      console.log("undo2", previousHtmlArray);
+      setHtmlArray(previousHtmlArray);
     }
+    // Remove this line -> setUndo(false);
   };
 
   // select options for forms
@@ -143,19 +141,18 @@ const EditForms: React.FC<EditFormsProps> = ({
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     event.preventDefault();
-    console.log("event.target.value", event.target.value);
     setSelectedSection(event.target.value as PromptTemplate);
-    setLastHtmlBlockIndex(null);
+    setLastHtmlBlockId(null);
   };
 
   return (
     <div className='py-4 space-x-2 flex flex-col flex-wrap justify-center items-center'>
       <div className='flex gap-2 m-2'>
-        <button onClick={editHead} className='p-3 bg-black text-white rounded hover:bg-green-500'>
+        <button onClick={editHead} className='p-3 bg-black text-white rounded hover:bg-green-500 duration-150'>
           Generate Head Tag Information
         </button>
-        <button onClick={undoLastChange} className='p-3 bg-black text-white rounded hover:bg-green-500'>
-          Undo Fetch
+        <button onClick={undoLastChange} className='p-3 bg-black text-white rounded hover:bg-green-500 duration-150'>
+          Undo Last Change
         </button>
       </div>
 
@@ -164,27 +161,69 @@ const EditForms: React.FC<EditFormsProps> = ({
 
         <div className='flex justify-center flex-wrap'>
           <form
-            className='bg-gray-200 p-4 m-2 rounded-md flex flex-col'
+            className='bg-gray-200 px-4 pt-2 pb-4 m-2 rounded-md flex flex-col'
             onSubmit={(event) => handleCreateHtmlBlockForm(selectedSection, event)}
           >
-            <textarea
-              rows={3}
-              cols={80}
-              placeholder='Give additional information'
-              value={formStateValues.additionalInfo}
-              onChange={(event) =>
-                setFormStateValues({
-                  ...formStateValues,
-                  additionalInfo: event.target.value,
-                })
-              }
-              className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-            />
+            {selectedSection === "createMap" && (
+              <>
+                <label className='relative'>
+                  {" "}
+                  Map Adress
+                  <input
+                    id='mapAdress'
+                    type='text'
+                    placeholder='Give me table section details ...'
+                    value={formStateValues.mapAddress}
+                    onChange={(event) =>
+                      setFormStateValues({
+                        ...formStateValues,
+                        mapAddress: event.target.value,
+                      })
+                    }
+                    className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+                  />
+                </label>
+                <label className='relative mt-2'>
+                  {" "}
+                  Map City
+                  <input
+                    id='mapCity'
+                    type='text'
+                    placeholder='Give me table section details ...'
+                    value={formStateValues.mapCity}
+                    onChange={(event) =>
+                      setFormStateValues({
+                        ...formStateValues,
+                        mapCity: event.target.value,
+                      })
+                    }
+                    className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+                  />
+                </label>
+              </>
+            )}
+            <label className='relative mt-2'>
+              {" "}
+              Additional information
+              <textarea
+                rows={5}
+                cols={80}
+                placeholder='Give additional information'
+                value={formStateValues.additionalInfo}
+                onChange={(event) =>
+                  setFormStateValues({
+                    ...formStateValues,
+                    additionalInfo: event.target.value,
+                  })
+                }
+                className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+              />
+            </label>
             <div className='flex gap-2 mt-2'>
               <select
                 value={selectedSection}
                 onChange={handleSelectChange}
-                className='w-full bg-black text-white p-2 rounded hover:bg-green-500'
+                className='w-full bg-black text-white p-2 rounded hover:bg-green-500 duration-150'
               >
                 {sections.map((section) => (
                   <option key={section.value} value={section.value}>
@@ -192,11 +231,14 @@ const EditForms: React.FC<EditFormsProps> = ({
                   </option>
                 ))}
               </select>
-              <button type='submit' className='w-full bg-black text-white p-2 rounded hover:bg-green-500'>
+              <button type='submit' className='w-full bg-black text-white p-2 rounded hover:bg-green-500 duration-150'>
                 Add New {getSectionDetails(selectedSection)}
               </button>
-              {lastHtmlBlockIndex && (
-                <button onClick={reRollHtmlBlock} className='w-full bg-black text-white p-2 rounded hover:bg-green-500'>
+              {lastHtmlBlockId && (
+                <button
+                  onClick={reRollHtmlBlock}
+                  className='w-full bg-black text-white p-2 rounded hover:bg-green-500 duration-150'
+                >
                   Refetch {getSectionDetails(selectedSection)}
                 </button>
               )}

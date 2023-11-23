@@ -2,12 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import { MediaProvider } from "./contexts/MediaContext.tsx";
+import { HtmlProvider } from "./contexts/HtmlContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <MediaProvider>
+    <HtmlProvider>
       <App />
-    </MediaProvider>
+    </HtmlProvider>
   </React.StrictMode>
 );

@@ -1,13 +1,13 @@
 import { useState, useContext } from "react";
 import { FormValues, PromptTemplate, getPromptTemplate } from "./Prompts";
 import { useChatGPT } from "../hooks/ApiHooks";
-import { MediaContext, HtmlBlock } from "../contexts/MediaContext";
+import { HtmlContext, HtmlBlock } from "../contexts/HtmlContext";
 
 const PromptFunctions = () => {
   const { postQuestion } = useChatGPT();
   const [progressCount, setProgressCount] = useState<string>("0 / 7");
   const [errorCount, setErrorCount] = useState<number>(0);
-  const { setHtmlArray } = useContext(MediaContext);
+  const { setHtmlArray } = useContext(HtmlContext);
 
   const removeHtmlMarkdown = (inputString: string) => {
     const regex = /```html([\s\S]*?)```/g;
