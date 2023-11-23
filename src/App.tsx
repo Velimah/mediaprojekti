@@ -8,6 +8,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 import Notification from "./components/Notification";
 import AdvancedHome from "./views/AdvancedHome";
 import AdvancedResult from "./views/AdvancedResult";
+import Login from "./views/Login";
 export function sum(a: number, b: number) {
   return a + b;
 }
@@ -23,6 +24,7 @@ const App = () => {
             <Route path='/advanced' element={<AdvancedHome />} />
             <Route path='/result' element={<Result />} />
             <Route path='/advancedresult' element={<AdvancedResult />} />
+            <Route path='/login' element={<Login />}/>
           </Route>
         </Routes>
       </HashRouter>
