@@ -62,24 +62,19 @@ const Home = () => {
   // Add primary colour prompt, returns string if selectedValue isn't empty
   const addColorPrompt = (selectedValue: string): string => (selectedValue !== '') ? ' (use ' + selectedValue + ' as a primary colour)' : '';
 
-
-  // Toggle alert dialog on and off
-  const handleToggleDialog = () => {
-    setShowAlertDialog((prev) => !prev);
-  };  
-
   return (
     <>
-    {showAlertDialog && (<AlertDialog content={error} onClose={handleToggleDialog} />)}
+    {showAlertDialog && (<AlertDialog content={error} onClose={() => setShowAlertDialog((prev) => !prev)} />)}
       <article className="w-full h-auto md:h-[calc(100vh-11rem)] flex items-center justify-center md:py-4">
-        <section className="flex flex-col w-[35rem] bg-white rounded-md shadow-lg">
-          <div id="header">
+        <section className="overflow-hidden flex flex-col w-[35rem] rounded-md shadow-3xl">
+          <div id="header" className="animate-slide-left relative">
             <figure className="bg-gray-200 h-36 rounded-t-md overflow-hidden">
-              <img src="/ai-header.png" alt="headerImg" className="" />
+              <img src="/ai-header.png" alt="headerImg" className="grayscale" />
             </figure>
           </div>
           <section className="flex flex-col">
-            <div className="flex items-center px-4 py-8 text-ai-primary bg-ai-black-100">
+            <div className="animate-slide-right relative">
+            <div className="flex items-center px-4 py-8 text-white bg-ai-black-100">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -130,7 +125,7 @@ const Home = () => {
                   r="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  fill="black"
+                  fill="#161616"
                   className="animate-pulse"
                 />
                 <circle
@@ -139,11 +134,11 @@ const Home = () => {
                   r="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  fill="black"
+                  fill="#161616"
                   className="animate-pulse"
                 />
               </svg>
-              <div className="ml-4 flex items-center">
+              <div className="ml-4 flex items-center text-ai-primary">
                 <span className="text-lg pr-4">:</span>
                 <span className="bg-ai-black p-3 rounded-md shrink font-robot">
                   Hello! How can I assist you in building your dream webpage
@@ -151,7 +146,8 @@ const Home = () => {
                 </span>
               </div>
             </div>
-            <div className="bg-ai-black-100 p-4 rounded-b-md">
+            </div>
+            <div className="bg-ai-black-100 p-4 rounded-b-md relative animate-slide-down">
             <form
               onSubmit={handleForm}
               className="text-white"

@@ -14,13 +14,17 @@ export default {
         'ai-black-100': '#1e1e1e',
       },
       fontFamily: {
-        'robot': 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;',
+        'sans': ['Roboto'],
+        'robot': ['RobotoMono', 'Courier New', 'monospace'],
       },
       backgroundSize: {
         '20': '20px 20px',
       },
       backgroundImage: {
-        'gridBg': 'linear-gradient(to right, rgba(201, 201, 201, 0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(201, 201, 201, 0.5) 1px, transparent 1px);',
+        'gridBg': 'linear-gradient(to right, #292929 1px, transparent 1px), linear-gradient(to bottom, #292929 1px, transparent 1px)',
+      },
+      boxShadow: {
+        '3xl': '0px 0px 50px 0px rgb(0 0 0 / 72%)',
       },
       keyframes: {
         opacity: {
@@ -39,14 +43,44 @@ export default {
           'from': {height: '100%', opacity : '1'},
           'to': {height: '0%', opacity : '0'},
         },
+        slideLeft: {
+          '0%': {left: '-100%'},
+          '100%': {left: '0'},
+        },
+        slideRight: {
+          '0%': {right: '-100%'},
+          '100%': {right: '0'},
+        },
+        slideDown: {
+          '0%': {transform: 'translateY(100%)'},
+          '100%': {transform: 'translateY(0%)'},
+        },
+        alertPopUp: {
+          '0%': { 
+            transform: 'translateX(-50%) translateY(-50%) scale(0)',
+            opacity: 0,
+          },
+          '100%': { 
+            transform: 'translateX(-50%) translateY(-50%) scale(1)',
+            opacity: 1,
+          },
+        },
       },
       animation: {
         'fade-in': 'opacity 0.5s ease-in-out',
+        'fade-in-slow': 'opacity 1s ease-in-out',
         'fade-out': 'fadeOutopacity 0.5s ease-in-out',
         'slide-up': 'slide-up 2s ease-in-out',
         'height-in': 'heightIn 1s ease-in-out',
         'height-out': 'heightOut 1s ease-in-out',
+        'slide-left': 'slideLeft 1s ease',
+        'slide-right': 'slideRight 1s ease',
+        'slide-down': 'slideDown 1.5s ease',
+        'alert-pop-up': 'alertPopUp 0.5s ease',
       },
+      transitionProperty: {
+        'push-right': 'right',
+      }
     },
   },
   plugins: [],

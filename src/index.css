@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-20 bg-gridBg bg-ai-black min-h-screen flex flex-col justify-between;
+    @apply bg-20 bg-gridBg bg-center font-sans bg-ai-black min-h-screen flex flex-col justify-between;
   }
   header, footer {
     @apply w-full;
@@ -12,23 +12,12 @@
   main {
     @apply w-full flex justify-center flex-1;
   }
-  .primary-btn {
-    @apply transition duration-300 ease-in-out rounded-md bg-ai-primary text-ai-black p-3 w-full hover:bg-ai-secondary border-2 border-ai-black font-bold cursor-pointer;
+  .primary-btn { /* primary button styling */
+    @apply transition duration-300 ease-in-out rounded-md bg-ai-primary text-ai-black p-3 w-full hover:bg-ai-secondary hover:border-ai-secondary border-2 border-ai-primary font-bold cursor-pointer;
   }
-  .active {
+  .active { /* ative nav link styling */
     @apply text-ai-primary border-ai-primary border-b-2;
   }
-}
-
-.menu {
-  transition: opacity 0.3s ease-in-out;
-  opacity: 0;
-  transform: translateX(-100%);
-}
-
-.menu.open {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 @keyframes slide-up {
@@ -52,6 +41,22 @@
     margin: 15px;
     transform: translateY(100%);
   }
+}
+
+/* custom font */
+@font-face {
+  font-family: "Roboto";
+  src: url('/font/Roboto-Regular.woff2') format('woff2');
+  font-weight: normal;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url('/font/Roboto-Bold.woff2') format('woff2');
+  font-weight: bold;
+}
+@font-face {
+  font-family: "RobotoMono";
+  src: url('/font/RobotoMono-VariableFont_wght.woff2') format('woff2');
 }
 
 :root {

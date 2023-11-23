@@ -8,7 +8,6 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   // TODO: add router/page switch
-  // TODO: if on loaded build -page and user is switching out of it, add a pop-up alert
   const renderPage = () => {
     switch (activePage) {
       case 'Build':
@@ -19,7 +18,6 @@ const Header = () => {
         return;
     }
   };
-  
   renderPage();
 
   // Checks screen width - if mobile width, change isMobile to true (show mobile nav)
@@ -40,11 +38,11 @@ const Header = () => {
     };
   }, []);
 
-  console.log(mobileMenuOpen)
+  // render mobile menu
   const MobileMenu = () => {
     return (
       <div className={`w-full h-full absolute top-1/2 left-1/2 transform translate-x-[-50%] -translate-y-1/2 z-10`}>
-        <div className={`absolute z-[1] w-full h-full bg-black rounded-lg shadow-lg top-0 transition-opacity animate-height-in`}>
+        <div className={`absolute z-[1] w-full h-full bg-black rounded-lg shadow-lg top-0 animate-height-in`}>
           <div className="text-white flex flex-col items-center justify-center h-full">
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="flex pb-20">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-20 h-20">
@@ -59,8 +57,6 @@ const Header = () => {
       </div>
     );
   }
-
-  console.log('clicked', mobileMenuOpen);
 
   // render navigation items
   const NavigationItems = () => {
