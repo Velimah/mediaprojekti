@@ -53,7 +53,6 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
 
   const handleItemClick = (item: HtmlBlock, event: React.MouseEvent) => {
     event.preventDefault();
-
     if (item.id !== lastHtmlBlockId) {
       setLastHtmlBlockId(item.id);
       setSelectedSection(item.name as PromptTemplate);
@@ -92,13 +91,9 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      {item.name === item.name ? (
-                        <p className='flex text-center'>
-                          {item.id} {getSectionDetails(item.name as PromptTemplate)}
-                        </p>
-                      ) : (
-                        <p>Do something else when name is falsy</p>
-                      )}
+                      <p className='flex text-center'>
+                        {item.id} {getSectionDetails(item.name as PromptTemplate)}
+                      </p>
                     </div>
                   )}
                 </Draggable>

@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { PromptFunctions } from "../utils/PromptFunctions";
 import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
@@ -125,11 +125,12 @@ const EditForms: React.FC<EditFormsProps> = ({
       setPastHtmlArrays(previousHtmlArrays.slice(0, -1));
       console.log("undo2", previousHtmlArray);
       setHtmlArray(previousHtmlArray);
+      setLastHtmlBlockId(null);
     }
     // Remove this line -> setUndo(false);
   };
 
-  // select options for forms
+  // select options for form
   const sections = [
     { value: "createNavigation", label: "Navigation" },
     { value: "createWelcomeSection", label: "Text | Image" },

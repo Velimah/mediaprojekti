@@ -61,8 +61,10 @@ const PromptFunctions = () => {
         await createAndPushHtmlBlock("createFooter", formValues, "6 / 7", currentId++),
         { id: 1000, name: "documentEnd", content: documentEnd },
       ];
-
-      const completeArrayString = newArray.map((block) => block.content).join("");
+      const newArrayWithoutEmptyContent = newArray.filter((block) => {
+        return block.content !== "";
+      });
+      const completeArrayString = newArrayWithoutEmptyContent.map((block) => block.content).join("");
       const newHead = await createHeadInfo(formValues, completeArrayString);
       // checks if there is an old document start html block and removes it and replaces it with new one
       if (newArray.length > 0) {
