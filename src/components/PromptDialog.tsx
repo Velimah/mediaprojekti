@@ -14,9 +14,9 @@ const PromptDialog: React.FC<{ question: string }> = ({ question }) => {
   };
 
   return (
-    <div className='md:mb-8 bottom-0 fixed md:left-0 md:ml-8 mx-4 w-full md:auto' id='userPrompt'>
+    <div className='md:mb-8 bottom-0 fixed md:left-0 md:ml-8 mx-4 w-full md:auto pointer-events-none' id='userPrompt'>
       {hide ? (
-        <div className='flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-[500px] animate-fade-in'>
+        <div className='flex flex-col items-center bg-white border border-gray-200 rounded-md shadow-lg w-full md:w-[500px] animate-fade-in pointer-events-auto'>
           <div className='flex flex-row bg-gray-200 w-full p-3 h-12 items-center justify-between rounded-md'>
             <div className='flex items-center'>
               <svg
@@ -66,7 +66,7 @@ const PromptDialog: React.FC<{ question: string }> = ({ question }) => {
       ) : (
         <button
           onClick={hideToggle}
-          className='rounded-md bg-black text-white p-3 hover:bg-white hover:text-black border-2 border-black font-bold cursor-pointer w-full md:w-auto'
+          className='rounded-md bg-black text-white p-3 hover:bg-white hover:text-black border-2 border-black font-bold cursor-pointer pointer-events-auto w-full md:w-auto'
         >
           Show instructions
         </button>
