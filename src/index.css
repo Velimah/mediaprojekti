@@ -15,6 +15,12 @@
   .primary-btn { /* primary button styling */
     @apply transition duration-300 ease-in-out rounded-md bg-ai-primary text-ai-black p-3 w-full hover:bg-ai-secondary hover:border-ai-secondary border-2 border-ai-primary font-bold cursor-pointer;
   }
+  .toolbar-btn { /* result page button styling */
+    @apply text-ai-primary hover:font-bold py-2 px-4 rounded-md border-ai-primary border-2 transition-fill-bg duration-300 ease-in-out hover:bg-ai-primary hover:text-ai-black;
+  }
+  .build-btn.toolbar-btn { /* build button styling */
+    @apply py-2 px-4 bg-ai-primary rounded-md border-ai-primary border-2 transition-fill-bg duration-300 ease-in-out text-ai-black hover:bg-transparent hover:text-ai-primary;
+  }
   .active { /* ative nav link styling */
     @apply text-ai-primary border-ai-primary border-b-2;
   }
@@ -43,7 +49,7 @@
   }
 }
 
-/* custom font */
+/* Custom font */
 @font-face {
   font-family: "Roboto";
   src: url('/font/Roboto-Regular.woff2') format('woff2');
@@ -59,6 +65,17 @@
   src: url('/font/RobotoMono-VariableFont_wght.woff2') format('woff2');
 }
 
+/* Scroll styling */
+::-webkit-scrollbar {background-color: white;width:5px;}
+::-webkit-scrollbar-track {background-color: white;}
+::-webkit-scrollbar-thumb {background-color: #92DA36;cursor: pointer;}
+::-webkit-scrollbar-thumb:hover {background: #FFE66B;}
+/* Scroll styling for CODE section */
+#code::-webkit-scrollbar {width: 0.5rem;}
+#code::-webkit-scrollbar-track {background-color: #FFE66B;}
+#code::-webkit-scrollbar-thumb {background-color: black;}
+#code::-webkit-scrollbar-thumb:hover {background-color: #e26262;}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -70,6 +87,7 @@
   -webkit-text-size-adjust: 100%;
 }
 
+/* flex grow */
 #root {
   flex: 1;
 }

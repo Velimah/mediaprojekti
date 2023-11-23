@@ -65,6 +65,14 @@ export default {
             opacity: 1,
           },
         },
+        gradient: {
+          '0%': {
+            transform: 'translateX(-100%)',
+          },
+          '100%': {
+            transform: 'translateX(100%)',
+          }
+        }
       },
       animation: {
         'fade-in': 'opacity 0.5s ease-in-out',
@@ -73,13 +81,14 @@ export default {
         'slide-up': 'slide-up 2s ease-in-out',
         'height-in': 'heightIn 1s ease-in-out',
         'height-out': 'heightOut 1s ease-in-out',
-        'slide-left': 'slideLeft 1s ease',
-        'slide-right': 'slideRight 1s ease',
+        'slide-left': 'slideLeft 1.5s ease',
+        'slide-right': 'slideRight 1.5s ease',
         'slide-down': 'slideDown 1.5s ease',
         'alert-pop-up': 'alertPopUp 0.5s ease',
+        'gradient': 'gradient 5s linear infinite',
       },
       transitionProperty: {
-        'push-right': 'right',
+        'fill-bg': 'background-color',
       }
     },
   },

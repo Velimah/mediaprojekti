@@ -59,7 +59,7 @@ const PromptDialog: React.FC<{ question: string }> = ({
                     />
                 </svg>
                 <span className="pr-4 font-bold">:</span>
-                <h2 className="text-lg font-bold font-mono uppercase">Your instructions</h2>
+                <h2 className="text-lg font-bold font-robot uppercase">Your prompt</h2>
             </div>
             <div className="hover:text-white relative right-2 cursor-pointer">
                 <button onClick={hideToggle} className="rounded-md underline p-2 w-full hover:text-white font-bold cursor-pointer">Hide</button>
@@ -70,7 +70,7 @@ const PromptDialog: React.FC<{ question: string }> = ({
         </div>
         </div>
         ) : (
-        <button onClick={hideToggle} className="rounded-md bg-black text-white p-3 hover:bg-white hover:text-black border-2 border-black font-bold cursor-pointer w-full md:w-auto">Show instructions</button>
+        <button onClick={hideToggle} className="w-full md:w-auto primary-btn font-robot">Show prompt</button>
         )}
         </div>
     );
