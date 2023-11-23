@@ -25,7 +25,7 @@ const Home = () => {
       try {
         const data = await postQuestion("html", newQuestion + addCSSprompt(newCSS) + addColorPrompt(newColor));
         console.log(data);
-        navigate("/result");
+        navigate("/result", { state: newQuestion });
         setNewQuestion("");
       } catch (error) {
         console.log("error: ", error);

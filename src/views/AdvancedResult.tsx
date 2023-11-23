@@ -113,9 +113,9 @@ const AdvancedResult = () => {
         <PromptDialog question={parseFormValues(originalFormValues.formValues)} />
         <div className='w-full lg:w-3/4 px-4'>
           <div className='mb-4'>
-            <div className='bg-white flex flex-col items-center border border-black rounded cursor-pointer'>
+            <div className='bg-white flex flex-col items-center border border-black rounded'>
               <h2
-                className='bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase'
+                className='bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase cursor-pointer'
                 onClick={toggleCodeVisibility}
               >
                 {codeVisible ? (
@@ -195,9 +195,9 @@ const AdvancedResult = () => {
           </button>
         </div>*/}
           <div className='mb-4'>
-            <div className='bg-white flex flex-col items-center border border-black rounded cursor-pointer'>
+            <div className='bg-white flex flex-col items-center border border-black rounded'>
               <h2
-                className='bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase'
+                className='bg-black text-white text-lg font-bold w-full p-3 h-12 flex items-center uppercase cursor-pointer'
                 onClick={togglePreviewVisibility}
               >
                 {previewVisible ? (

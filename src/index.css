@@ -14,6 +14,29 @@
   }
 }
 
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    margin: 15px;
+    transform: translateY(100%);
+  }
+  10% {
+    opacity: 1;
+    margin: 15px;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    margin: 15px;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    margin: 15px;
+    transform: translateY(100%);
+  }
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
