@@ -70,7 +70,9 @@ make p 50% width, 1rem padding right, and center text.
 make iframe 50% width, height close to 400px, and black border.
 Inside the <p></p>, generate text paragraph that offers information: ${additionalInfo}. Ensure that all generated text conforms to the language used in the provided information. 
 Apply styling to the HTML using the ${cssLibrary} CSS.`,
-    CreateHead: `update <head></head> tags with provided meta tags using correct information you get by analyzing the code:
+    CreateHead: `update <head></head> tags with provided meta tag template using fitting information. Add content delivery network link tag for ${cssLibrary}!
+    Return Only the <head></head> tags containing the updated code, no Other HTML ie. <body></body> tags or anthing inside <body></body> tags.
+    No integrity attributes. Template:
 (<!-- Basic Meta Tags -->
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -99,10 +101,7 @@ Apply styling to the HTML using the ${cssLibrary} CSS.`,
 <!-- Keywords Meta Tag (optional, search engines may not consider this) -->
 <meta name="keywords" content="keyword1, keyword2, keyword3">
 <!-- Favicon -->
-<link rel="icon" href="path/to/favicon.ico" type="image/x-icon">). 
-Add content delivery network link/script tag for ${cssLibrary}, check which one is correct!
-Return Only the <head></head> tags containing the updated code, no Other HTML ie. <body></body> tags or anthing inside <body></body> tags.
-No integrity attributes.
+<link rel="icon" href="path/to/favicon.ico" type="image/x-icon).
 Code to analyze: `,
   };
 

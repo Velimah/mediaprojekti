@@ -1,11 +1,13 @@
 import { useState, useContext, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import EditForms from "../components/EditForms";
-import { MediaContext } from "../contexts/MediaContext";
+import { HtmlContext } from "../contexts/HtmlContext";
+import { PromptTemplate } from "../utils/Prompts";
 import PromptDialog from "../components/PromptDialog";
+import EditForms from "../components/EditForms";
+import DragDropList from "../components/DragDropList";
 
 const AdvancedResult = () => {
-  const { htmlArray } = useContext(MediaContext);
+  const { htmlArray } = useContext(HtmlContext);
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
@@ -13,6 +15,8 @@ const AdvancedResult = () => {
 
   const [codeVisible, setCodeVisible] = useState<boolean>(false);
   const [previewVisible, setPreviewVisible] = useState<boolean>(true);
+
+  const [selectedSection, setSelectedSection] = useState<PromptTemplate>("createNavigation");
 
   const location = useLocation();
 
@@ -26,11 +30,8 @@ const AdvancedResult = () => {
   }, [htmlArray]);
 
   useEffect(() => {
-    // Update the code state with the current answer
-    if (htmlArray) {
-      setCode(htmlArray.map((block) => block.content).join(""));
-    }
-  }, []);
+    handleRunCode();
+  }, [code]);
 
   const handleRunCode = () => {
     if (previewFrame.current) {
@@ -84,6 +85,26 @@ const AdvancedResult = () => {
     return Object.entries(obj)
       .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
       .join(", ");
+  };
+
+  // template for section details
+  const getSectionDetails = (selectedSection: PromptTemplate) => {
+    switch (selectedSection) {
+      case "createNavigation":
+        return "Navigation";
+      case "createWelcomeSection":
+        return "Text | Image";
+      case "createMainSection":
+        return "Text";
+      case "createTableSection":
+        return "Table";
+      case "createMap":
+        return "Text | Map";
+      case "createFooter":
+        return "Footer";
+      default:
+        return "Unknown Section";
+    }
   };
 
   return (
@@ -143,20 +164,25 @@ const AdvancedResult = () => {
               )}
 
               <div className='py-4 space-x-2 flex flex-wrap justify-center'>
-                <button className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'>Undo</button>
                 <button onClick={handleCopy} className='bg-black text-white py-2 px-4 rounded m-1'>
                   Copy
                 </button>
-                <button className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'>Build</button>
-                <button className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'>Save</button>
                 <button
                   onClick={handleSaveToFile}
-                  className='bg-black hover:bg-green-500 text-white py-2 px-4 rounded m-1'
+                  className='bg-black hover:bg-green-500 duration-150 text-white py-2 px-4 rounded m-1'
                 >
                   Save as HTML
                 </button>
               </div>
-              <EditForms originalFormValues={originalFormValues} />
+              <div className='flex'>
+                <EditForms
+                  originalFormValues={originalFormValues}
+                  setSelectedSection={setSelectedSection}
+                  selectedSection={selectedSection}
+                  getSectionDetails={getSectionDetails}
+                />
+                <DragDropList setSelectedSection={setSelectedSection} getSectionDetails={getSectionDetails} />
+              </div>
             </div>
           </div>
           {/*
