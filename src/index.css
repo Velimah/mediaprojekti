@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-20 bg-gridBg bg-white min-h-screen flex flex-col justify-between;
+    @apply bg-20 bg-gridBg bg-ai-black min-h-screen flex flex-col justify-between;
   }
   header, footer {
     @apply w-full;
@@ -12,6 +12,23 @@
   main {
     @apply w-full flex justify-center flex-1;
   }
+  .primary-btn {
+    @apply transition duration-300 ease-in-out rounded-md bg-ai-primary text-ai-black p-3 w-full hover:bg-ai-secondary border-2 border-ai-black font-bold cursor-pointer;
+  }
+  .active {
+    @apply text-ai-primary border-ai-primary border-b-2;
+  }
+}
+
+.menu {
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.menu.open {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 @keyframes slide-up {

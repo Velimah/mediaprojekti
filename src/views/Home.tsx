@@ -40,19 +40,19 @@ const Home = () => {
   const addCSSprompt = (selectedValue: string) => {
     switch (selectedValue) {
       case 'Tailwind':
-        return " (using Tailwind CSS)"
+        return " (use Tailwind CSS)"
         break;
       case 'Bootstrap':
-        return " (using Bootstrap CSS)"
+        return " (use Bootstrap CSS)"
         break;
       case 'Materialize':
-        return " (using Materialize CSS)"
+        return " (use Materialize CSS)"
         break;
       case 'Bulma':
-        return " (using Bulma CSS)"
+        return " (use Bulma CSS)"
         break;
       case 'Foundation':
-        return " (using Foundation CSS)"
+        return " (use Foundation CSS)"
         break;
       default:
         return ''
@@ -60,7 +60,7 @@ const Home = () => {
     }
   }
   // Add primary colour prompt, returns string if selectedValue isn't empty
-  const addColorPrompt = (selectedValue: string): string => (selectedValue !== '') ? ' (using ' + selectedValue + ' as a primary colour)' : '';
+  const addColorPrompt = (selectedValue: string): string => (selectedValue !== '') ? ' (use ' + selectedValue + ' as a primary colour)' : '';
 
 
   // Toggle alert dialog on and off
@@ -71,15 +71,15 @@ const Home = () => {
   return (
     <>
     {showAlertDialog && (<AlertDialog content={error} onClose={handleToggleDialog} />)}
-      <article className="w-full h-[calc(100vh-11rem)] flex items-center justify-center py-4">
+      <article className="w-full h-auto md:h-[calc(100vh-11rem)] flex items-center justify-center md:py-4">
         <section className="flex flex-col w-[35rem] bg-white rounded-md shadow-lg">
           <div id="header">
-            <figure className="bg-gray-200 h-36 rounded-t-md">
-              <img src="" alt="headerImg" />
+            <figure className="bg-gray-200 h-36 rounded-t-md overflow-hidden">
+              <img src="/ai-header.png" alt="headerImg" className="" />
             </figure>
           </div>
           <section className="flex flex-col">
-            <div className="flex items-center px-4 py-8">
+            <div className="flex items-center px-4 py-8 text-ai-primary bg-ai-black-100">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -130,7 +130,7 @@ const Home = () => {
                   r="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  fill="white"
+                  fill="black"
                   className="animate-pulse"
                 />
                 <circle
@@ -139,21 +139,22 @@ const Home = () => {
                   r="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  fill="white"
+                  fill="black"
                   className="animate-pulse"
                 />
               </svg>
               <div className="ml-4 flex items-center">
                 <span className="text-lg pr-4">:</span>
-                <span className="bg-gray-200 p-3 rounded-md shrink font-mono">
+                <span className="bg-ai-black p-3 rounded-md shrink font-robot">
                   Hello! How can I assist you in building your dream webpage
                   today?
                 </span>
               </div>
             </div>
-            <div className="bg-gray-200 p-4 rounded-b-md">
+            <div className="bg-ai-black-100 p-4 rounded-b-md">
             <form
               onSubmit={handleForm}
+              className="text-white"
             >
               <label className="relative">
                 <input
@@ -162,7 +163,7 @@ const Home = () => {
                   placeholder="Give me a webpage with two div's next to each other ..."
                   value={newQuestion}
                   onChange={(e) => setNewQuestion(e.target.value)}
-                  className="rounded-md border-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-2 w-full"
+                  className="rounded-md border-ai-black text-ai-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full"
                 />
                 <span className="absolute left-0 top-0 px-3">
                   <svg
@@ -187,7 +188,7 @@ const Home = () => {
                     <span className="pr-2 font-bold">CSS:</span>
                     <select
                       id="userPromptCSS"
-                      className="w-full rounded-md bg-white pl-1 cursor-pointer"
+                      className="w-full rounded-md bg-white pl-1 cursor-pointer text-ai-black"
                       onChange={(e) => setNewCSS(e.target.value)}
                     >
                       <option value='Vanilla'>Vanilla/Default</option>
@@ -200,20 +201,20 @@ const Home = () => {
                   </label>
                   <label className="flex flex-row items-center">
                     <span className="pr-2 font-bold">Primary color:</span>
-                    <input type="color" id="userPromptColor" className="grow cursor-pointer" 
+                    <input type="color" id="userPromptColor" className="grow cursor-pointer bg-transparent" 
                       onChange={(e) => setNewColor(e.target.value)} />
                   </label>
                 </div>
                 <label className="grow pt-4 md:pl-4 md:pt-0">
                   <input
                     type="submit"
-                    className="rounded-md bg-black text-white p-3 w-full hover:bg-white hover:text-black border-2 border-black font-bold cursor-pointer"
+                    className="primary-btn"
                     value="BUILD!"
                   />
                 </label>
               </div>
             </form>
-            <button  onClick={() => {location.pathname === '/' ? navigate("/advanced") : navigate("/")}} className="rounded-md p-1 w-full hover:bg-black hover:text-white border-2 border-transparent font-bold cursor-pointer">
+            <button  onClick={() => {location.pathname === '/' ? navigate("/advanced") : navigate("/")}} className="rounded-md p-1 w-full hover:bg-black text-white border-2 border-transparent font-bold cursor-pointer">
                 <span className="flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 pr-2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
