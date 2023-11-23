@@ -68,13 +68,13 @@
 /* Scroll styling */
 ::-webkit-scrollbar {background-color: white;width:5px;}
 ::-webkit-scrollbar-track {background-color: white;}
-::-webkit-scrollbar-thumb {background-color: #92DA36;cursor: pointer;}
-::-webkit-scrollbar-thumb:hover {background: #FFE66B;}
+::-webkit-scrollbar-thumb {background-color: #6e9b43;cursor: pointer;}
+::-webkit-scrollbar-thumb:hover {background: #b3862b;}
 /* Scroll styling for CODE section */
 #code::-webkit-scrollbar {width: 0.5rem;}
-#code::-webkit-scrollbar-track {background-color: #FFE66B;}
+#code::-webkit-scrollbar-track {background-color: #b3862b;}
 #code::-webkit-scrollbar-thumb {background-color: black;}
-#code::-webkit-scrollbar-thumb:hover {background-color: #e26262;}
+#code::-webkit-scrollbar-thumb:hover {background-color: #B32B2B;}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 interface AlertDialogProps {
@@ -118,7 +117,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
               </div>
             </div>
             <div className="pt-6">
-                <button onClick={onClose} className="transition duration-300 ease-in-out rounded-md text-white p-3 w-full hover:text-ai-black hover:bg-ai-secondary hover:border-ai-secondary border-2 border-ai-primary font-bold cursor-pointer">Try again</button>
+                <button onClick={onClose} className="transition duration-300 ease-in-out rounded-md text-white p-3 w-full hover:text-ai-black hover:bg-ai-secondary hover:border-ai-secondary border-2 border-ai-primary font-bold cursor-pointer">OK</button>
             </div>
           </div>
         </div>

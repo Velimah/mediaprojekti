@@ -6,6 +6,7 @@ const Header = () => {
   const [activePage, setActivePage] = useState('Build');
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [handleCloseAnim, setHandleCloseAnim] = useState<boolean>(false);
 
   // TODO: add router/page switch
   const renderPage = () => {
@@ -42,14 +43,20 @@ const Header = () => {
   const MobileMenu = () => {
     return (
       <div className={`w-full h-full absolute top-1/2 left-1/2 transform translate-x-[-50%] -translate-y-1/2 z-10`}>
-        <div className={`absolute z-[1] w-full h-full bg-black rounded-lg shadow-lg top-0 animate-height-in`}>
+        <div className={`absolute z-[1] w-full h-full bg-black rounded-lg shadow-lg top-0 ${handleCloseAnim ? 'animate-height-out h-0' : 'animate-height-in'}`}
+        onAnimationEnd={() => {
+          if(handleCloseAnim){
+            setMobileMenuOpen(false);
+            setHandleCloseAnim(false);
+          }
+      }}>
           <div className="text-white flex flex-col items-center justify-center h-full">
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="flex pb-20">
+            <button onClick={()=>setHandleCloseAnim(!handleCloseAnim)} className="flex pb-20">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-20 h-20">
                 <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
               </svg>
             </button>
-            <ul className="list-none flex flex-col items-center text-xl	gap-5 text-white">
+            <ul className={`list-none flex flex-col items-center text-xl	gap-5 text-white ${handleCloseAnim ? 'animate-fade-out opacity-0' : 'animate-fade-in'}`}>
               <NavigationItems/>
             </ul>
           </div>
