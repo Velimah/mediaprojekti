@@ -69,7 +69,7 @@ const Home = () => {
         <section className='overflow-hidden flex flex-col w-[35rem] rounded-md shadow-3xl'>
           <div id='header' className='animate-slide-left relative'>
             <figure className='bg-gray-200 h-36 rounded-t-md overflow-hidden'>
-              <img src='/ai-header.png' alt='headerImg' className='grayscale' />
+              <img src={"ai-header.png"} alt='headerImg' className='grayscale' />
             </figure>
           </div>
           <section className='flex flex-col'>
