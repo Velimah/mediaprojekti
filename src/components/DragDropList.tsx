@@ -84,7 +84,7 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
                           ? "bg-green-800 text-white"
                           : lastHtmlBlockId === item.id
                           ? "bg-green-500 text-white"
-                          : "bg-black text-white hover:bg-green-800 duration-150"
+                          : "bg-black text-white hover:bg-green-800"
                       }`}
                       onClick={(event) => handleItemClick(item, event)}
                       ref={provided.innerRef}
@@ -105,7 +105,7 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
         <Droppable droppableId='removeArea' direction='horizontal'>
           {(provided) => (
             <div
-              className='w-full p-2 sticky bg-red-500 text-white text-center rounded mt-2 hover:bg-red-800'
+              className='w-full p-2 h-10 bg-red-500 text-white text-center rounded mt-2 hover:bg-red-800'
               {...provided.droppableProps}
               ref={provided.innerRef}
             >

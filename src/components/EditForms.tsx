@@ -3,6 +3,8 @@ import { PromptFunctions } from "../utils/PromptFunctions";
 import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
 import { HtmlContext } from "../contexts/HtmlContext";
+import { useChatGPT } from "../hooks/ApiHooks";
+import Loader from "./Loader";
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
@@ -26,7 +28,7 @@ const EditForms: React.FC<EditFormsProps> = ({
 }) => {
   const { createHeadInfo, createHtmlBlock } = PromptFunctions();
   const { dispatch } = useChat();
-  const [fetching, setFetching] = useState<boolean>(false);
+  const { loading, setLoading } = useChatGPT();
   const { htmlArray, setHtmlArray, pastHtmlArrays, setPastHtmlArrays, lastHtmlBlockId, setLastHtmlBlockId } =
     useContext(HtmlContext);
 
@@ -43,7 +45,7 @@ const EditForms: React.FC<EditFormsProps> = ({
   const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const newArray = [...htmlArray];
-    setFetching(true);
+    setLoading(true);
 
     const sanitizedHtmlData = await createHeadInfo(
       formStateValues,
@@ -56,7 +58,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     newArray[htmlArray.length - 1] = { id: 1000, name: "documentEnd", content: "\n</body>\n</html>" };
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
     setHtmlArray(newArray);
-    setFetching(false);
+    setLoading(false);
   };
 
   const checkForFreeId = (newArray: { id: number }[]) => {
@@ -72,7 +74,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     event.preventDefault();
     const newHtmlArray = [...htmlArray];
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
-    setFetching(true);
+    setLoading(true);
     try {
       const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
       if (typeof sanitizedHtmlData === "string") {
@@ -88,10 +90,10 @@ const EditForms: React.FC<EditFormsProps> = ({
         }
       }
       dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
-      setFetching(false);
+      setLoading(false);
     } catch (error) {
       console.log("error", error);
-      setFetching(false);
+      setLoading(false);
     }
   };
 
@@ -102,17 +104,17 @@ const EditForms: React.FC<EditFormsProps> = ({
     if (typeof lastHtmlBlockId === "number") {
       const index = newHtmlArray.findIndex((item) => item.id === lastHtmlBlockId);
       const htmlBlockName: PromptTemplate = newHtmlArray[index].name as PromptTemplate;
-      setFetching(true);
+      setLoading(true);
       try {
         const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
         if (typeof sanitizedHtmlData === "string") {
           newHtmlArray[index].content = sanitizedHtmlData;
           setHtmlArray(newHtmlArray);
         }
-        setFetching(false);
+        setLoading(false);
       } catch (error) {
         console.log("error", error);
-        setFetching(false);
+        setLoading(false);
       }
     }
   };
@@ -243,19 +245,11 @@ const EditForms: React.FC<EditFormsProps> = ({
                   Refetch {getSectionDetails(selectedSection)}
                 </button>
               )}
-              {fetching && (
-                <div className='flex items-center gap-2 mt-2'>
-                  <span className='relative flex h-3 w-3'>
-                    <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                    <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-                  </span>
-                  <p className='font-bold'>Building...</p>
-                </div>
-              )}
             </div>
           </form>
         </div>
       </div>
+      {loading && <Loader />}
     </div>
   );
 };
