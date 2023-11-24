@@ -208,7 +208,7 @@ const Home = () => {
               </form>
               <button
                 onClick={() => {
-                  location.pathname === "/" ? navigate("/advanced") : navigate("/");
+                  navigate("/advanced");
                 }}
                 className='rounded-md p-1 w-full hover:bg-black text-white border-2 border-transparent font-bold cursor-pointer'
               >

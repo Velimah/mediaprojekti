@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useChatGPT } from "../hooks/ApiHooks";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import { FormValues } from "../utils/Prompts";
 import { PromptFunctions } from "../utils/PromptFunctions";
@@ -10,7 +10,6 @@ const AdvancedHome = () => {
   const { createWebPageTemplate } = PromptFunctions();
   const { loading, setLoading } = useChatGPT();
   const navigate = useNavigate();
-  const location = useLocation();
   const [error, setError] = useState<string>("");
   const [showAlertDialog, setShowAlertDialog] = useState<boolean>(false);
 
@@ -198,7 +197,7 @@ const AdvancedHome = () => {
               </form>
               <button
                 onClick={() => {
-                  location.pathname === "/" ? navigate("/advanced") : navigate("/");
+                  navigate("/");
                 }}
                 className='rounded-md p-1 w-full hover:bg-black text-white border-2 border-transparent font-bold cursor-pointer'
               >
