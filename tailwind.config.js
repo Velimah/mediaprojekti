@@ -51,6 +51,10 @@ export default {
           '0%': {left: '0'},
           '100%': {left: '-50%'},
         },
+        slideRight: {
+          '0%': {right: '-100%'},
+          '100%': {right: '0'},
+        },
         slideDown: {
           '0%': {transform: 'translateY(100%)'},
           '100%': {transform: 'translateY(0%)'},
@@ -85,6 +89,7 @@ export default {
         'height-out': 'heightOut 1s ease-in-out',
         'slide-left': 'slideLeft 1.5s ease',
         'slide-left-out': 'slideLeftOut 1.5s ease',
+        'slide-right': 'slideRight 1.5s ease',
         'slide-down': 'slideDown 1.5s ease',
         'alert-pop-up': 'alertPopUp 0.5s ease',
         'alert-pop-off': 'alertPopOff 0.5s ease-out',
