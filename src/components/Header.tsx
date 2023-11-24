@@ -11,9 +11,9 @@ const Header = () => {
   // TODO: add router/page switch
   const renderPage = () => {
     switch (activePage) {
-      case 'Build':
+      case "Build":
         return null;
-      case 'About':
+      case "About":
         return;
       default:
         return;

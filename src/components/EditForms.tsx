@@ -1,8 +1,8 @@
 import { useState, useContext } from "react";
-import { PromptFunctions, HtmlBlock } from "../utils/PromptFunctions";
+import { PromptFunctions } from "../utils/PromptFunctions";
 import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
-import { MediaContext } from "../contexts/MediaContext";
+import { HtmlContext } from "../contexts/HtmlContext";
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
@@ -13,15 +13,22 @@ interface EditFormsProps {
       additionalInfo: string;
     };
   };
+  setSelectedSection: (params: PromptTemplate) => void;
+  selectedSection: PromptTemplate;
+  getSectionDetails: (params: PromptTemplate) => string;
 }
 
-const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
+const EditForms: React.FC<EditFormsProps> = ({
+  originalFormValues,
+  setSelectedSection,
+  selectedSection,
+  getSectionDetails,
+}) => {
   const { createHeadInfo, createHtmlBlock } = PromptFunctions();
   const { dispatch } = useChat();
   const [fetching, setFetching] = useState<boolean>(false);
-  const [redo, setRedo] = useState<boolean>(false);
-  const { htmlArray, setHtmlArray } = useContext(MediaContext);
-  const [pastHtmlArrays, setPastHtmlArrays] = useState<HtmlBlock[][]>([]);
+  const { htmlArray, setHtmlArray, pastHtmlArrays, setPastHtmlArrays, lastHtmlBlockId, setLastHtmlBlockId } =
+    useContext(HtmlContext);
 
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
@@ -35,359 +42,220 @@ const EditForms: React.FC<EditFormsProps> = ({ originalFormValues }) => {
 
   const editHead = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    let newArray = [...htmlArray];
+    const newArray = [...htmlArray];
     setFetching(true);
 
-    const sanitizedHtmlData =
-      (await createHeadInfo(formStateValues, htmlArray.map((block) => block.content).join(""))) || "";
+    const sanitizedHtmlData = await createHeadInfo(
+      formStateValues,
+      htmlArray
+        .slice(1)
+        .map((block) => block.content)
+        .join("")
+    );
     newArray[0] = sanitizedHtmlData;
+    newArray[htmlArray.length - 1] = { id: 1000, name: "documentEnd", content: "\n</body>\n</html>" };
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
     setHtmlArray(newArray);
     setFetching(false);
   };
 
-  const handleEditForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
-    event.preventDefault();
-    let newArray = [...htmlArray];
-    let indexToReplace = -1; // Initialize indexToReplace outside the if block
-
-    if (redo) {
-      indexToReplace = newArray.findIndex((item) => item.id === htmlBlockName);
-      if (indexToReplace !== -1) {
-        newArray.splice(indexToReplace, 1);
+  const checkForFreeId = (newArray: { id: number }[]) => {
+    for (let i = 1; i < 1000; i++) {
+      const isDuplicateId = newArray.some((element: { id: number }) => element.id === i);
+      if (!isDuplicateId) {
+        if (typeof i === "number") return i; // Return the first available ID
       }
     }
-
-    setFetching(true);
-    const sanitizedHtmlData = (await createHtmlBlock(htmlBlockName, formStateValues)) || "";
-
-    // Conditionally choose the insertion index
-    const insertIndex = redo ? indexToReplace : newArray.length - 1;
-    newArray.splice(insertIndex, 0, { id: htmlBlockName, content: sanitizedHtmlData });
-
-    setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
-    setHtmlArray(newArray);
-    dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
-    setFetching(false);
-    setRedo(false);
   };
 
-  const removeHtmlBlock = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCreateHtmlBlockForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
     event.preventDefault();
-    const newArray = [...htmlArray];
-    if (newArray.length > 2) {
-      newArray.splice(-2, 1);
+    const newHtmlArray = [...htmlArray];
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
+    setFetching(true);
+    try {
+      const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
+      if (typeof sanitizedHtmlData === "string") {
+        const newId = checkForFreeId(newHtmlArray);
+        if (typeof newId === "number") {
+          newHtmlArray.splice(newHtmlArray.length - 1, 0, {
+            id: newId,
+            name: htmlBlockName,
+            content: sanitizedHtmlData,
+          });
+          setLastHtmlBlockId(newId);
+          setHtmlArray(newHtmlArray);
+        }
+      }
+      dispatch({ type: "SET_QUESTION", payload: formStateValues.additionalInfo });
+      setFetching(false);
+    } catch (error) {
+      console.log("error", error);
+      setFetching(false);
     }
-    setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state
-    setHtmlArray(newArray);
+  };
+
+  const reRollHtmlBlock = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    const newHtmlArray = [...htmlArray];
+    setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
+    if (typeof lastHtmlBlockId === "number") {
+      const index = newHtmlArray.findIndex((item) => item.id === lastHtmlBlockId);
+      const htmlBlockName: PromptTemplate = newHtmlArray[index].name as PromptTemplate;
+      setFetching(true);
+      try {
+        const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
+        if (typeof sanitizedHtmlData === "string") {
+          newHtmlArray[index].content = sanitizedHtmlData;
+          setHtmlArray(newHtmlArray);
+        }
+        setFetching(false);
+      } catch (error) {
+        console.log("error", error);
+        setFetching(false);
+      }
+    }
   };
 
   const undoLastChange = () => {
+    console.log("undo1", pastHtmlArrays);
     if (pastHtmlArrays.length > 0) {
-      const lastHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];
-      setHtmlArray(lastHtmlArray);
-      setPastHtmlArrays(pastHtmlArrays.slice(0, -1)); // Remove the last state
+      const previousHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];
+      const previousHtmlArrays = [...pastHtmlArrays];
+      setPastHtmlArrays(previousHtmlArrays.slice(0, -1));
+      console.log("undo2", previousHtmlArray);
+      setHtmlArray(previousHtmlArray);
+      setLastHtmlBlockId(null);
     }
+    // Remove this line -> setUndo(false);
   };
 
-  const [activeSection, setActiveSection] = useState<string | null>("navigation");
-  // Toggle function to set the active edit form in ui
-  const toggleSection = (section: any) => {
-    setActiveSection((prevSection) => (prevSection === section ? null : section));
-  };
-
-  const redoElement = () => {
-    setRedo(true);
-  };
-
-  // select options for edit forms
+  // select options for form
   const sections = [
-    { value: "navigation", label: "Edit Navigation" },
-    { value: "welcome", label: "Edit Welcome" },
-    { value: "main", label: "Edit Main" },
-    { value: "table", label: "Edit Table" },
-    { value: "map", label: "Edit Map" },
-    { value: "footer", label: "Edit Footer" },
+    { value: "createNavigation", label: "Navigation" },
+    { value: "createWelcomeSection", label: "Text | Image" },
+    { value: "createMainSection", label: "Text" },
+    { value: "createTableSection", label: "Table" },
+    { value: "createMap", label: "Text | Map" },
+    { value: "createFooter", label: "Footer" },
   ];
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+    setSelectedSection(event.target.value as PromptTemplate);
+    setLastHtmlBlockId(null);
+  };
 
   return (
     <div className='py-4 space-x-2 flex flex-col flex-wrap justify-center items-center'>
-      <div className='flex flex-wrap gap-2 m-2'>
-        <button onClick={editHead} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
-          Reroll Head Tag Information
+      <div className='flex gap-2 m-2'>
+        <button onClick={editHead} className='p-3 bg-black text-white rounded hover:bg-green-500 duration-150'>
+          Generate Head Tag Information
         </button>
-        <button onClick={undoLastChange} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
+        <button onClick={undoLastChange} className='p-3 bg-black text-white rounded hover:bg-green-500 duration-150'>
           Undo Last Change
         </button>
-        <button onClick={removeHtmlBlock} className='bg-black text-white p-2 m-1 rounded w-64  hover:bg-green-500'>
-          Remove bottom block
-        </button>
-      </div>
-      <div className='flex justify-center flex-wrap'>
-        <select
-          value={activeSection || ""}
-          onChange={(e) => toggleSection(e.target.value)}
-          className='p-2 rounded m-1 bg-black text-white hover:bg-green-500'
-        >
-          {sections.map((section) => (
-            <option key={section.value} value={section.value}>
-              {section.label}
-            </option>
-          ))}
-        </select>
       </div>
 
-      {activeSection === "navigation" && (
-        <form
-          className='bg-gray-200 m-2 p-4 rounded-b-md flex flex-col'
-          onSubmit={(event) => handleEditForm("createNavigation", event)}
-        >
-          <textarea
-            rows={3}
-            cols={80}
-            placeholder='Give additional information'
-            value={formStateValues.additionalInfo}
-            onChange={(event) =>
-              setFormStateValues({
-                ...formStateValues,
-                additionalInfo: event.target.value,
-              })
-            }
-            className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-          />
-          <div className='flex gap-2 w-96'>
-            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add a new navigation
-            </button>
-            <button
-              type='submit'
-              onClick={redoElement}
-              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
-            >
-              Reroll current navigation
-            </button>
-            {fetching && (
-              <div className='flex items-center gap-2 mt-2'>
-                <span className='relative flex h-3 w-3'>
-                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-                </span>
-                <p className='font-bold'>Building...</p>
-              </div>
-            )}
-          </div>
-        </form>
-      )}
+      <div className='flex flex-col flex-wrap justify-center items-center'>
+        {/* ... (your other buttons) */}
 
-      {activeSection === "welcome" && (
-        <form
-          className='bg-gray-200 p-4 m-2 rounded-md flex flex-col'
-          onSubmit={(event) => handleEditForm("createWelcomeSection", event)}
-        >
-          <textarea
-            rows={3}
-            cols={80}
-            placeholder='Give additional information'
-            value={formStateValues.additionalInfo}
-            onChange={(event) =>
-              setFormStateValues({
-                ...formStateValues,
-                additionalInfo: event.target.value,
-              })
-            }
-            className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-          />
-          <div className='flex gap-2 w-96'>
-            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add a new Welcome
-            </button>
-            <button
-              type='submit'
-              onClick={redoElement}
-              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
-            >
-              Reroll current Welcome
-            </button>
-            {fetching && (
-              <div className='flex items-center gap-2 mt-2'>
-                <span className='relative flex h-3 w-3'>
-                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-                </span>
-                <p className='font-bold'>Building...</p>
-              </div>
+        <div className='flex justify-center flex-wrap'>
+          <form
+            className='bg-gray-200 px-4 pt-2 pb-4 m-2 rounded-md flex flex-col'
+            onSubmit={(event) => handleCreateHtmlBlockForm(selectedSection, event)}
+          >
+            {selectedSection === "createMap" && (
+              <>
+                <label className='relative'>
+                  {" "}
+                  Map Adress
+                  <input
+                    id='mapAdress'
+                    type='text'
+                    placeholder='Give me table section details ...'
+                    value={formStateValues.mapAddress}
+                    onChange={(event) =>
+                      setFormStateValues({
+                        ...formStateValues,
+                        mapAddress: event.target.value,
+                      })
+                    }
+                    className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+                  />
+                </label>
+                <label className='relative mt-2'>
+                  {" "}
+                  Map City
+                  <input
+                    id='mapCity'
+                    type='text'
+                    placeholder='Give me table section details ...'
+                    value={formStateValues.mapCity}
+                    onChange={(event) =>
+                      setFormStateValues({
+                        ...formStateValues,
+                        mapCity: event.target.value,
+                      })
+                    }
+                    className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+                  />
+                </label>
+              </>
             )}
-          </div>
-        </form>
-      )}
-
-      {activeSection === "main" && (
-        <form
-          className='bg-gray-200 p-4 m-2 rounded-md flex flex-col'
-          onSubmit={(event) => handleEditForm("createMainSection", event)}
-        >
-          <textarea
-            rows={3}
-            cols={80}
-            placeholder='Give additional information'
-            value={formStateValues.additionalInfo}
-            onChange={(event) =>
-              setFormStateValues({
-                ...formStateValues,
-                additionalInfo: event.target.value,
-              })
-            }
-            className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-          />
-          <div className='flex gap-2 w-96'>
-            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add a new Main
-            </button>
-            <button
-              type='submit'
-              onClick={redoElement}
-              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
-            >
-              Reroll current Main
-            </button>
-            {fetching && (
-              <div className='flex items-center gap-2 mt-2'>
-                <span className='relative flex h-3 w-3'>
-                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-                </span>
-                <p className='font-bold'>Building...</p>
-              </div>
-            )}
-          </div>
-        </form>
-      )}
-
-      {activeSection === "map" && (
-        <form
-          className='bg-gray-200 p-4 m-2 rounded-md flex flex-col'
-          onSubmit={(event) => handleEditForm("createMap", event)}
-        >
-          <textarea
-            rows={3}
-            cols={80}
-            placeholder='Give additional information'
-            value={formStateValues.additionalInfo}
-            onChange={(event) =>
-              setFormStateValues({
-                ...formStateValues,
-                additionalInfo: event.target.value,
-              })
-            }
-            className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-          />
-          <div className='flex gap-2 w-96'>
-            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add a new Map
-            </button>
-            <button
-              type='submit'
-              onClick={redoElement}
-              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
-            >
-              Reroll current Map
-            </button>
-            {fetching && (
-              <div className='flex items-center gap-2 mt-2'>
-                <span className='relative flex h-3 w-3'>
-                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-                </span>
-                <p className='font-bold'>Building...</p>
-              </div>
-            )}
-          </div>
-        </form>
-      )}
-
-      {activeSection === "table" && (
-        <form
-          className='bg-gray-200 p-4 m-2 rounded-md flex flex-col'
-          onSubmit={(event) => handleEditForm("createTableSection", event)}
-        >
-          <textarea
-            rows={3}
-            cols={80}
-            placeholder='Give additional information'
-            value={formStateValues.additionalInfo}
-            onChange={(event) =>
-              setFormStateValues({
-                ...formStateValues,
-                additionalInfo: event.target.value,
-              })
-            }
-            className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-          />
-          <div className='flex gap-2 w-96'>
-            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add a new Table
-            </button>
-            <button
-              type='submit'
-              onClick={redoElement}
-              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
-            >
-              Reroll current Table
-            </button>
-            {fetching && (
-              <div className='flex items-center gap-2 mt-2'>
-                <span className='relative flex h-3 w-3'>
-                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-                </span>
-                <p className='font-bold'>Building...</p>
-              </div>
-            )}
-          </div>
-        </form>
-      )}
-
-      {activeSection === "footer" && (
-        <form
-          className='bg-gray-200 p-4 m-2 rounded-md flex flex-col'
-          onSubmit={(event) => handleEditForm("createFooter", event)}
-        >
-          <textarea
-            rows={3}
-            cols={80}
-            placeholder='Give additional information'
-            value={formStateValues.additionalInfo}
-            onChange={(event) =>
-              setFormStateValues({
-                ...formStateValues,
-                additionalInfo: event.target.value,
-              })
-            }
-            className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
-          />
-          <div className='flex gap-2 w-96'>
-            <button type='submit' className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'>
-              Add a Footer
-            </button>
-            <button
-              type='submit'
-              onClick={redoElement}
-              className='bg-black text-white p-2 rounded mt-2 hover:bg-green-500'
-            >
-              Reroll current Footer
-            </button>
-            {fetching && (
-              <div className='flex items-center gap-2 mt-2'>
-                <span className='relative flex h-3 w-3'>
-                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
-                  <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
-                </span>
-                <p className='font-bold'>Building...</p>
-              </div>
-            )}
-          </div>
-        </form>
-      )}
+            <label className='relative mt-2'>
+              {" "}
+              Additional information
+              <textarea
+                rows={5}
+                cols={80}
+                placeholder='Give additional information'
+                value={formStateValues.additionalInfo}
+                onChange={(event) =>
+                  setFormStateValues({
+                    ...formStateValues,
+                    additionalInfo: event.target.value,
+                  })
+                }
+                className='rounded-md border-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-black focus:ring-black focus:ring-1 w-full'
+              />
+            </label>
+            <div className='flex gap-2 mt-2'>
+              <select
+                value={selectedSection}
+                onChange={handleSelectChange}
+                className='w-full bg-black text-white p-2 rounded hover:bg-green-500 duration-150'
+              >
+                {sections.map((section) => (
+                  <option key={section.value} value={section.value}>
+                    {section.label}
+                  </option>
+                ))}
+              </select>
+              <button type='submit' className='w-full bg-black text-white p-2 rounded hover:bg-green-500 duration-150'>
+                Add New {getSectionDetails(selectedSection)}
+              </button>
+              {lastHtmlBlockId && (
+                <button
+                  onClick={reRollHtmlBlock}
+                  className='w-full bg-black text-white p-2 rounded hover:bg-green-500 duration-150'
+                >
+                  Refetch {getSectionDetails(selectedSection)}
+                </button>
+              )}
+              {fetching && (
+                <div className='flex items-center gap-2 mt-2'>
+                  <span className='relative flex h-3 w-3'>
+                    <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+                    <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+                  </span>
+                  <p className='font-bold'>Building...</p>
+                </div>
+              )}
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

@@ -7,10 +7,10 @@ import AlertDialog from "../components/AlertDialog";
 const Home = () => {
   const { postQuestion, loading } = useChatGPT();
   const [newQuestion, setNewQuestion] = useState("");
-  const [newCSS, setNewCSS] = useState('');
-  const [newColor, setNewColor] = useState('');
+  const [newCSS, setNewCSS] = useState("");
+  const [newColor, setNewColor] = useState("");
   const navigate = useNavigate();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   const handleForm = async (e: React.FormEvent) => {
@@ -18,8 +18,8 @@ const Home = () => {
 
     // if question string is empty, show error
     // TODO: add form valitators instead
-    if(newQuestion === ''){
-      setError('Please give me instructions first!');
+    if (newQuestion === "") {
+      setError("Please give me instructions first!");
       setShowAlertDialog(true);
     } else {
       try {
@@ -33,7 +33,6 @@ const Home = () => {
         setShowAlertDialog(true);
       }
     }
-
   };
 
   // Add new CSS prompt, returns string
@@ -55,10 +54,10 @@ const Home = () => {
         return " (use Foundation CSS)"
         break;
       default:
-        return ''
+        return "";
         break;
     }
-  }
+  };
   // Add primary colour prompt, returns string if selectedValue isn't empty
   const addColorPrompt = (selectedValue: string): string => (selectedValue !== '') ? ' (use ' + selectedValue + ' as a primary colour)' : '';
 
@@ -76,48 +75,48 @@ const Home = () => {
             <div className="animate-slide-right relative">
             <div className="flex items-center px-4 py-8 text-white bg-ai-black-100">
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="h-[70px] shrink-0 hover:animate-bounce"
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth='1.5'
+                stroke='currentColor'
+                className='h-[70px] shrink-0 hover:animate-bounce'
               >
                 <rect
-                  x="5"
-                  y="2"
-                  width="14"
-                  height="9"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="currentColor"
+                  x='5'
+                  y='2'
+                  width='14'
+                  height='9'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  fill='currentColor'
                 />
                 <rect
-                  x="3"
-                  y="11"
-                  width="18"
-                  height="9"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="currentColor"
+                  x='3'
+                  y='11'
+                  width='18'
+                  height='9'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  fill='currentColor'
                 />
                 <rect
-                  x="5"
-                  y="21"
-                  width="4"
-                  height="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="currentColor"
+                  x='5'
+                  y='21'
+                  width='4'
+                  height='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  fill='currentColor'
                 />
                 <rect
-                  x="15"
-                  y="21"
-                  width="4"
-                  height="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="currentColor"
+                  x='15'
+                  y='21'
+                  width='4'
+                  height='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  fill='currentColor'
                 />
                 <circle
                   cx="8.5"
@@ -217,7 +216,7 @@ const Home = () => {
                   </svg>
                   Switch to Advanced
                 </span>
-            </button>
+              </button>
             </div>
           </section>
         </section>

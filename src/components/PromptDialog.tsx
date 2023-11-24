@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 interface PromptDialog {
-    question: string;
+  question: string;
 }
 
 const PromptDialog: React.FC<{ question: string }> = ({
@@ -93,7 +93,7 @@ const PromptDialog: React.FC<{ question: string }> = ({
 };
 
 PromptDialog.propTypes = {
-    question: PropTypes.string.isRequired,
-}
+  question: PropTypes.string.isRequired,
+};
 
 export default PromptDialog;
