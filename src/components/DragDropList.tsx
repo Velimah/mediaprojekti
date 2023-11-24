@@ -66,25 +66,21 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className='flex flex-col m-2 py-4 justify-end '>
+      <div className='flex flex-col m-2 py-4 justify-end w-48 font-robot'>
         <Droppable droppableId='droppable'>
           {(provided) => (
-            <div
-              className='bg-gray-200 p-2 pt-2 rounded-md flex flex-col'
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              <p className='text-center font-semibold'>Layout</p>
+            <div className='pt-2 rounded-md flex flex-col' {...provided.droppableProps} ref={provided.innerRef}>
+              <p className='text-ai-primary text-center text-underline'>Layout</p>
               {renderedItems.map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                   {(provided, snapshot) => (
                     <div
-                      className={`w-full p-2 mt-2 rounded cursor-pointer ${
+                      className={`w-full p-2 mt-4 rounded cursor-pointer ${
                         snapshot.isDragging
-                          ? "bg-green-800 text-white"
+                          ? "bg-ai-primary"
                           : lastHtmlBlockId === item.id
-                          ? "bg-green-500 text-white"
-                          : "bg-black text-white hover:bg-green-800"
+                          ? "bg-ai-primary"
+                          : "toolbar-btn"
                       }`}
                       onClick={(event) => handleItemClick(item, event)}
                       ref={provided.innerRef}
@@ -105,12 +101,12 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
         <Droppable droppableId='removeArea' direction='horizontal'>
           {(provided) => (
             <div
-              className='w-full p-2 h-10 bg-red-500 text-white text-center rounded mt-2 hover:bg-red-800'
+              className='group flex flex-col w-full h-14 p-2 bg-ai-tertiary text-center rounded mt-4 justify-center items-center'
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              Drag here to Remove
               {provided.placeholder}
+              <div className='group-hover:opacity-0'>Drag here to Remove</div>
             </div>
           )}
         </Droppable>
