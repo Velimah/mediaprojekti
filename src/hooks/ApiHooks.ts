@@ -55,7 +55,7 @@ const useChatGPT = () => {
     }
   };
 
-  return { postQuestion, loading };
+  return { postQuestion, loading, setLoading };
 };
 
 export { useChatGPT };

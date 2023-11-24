@@ -20,6 +20,32 @@ const PromptFunctions = () => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
 
+  const createWebPageTemplate = async (formValues: FormValues) => {
+    setHtmlArray([]);
+    const documentStart = '<!DOCTYPE html>\n<html lang="en">\n<body style="margin: auto;">\n';
+    const documentEnd = "\n</body>\n</html>";
+
+    const newArray: HtmlBlock[] = [
+      { id: 0, name: "documentStart", content: documentStart },
+      { id: 1000, name: "documentEnd", content: documentEnd },
+    ];
+    try {
+      const newHead = await createHeadInfo(formValues, "");
+      if (newArray.length > 0) {
+        const firstContent = newArray[0].content;
+        if (typeof firstContent === "string" && firstContent.startsWith("<!D")) {
+          newArray.shift();
+        }
+      }
+      if (newHead !== undefined) {
+        newArray.unshift(newHead);
+      }
+      setHtmlArray(newArray);
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+
   // create web page function, creates all html blocks and saves them to local storage
   const createWebPage = async (formValues: FormValues) => {
     setHtmlArray([]);
@@ -134,6 +160,7 @@ ${sanitizedHeadData}
     createHeadInfo,
     removeHtmlMarkdown,
     createWebPage,
+    createWebPageTemplate,
   };
 };
 
