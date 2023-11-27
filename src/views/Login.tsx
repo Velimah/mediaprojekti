@@ -11,7 +11,7 @@ const Login = () => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 w-full h-full flex flex-col justify-center items-center bg-gray-800 bg-opacity-50">
+      <div className="w-full min-h-full flex flex-col justify-center items-center">
         {toggle ? <LoginForm /> : <RegisterForm />}
         <button
           className="bg-black hover:bg-gray-800 text-white font-bold text-xs py-2 px-4 rounded m-1"
