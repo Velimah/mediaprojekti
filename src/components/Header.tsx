@@ -103,6 +103,13 @@ const Header = () => {
                 ABOUT
               </button>
             </li>
+            <li className="md:pl-4">
+            <Link to="/login">
+              <button onClick={() => setActivePage('Login')} className={`flex items-center ${activePage === 'Login' ? 'active' : 'font-normal'}`}>
+                LOGIN
+              </button>
+            </Link>
+            </li>
             </>
     );
   }
