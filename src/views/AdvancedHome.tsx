@@ -19,6 +19,7 @@ const AdvancedHome = () => {
     mapAddress: "",
     mapCity: "",
     additionalInfo: "",
+    imageSrc: "",
   });
 
   const handleForm = async (event: React.FormEvent) => {

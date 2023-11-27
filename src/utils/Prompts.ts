@@ -5,7 +5,8 @@ export type PromptTemplate =
   | "createTableSection"
   | "createFooter"
   | "createMap"
-  | "CreateHead";
+  | "CreateHead"
+  | "createImage";
 
 export interface FormValues {
   cssLibrary: string;
@@ -13,10 +14,11 @@ export interface FormValues {
   mapAddress: string;
   mapCity: string;
   additionalInfo: string;
+  imageSrc: string;
 }
 
 export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: FormValues): string => {
-  const { cssLibrary, colors, mapAddress, mapCity, additionalInfo } = formValues;
+  const { cssLibrary, colors, mapAddress, mapCity, additionalInfo, imageSrc } = formValues;
 
   const promptTemplates = {
     createNavigation: `Create a fully functional navigation section <nav></nav>.
@@ -103,6 +105,7 @@ Apply styling to the HTML using the ${cssLibrary} CSS.`,
 <!-- Favicon -->
 <link rel="icon" href="path/to/favicon.ico" type="image/x-icon).
 Code to analyze: `,
+    createImage: `Use ${cssLibrary} css for html styling. Add a image inside <img> tag, with the src being ${imageSrc}. Alt must be ${additionalInfo}. Use <figure> tag, make it semantic. Wrap it all in a <article>. Make sure image is responsive.`,
   };
 
   return promptTemplates[promptTemplate];

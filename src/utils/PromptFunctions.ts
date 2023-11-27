@@ -79,12 +79,13 @@ const PromptFunctions = () => {
       let currentId = 1; // Initialize the ID counter
       const newArray: HtmlBlock[] = [
         { id: 0, name: "documentStart", content: documentStart },
-        await createAndPushHtmlBlock("createNavigation", formValues, "1 / 7", currentId++),
-        await createAndPushHtmlBlock("createWelcomeSection", formValues, "2 / 7", currentId++),
-        await createAndPushHtmlBlock("createMainSection", formValues, "3 / 7", currentId++),
-        await createAndPushHtmlBlock("createTableSection", formValues, "4 / 7", currentId++),
-        await createAndPushHtmlBlock("createMap", formValues, "5 / 7", currentId++),
-        await createAndPushHtmlBlock("createFooter", formValues, "6 / 7", currentId++),
+        await createAndPushHtmlBlock("createNavigation", formValues, "1 / 8", currentId++),
+        await createAndPushHtmlBlock("createWelcomeSection", formValues, "2 / 8", currentId++),
+        await createAndPushHtmlBlock("createMainSection", formValues, "3 / 8", currentId++),
+        await createAndPushHtmlBlock("createTableSection", formValues, "4 / 8", currentId++),
+        await createAndPushHtmlBlock("createMap", formValues, "5 / 8", currentId++),
+        await createAndPushHtmlBlock("createFooter", formValues, "6 / 8", currentId++),
+        await createAndPushHtmlBlock("createImage", formValues, "7 / 8", currentId++),
         { id: 1000, name: "documentEnd", content: documentEnd },
       ];
       const newArrayWithoutEmptyContent = newArray.filter((block) => {
@@ -103,7 +104,7 @@ const PromptFunctions = () => {
         newArray.unshift(newHead);
       }
       setHtmlArray(newArray);
-      setProgressCount("0 / 7");
+      setProgressCount("0 / 8");
     } catch (error) {
       console.log("error: ", error);
     }
