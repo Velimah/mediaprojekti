@@ -293,7 +293,9 @@ const AdvancedResult = () => {
                   selectedSection={selectedSection}
                   getSectionDetails={getSectionDetails}
                 />
-                <DragDropList setSelectedSection={setSelectedSection} getSectionDetails={getSectionDetails} />
+                {previewVisible && (
+                  <DragDropList setSelectedSection={setSelectedSection} getSectionDetails={getSectionDetails} />
+                )}
               </div>
             </div>
           </div>

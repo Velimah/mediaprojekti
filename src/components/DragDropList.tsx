@@ -66,16 +66,16 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className='flex flex-col m-2 py-4 justify-end w-48 font-robot'>
+      <div className='flex flex-col m-2 justify-end w-48 font-robot 2xl:absolute right-4 top-[500px] p-2 rounded-md'>
         <Droppable droppableId='droppable'>
           {(provided) => (
-            <div className='pt-2 rounded-md flex flex-col' {...provided.droppableProps} ref={provided.innerRef}>
+            <div className='pt-1 rounded-md flex flex-col' {...provided.droppableProps} ref={provided.innerRef}>
               <p className='text-ai-primary text-center text-underline'>Layout</p>
               {renderedItems.map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                   {(provided, snapshot) => (
                     <div
-                      className={`w-full p-2 mt-4 rounded cursor-pointer ${
+                      className={`w-full p-2 mt-2 rounded cursor-pointer ${
                         snapshot.isDragging
                           ? "bg-ai-primary"
                           : lastHtmlBlockId === item.id
@@ -87,9 +87,7 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <p className='flex text-center'>
-                        {item.id} {getSectionDetails(item.name as PromptTemplate)}
-                      </p>
+                      <p className='flex text-center'>{getSectionDetails(item.name as PromptTemplate)}</p>
                     </div>
                   )}
                 </Draggable>
@@ -106,7 +104,7 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
               ref={provided.innerRef}
             >
               {provided.placeholder}
-              <div className='group-hover:opacity-0'>Drag here to Remove</div>
+              <div className=''>Drag here to Remove</div>
             </div>
           )}
         </Droppable>

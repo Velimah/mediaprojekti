@@ -99,8 +99,8 @@ const EditForms: React.FC<EditFormsProps> = ({
 
   const reRollHtmlBlock = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const newHtmlArray = [...htmlArray];
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
+    const newHtmlArray = [...htmlArray];
     if (typeof lastHtmlBlockId === "number") {
       const index = newHtmlArray.findIndex((item) => item.id === lastHtmlBlockId);
       const htmlBlockName: PromptTemplate = newHtmlArray[index].name as PromptTemplate;
@@ -108,8 +108,15 @@ const EditForms: React.FC<EditFormsProps> = ({
       try {
         const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
         if (typeof sanitizedHtmlData === "string") {
-          newHtmlArray[index].content = sanitizedHtmlData;
-          setHtmlArray(newHtmlArray);
+          const updatedHtmlArray = newHtmlArray.map((item, i) => {
+            if (i === index) {
+              // Modify the content property for the specific index
+              return { ...item, content: sanitizedHtmlData };
+            }
+            // For other indices, return the item unchanged
+            return item;
+          });
+          setHtmlArray([...updatedHtmlArray]);
         }
         setLoading(false);
       } catch (error) {
@@ -121,13 +128,13 @@ const EditForms: React.FC<EditFormsProps> = ({
 
   const undoLastChange = () => {
     if (pastHtmlArrays.length > 0) {
+      console.log("pastHtmlArrays", pastHtmlArrays);
       const previousHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];
       const previousHtmlArrays = [...pastHtmlArrays];
       setPastHtmlArrays(previousHtmlArrays.slice(0, -1));
-      setHtmlArray(previousHtmlArray);
+      setHtmlArray([...previousHtmlArray]);
       setLastHtmlBlockId(null);
     }
-    // Remove this line -> setUndo(false);
   };
 
   // select options for form
@@ -141,7 +148,6 @@ const EditForms: React.FC<EditFormsProps> = ({
   ];
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    event.preventDefault();
     setSelectedSection(event.target.value as PromptTemplate);
     setLastHtmlBlockId(null);
   };
@@ -174,10 +180,10 @@ const EditForms: React.FC<EditFormsProps> = ({
       <div className='flex flex-col flex-wrap justify-center items-center'>
         {/* ... (your other buttons) */}
 
-        <div className='bg-ai-black-100 p-4 rounded-b-md relative'>
+        <div className='bg-ai-black-100 p-4 rounded-b-md relative max-w-2xl'>
           <form className=' text-white' onSubmit={(event) => handleCreateHtmlBlockForm(selectedSection, event)}>
             {selectedSection === "createMap" && (
-              <>
+              <div>
                 <label className='relative'>
                   <input
                     id='mapAdress'
@@ -211,14 +217,14 @@ const EditForms: React.FC<EditFormsProps> = ({
                 </label>
                 <label className='relative'>
                   <input
-                    id='mapAdress'
+                    id='mapCity'
                     type='text'
                     placeholder='And the city  ...'
-                    value={formStateValues.mapAddress}
+                    value={formStateValues.mapCity}
                     onChange={(event) =>
                       setFormStateValues({
                         ...formStateValues,
-                        mapAddress: event.target.value,
+                        mapCity: event.target.value,
                       })
                     }
                     className='mb-2 rounded-md border-ai-black text-ai-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full'
@@ -240,7 +246,7 @@ const EditForms: React.FC<EditFormsProps> = ({
                     </svg>
                   </span>
                 </label>
-              </>
+              </div>
             )}
             <label className='relative mt-2'>
               <textarea
@@ -254,10 +260,10 @@ const EditForms: React.FC<EditFormsProps> = ({
                     additionalInfo: event.target.value,
                   })
                 }
-                className='rounded-md border-ai-black text-ai-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full'
+                className='rounded-md border-ai-black text-ai-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full'
               />
             </label>
-            <div className='flex gap-2 mt-2 '>
+            <div className='flex flex-col md:flex-row gap-2 mt-2  '>
               <select value={selectedSection} onChange={handleSelectChange} className='toolbar-btn bg-ai-black'>
                 {sections.map((section) => (
                   <option className='bg-ai-primary' key={section.value} value={section.value}>
