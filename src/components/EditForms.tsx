@@ -26,7 +26,7 @@ const EditForms: React.FC<EditFormsProps> = ({
   selectedSection,
   getSectionDetails,
 }) => {
-  const { createHeadInfo, createHtmlBlock } = PromptFunctions();
+  const { createHeadInfo, createHtmlBlock, sanitizeText } = PromptFunctions();
   const { dispatch } = useChat();
   const { loading, setLoading } = useChatGPT();
   const { htmlArray, setHtmlArray, pastHtmlArrays, setPastHtmlArrays, lastHtmlBlockId, setLastHtmlBlockId } =
@@ -126,6 +126,24 @@ const EditForms: React.FC<EditFormsProps> = ({
     }
   };
 
+  const handleSanitizeText = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+      const sanitizedText = await sanitizeText("sanitizeText", formStateValues);
+      if (typeof sanitizedText === "string") {
+        setFormStateValues({
+          ...formStateValues,
+          additionalInfo: sanitizedText,
+        });
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
   const undoLastChange = () => {
     if (pastHtmlArrays.length > 0) {
       console.log("pastHtmlArrays", pastHtmlArrays);
@@ -180,7 +198,7 @@ const EditForms: React.FC<EditFormsProps> = ({
       <div className='flex flex-col flex-wrap justify-center items-center'>
         {/* ... (your other buttons) */}
 
-        <div className='bg-ai-black-100 p-4 rounded-b-md relative max-w-2xl'>
+        <div className='bg-ai-black-100 p-4 rounded-b-md relative w-2xl'>
           <form className=' text-white' onSubmit={(event) => handleCreateHtmlBlockForm(selectedSection, event)}>
             {selectedSection === "createMap" && (
               <div>
@@ -263,10 +281,14 @@ const EditForms: React.FC<EditFormsProps> = ({
                 className='rounded-md border-ai-black text-ai-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full'
               />
             </label>
-            <div className='flex flex-col md:flex-row gap-2 mt-2  '>
-              <select value={selectedSection} onChange={handleSelectChange} className='toolbar-btn bg-ai-black'>
+            <div className='flex flex-col md:flex-row gap-2 mt-2'>
+              <select
+                value={selectedSection}
+                onChange={handleSelectChange}
+                className='toolbar-btn bg-black hover:bg-black hover:text-ai-primary '
+              >
                 {sections.map((section) => (
-                  <option className='bg-ai-primary' key={section.value} value={section.value}>
+                  <option className='' key={section.value} value={section.value}>
                     {section.label}
                   </option>
                 ))}
@@ -277,6 +299,14 @@ const EditForms: React.FC<EditFormsProps> = ({
                     <path d='M12,1A11,11,0,1,0,23,12,11.013,11.013,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9.01,9.01,0,0,1,12,21Zm5-9a1,1,0,0,1-1,1H13v3a1,1,0,0,1-2,0V13H8a1,1,0,0,1,0-2h3V8a1,1,0,0,1,2,0v3h3A1,1,0,0,1,17,12Z' />
                   </svg>
                   NEW {getSectionDetails(selectedSection).toUpperCase()}
+                </span>
+              </button>
+              <button onClick={handleSanitizeText} className='primary-btn'>
+                <span className='flex justify-center gap-2'>
+                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-6 h-6'>
+                    <path d='M1,12A11,11,0,0,1,17.882,2.7l1.411-1.41A1,1,0,0,1,21,2V6a1,1,0,0,1-1,1H16a1,1,0,0,1-.707-1.707l1.128-1.128A8.994,8.994,0,0,0,3,12a1,1,0,0,1-2,0Zm21-1a1,1,0,0,0-1,1,9.01,9.01,0,0,1-9,9,8.9,8.9,0,0,1-4.42-1.166l1.127-1.127A1,1,0,0,0,8,17H4a1,1,0,0,0-1,1v4a1,1,0,0,0,.617.924A.987.987,0,0,0,4,23a1,1,0,0,0,.707-.293L6.118,21.3A10.891,10.891,0,0,0,12,23,11.013,11.013,0,0,0,23,12,1,1,0,0,0,22,11Z' />
+                  </svg>
+                  SANITIZE
                 </span>
               </button>
               {lastHtmlBlockId && (

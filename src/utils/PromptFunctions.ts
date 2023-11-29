@@ -126,16 +126,23 @@ const PromptFunctions = () => {
     }
   };
 
+  const sanitizeText = async (promptTemplate: PromptTemplate, formValues: FormValues) => {
+    const sanitizePrompt = getPromptTemplate(promptTemplate, formValues);
+    try {
+      const sanitizedText = await postQuestion("sanitize", sanitizePrompt);
+      return sanitizedText;
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+
   // creates <head></head> info html block and saves it to local storage
   const createHeadInfo = async (formValues: FormValues, completeArray: string): Promise<HtmlBlock> => {
     // choose correct prompt template and take values from form and inject them into the template
     const CreateHeadPrompt = getPromptTemplate("CreateHead", formValues);
     // fetch for the head html block, joins CreateHeadPrompt with full htmlstring for gpt to analyze
 
-    const documentStart = `<!DOCTYPE html>
-<html lang="en">
-<body style="margin: auto;">
-`;
+    const documentStart = '<!DOCTYPE html>\n<html lang="en">\n<body style="margin: auto;">\n';
     try {
       const headData = await postQuestion("html", CreateHeadPrompt + completeArray);
       const sanitizedHeadData = removeHtmlMarkdown(headData);
@@ -161,6 +168,7 @@ ${sanitizedHeadData}
     removeHtmlMarkdown,
     createWebPage,
     createWebPageTemplate,
+    sanitizeText,
   };
 };
 
