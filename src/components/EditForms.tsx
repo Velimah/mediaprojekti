@@ -293,22 +293,16 @@ const EditForms: React.FC<EditFormsProps> = ({
                   </option>
                 ))}
               </select>
-              <button type='submit' className='primary-btn'>
-                <span className='flex justify-center gap-2'>
-                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-6 h-6'>
-                    <path d='M12,1A11,11,0,1,0,23,12,11.013,11.013,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9.01,9.01,0,0,1,12,21Zm5-9a1,1,0,0,1-1,1H13v3a1,1,0,0,1-2,0V13H8a1,1,0,0,1,0-2h3V8a1,1,0,0,1,2,0v3h3A1,1,0,0,1,17,12Z' />
-                  </svg>
-                  NEW {getSectionDetails(selectedSection).toUpperCase()}
-                </span>
-              </button>
-              <button onClick={handleSanitizeText} className='primary-btn'>
-                <span className='flex justify-center gap-2'>
-                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-6 h-6'>
-                    <path d='M1,12A11,11,0,0,1,17.882,2.7l1.411-1.41A1,1,0,0,1,21,2V6a1,1,0,0,1-1,1H16a1,1,0,0,1-.707-1.707l1.128-1.128A8.994,8.994,0,0,0,3,12a1,1,0,0,1-2,0Zm21-1a1,1,0,0,0-1,1,9.01,9.01,0,0,1-9,9,8.9,8.9,0,0,1-4.42-1.166l1.127-1.127A1,1,0,0,0,8,17H4a1,1,0,0,0-1,1v4a1,1,0,0,0,.617.924A.987.987,0,0,0,4,23a1,1,0,0,0,.707-.293L6.118,21.3A10.891,10.891,0,0,0,12,23,11.013,11.013,0,0,0,23,12,1,1,0,0,0,22,11Z' />
-                  </svg>
-                  SANITIZE
-                </span>
-              </button>
+              {lastHtmlBlockId === null && (
+                <button type='submit' className='primary-btn'>
+                  <span className='flex justify-center gap-2'>
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-6 h-6'>
+                      <path d='M12,1A11,11,0,1,0,23,12,11.013,11.013,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9.01,9.01,0,0,1,12,21Zm5-9a1,1,0,0,1-1,1H13v3a1,1,0,0,1-2,0V13H8a1,1,0,0,1,0-2h3V8a1,1,0,0,1,2,0v3h3A1,1,0,0,1,17,12Z' />
+                    </svg>
+                    NEW {getSectionDetails(selectedSection).toUpperCase()}
+                  </span>
+                </button>
+              )}
               {lastHtmlBlockId && (
                 <button onClick={reRollHtmlBlock} className='primary-btn'>
                   <span className='flex justify-center gap-2'>
@@ -319,6 +313,14 @@ const EditForms: React.FC<EditFormsProps> = ({
                   </span>
                 </button>
               )}
+              <button onClick={handleSanitizeText} className='primary-btn'>
+                <span className='flex justify-center gap-2'>
+                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-6 h-6'>
+                    <path d='M1,12A11,11,0,0,1,17.882,2.7l1.411-1.41A1,1,0,0,1,21,2V6a1,1,0,0,1-1,1H16a1,1,0,0,1-.707-1.707l1.128-1.128A8.994,8.994,0,0,0,3,12a1,1,0,0,1-2,0Zm21-1a1,1,0,0,0-1,1,9.01,9.01,0,0,1-9,9,8.9,8.9,0,0,1-4.42-1.166l1.127-1.127A1,1,0,0,0,8,17H4a1,1,0,0,0-1,1v4a1,1,0,0,0,.617.924A.987.987,0,0,0,4,23a1,1,0,0,0,.707-.293L6.118,21.3A10.891,10.891,0,0,0,12,23,11.013,11.013,0,0,0,23,12,1,1,0,0,0,22,11Z' />
+                  </svg>
+                  SANITIZE
+                </span>
+              </button>
             </div>
           </form>
         </div>

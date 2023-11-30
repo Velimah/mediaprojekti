@@ -3,7 +3,7 @@ import { useChat } from "../contexts/ChatContext";
 
 // TODO: Update to backend URL when pushing to main, switch to localhost when testing locally
 // server URL https://medpal-catkos.northeurope.cloudapp.azure.com/gpt/completions
-const urli: string = "https://medpal-catkos.northeurope.cloudapp.azure.com/gpt/completions";
+const urli: string = "http://localhost:8000/gpt/completions";
 
 const useChatGPT = () => {
   const { dispatch } = useChat();
@@ -31,7 +31,7 @@ const useChatGPT = () => {
         throw new Error(`Request failed with status: ${response.status}`);
       }
 
-      const data = await response.text();
+      const data = await response.json();
 
       dispatch({ type: "SET_ANSWER", payload: data });
 
