@@ -165,7 +165,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     { value: "createTableSection", label: "Table" },
     { value: "createMap", label: "Text | Map" },
     { value: "createFooter", label: "Footer" },
-    { value: "createImage", label: "Generate Image" },
+    { value: "createImage", label: "AI Image" },
   ];
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
