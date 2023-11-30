@@ -5,6 +5,7 @@ import { useChat } from "../contexts/ChatContext";
 import { HtmlContext } from "../contexts/HtmlContext";
 import { useChatGPT } from "../hooks/ApiHooks";
 import Loader from "./Loader";
+import AlertDialog from "./AlertDialog";
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
@@ -32,6 +33,9 @@ const EditForms: React.FC<EditFormsProps> = ({
   const { loading, setLoading, getImage } = useChatGPT();
   const { htmlArray, setHtmlArray, pastHtmlArrays, setPastHtmlArrays, lastHtmlBlockId, setLastHtmlBlockId } =
     useContext(HtmlContext);
+  
+  const [error, setError] = useState("");
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
@@ -84,10 +88,15 @@ const EditForms: React.FC<EditFormsProps> = ({
         // TODO: add custom sizes
         try {
           const data = await getImage(formStateValues.additionalInfo, '512x512');
+          if(data===''){
+            throw new Error('Something went wrong');
+          }
           formStateValues.imageSrc = data;
           console.log('generated img URL:',data);
         } catch (error) {
           console.log("error in getting image: ", error);
+          //throw error again so parent can catch
+          throw error;
         }
       }
       const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
@@ -107,6 +116,8 @@ const EditForms: React.FC<EditFormsProps> = ({
       setLoading(false);
     } catch (error) {
       console.log("error", error);
+      setError((error as Error).message);
+      setShowAlertDialog(true);
       setLoading(false);
     }
   };
@@ -164,6 +175,8 @@ const EditForms: React.FC<EditFormsProps> = ({
   };
 
   return (
+    <>
+    {showAlertDialog && <AlertDialog content={error} onClose={() => setShowAlertDialog(false)} />}
     <div className='flex flex-col items-center justify-center font-robot'>
       <div className='flex items-center justify-center gap-5'>
         <button onClick={redoHeadTag} className='build-btn toolbar-btn w-40'>
@@ -306,6 +319,7 @@ const EditForms: React.FC<EditFormsProps> = ({
       </div>
       {loading && <Loader />}
     </div>
+    </>
   );
 };
 

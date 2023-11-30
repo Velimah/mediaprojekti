@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import { HtmlContext } from "../contexts/HtmlContext";
 import { PromptTemplate } from "../utils/Prompts";
 import { useNotification } from "../contexts/NotificationContext";
-import { useChatGPT } from "../hooks/ApiHooks";
 import EditForms from "../components/EditForms";
 import DragDropList from "../components/DragDropList";
 
@@ -28,11 +27,6 @@ const AdvancedResult = () => {
   const [hasSaved, setHasSaved] = useState<boolean>(false);
   const [openSave, setOpenSave] = useState<boolean>(false);
   const [handleCloseSave, setHandleCloseSave] = useState<boolean>(false);
-  const [openImgGeneration, setOpenImgGeneration] = useState<boolean>(false);
-  const [newImgPrompt, setNewImgPrompt] = useState("");
-
-  const { getImage, loading } = useChatGPT();
-
 
   /* add a warning when user is about to exit/refresh page IF not saved before new changes */
   useEffect(() => {
@@ -97,15 +91,6 @@ const AdvancedResult = () => {
     setNotification("default", "Saved");
     // Close Save -popup if code string has been saved succesfully to database
     setOpenSave(false);
-  };
-
-  /* toggle code frame's visibiltiy */
-  const toggleCodeVisibility = () => {
-    setCodeVisible(!codeVisible);
-  };
-  /* toggle preview frame's visibiltiy */
-  const togglePreviewVisibility = () => {
-    setPreviewVisible(!previewVisible);
   };
 
   // template for section details
@@ -215,68 +200,9 @@ const AdvancedResult = () => {
     );
   };
 
-  const [imagePrompt, setImagePrompt] = useState("");
-
-  // render a image generation promp
-  const ImgGeneration = () => {
-    return (
-      <div
-        className="w-full h-full overflow-hidden absolute top-1/2 left-1/2 transform translate-x-[-50%] -translate-y-1/2 z-[1] bg-black bg-opacity-25"
-        id="alertDialog"
-      >
-        <form onSubmit={handleImgForm} className="text-white p-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[1] w-full md:w-[35rem] h-auto bg-ai-black-100 rounded-lg shadow-lg animate-alert-pop-up">
-          <label className="relative">
-            <input
-              id="userPrompt"
-              type="text"
-              placeholder="A cute cat looking at the camera ..."
-              value={imagePrompt}
-              onChange={(e) => setImagePrompt(e.target.value)}
-              className="rounded-md border-ai-black text-ai-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full"
-            />
-            <span className="absolute left-0 top-0 px-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="nonabsolutee"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-                />
-              </svg>
-            </span>
-          </label>
-          <div className="flex py-4 md:flex-row flex-col items-stretch md:items-center">
-            <label className="grow pt-4 md:pt-0">
-              <input type="submit" className="primary-btn" value="GENERATE!" />
-            </label>
-          </div>
-        </form>
-      </div>
-    );
-  };
-
-  const handleImgForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const data = await getImage(imagePrompt, '512x512');
-      console.log(data);
-    } catch (error) {
-      console.log("error: ", error);
-    }
-    console.log('prompt: ',imagePrompt);
-    setOpenImgGeneration(false);
-  }
-
   return (
     <>
       {openSave && <SavePopup />}
-      {openImgGeneration && <ImgGeneration />}
       <div className="flex flex-col w-full items-center">
         {/*
         <PromptDialog question={""} />
@@ -286,7 +212,7 @@ const AdvancedResult = () => {
             <div className="bg-ai-black-100 flex flex-col items-center border border-ai-black-100 rounded">
               <h2
                 className="bg-ai-secondary text-ai-black text-lg font-bold font-robot w-full p-3 h-12 flex items-center uppercase cursor-pointer"
-                onClick={toggleCodeVisibility}
+                onClick={()=>setCodeVisible(!codeVisible)}
               >
                 {codeVisible ? (
                   <svg
@@ -373,26 +299,6 @@ const AdvancedResult = () => {
                     SAVE
                   </span>
                 </button>
-                <button
-                  onClick={() => setOpenImgGeneration(true)}
-                  className="build-btn toolbar-btn w-40"
-                >
-                  <span className="flex justify-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10.5 3A1.501 1.501 0 009 4.5h6A1.5 1.5 0 0013.5 3h-3zm-2.693.178A3 3 0 0110.5 1.5h3a3 3 0 012.694 1.678c.497.042.992.092 1.486.15 1.497.173 2.57 1.46 2.57 2.929V19.5a3 3 0 01-3 3H6.75a3 3 0 01-3-3V6.257c0-1.47 1.073-2.756 2.57-2.93.493-.057.989-.107 1.487-.15z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    GENERATE IMAGE
-                  </span>
-                </button>
                 {/*
               <button
                 onClick={handleSave}
@@ -434,7 +340,7 @@ const AdvancedResult = () => {
             <div className="bg-white flex flex-col items-center border border-black rounded">
               <h2
                 className="bg-ai-primary text-ai-black text-lg font-bold font-robot w-full p-3 h-12 flex items-center uppercase cursor-pointer"
-                onClick={togglePreviewVisibility}
+                onClick={()=>setPreviewVisible(!previewVisible)}
               >
                 {previewVisible ? (
                   <svg
