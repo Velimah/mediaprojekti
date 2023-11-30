@@ -126,7 +126,7 @@ export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: Fo
       "Code to analyze:",
     ],
     sanitizeText: [`${additionalInfo}`],
-    createImage: `Use ${cssLibrary} css for html styling. Add a image inside <img> tag, with the src being ${imageSrc}. Alt must be ${additionalInfo}. Use <figure> tag, make it semantic. Wrap it all in a <article>. Make sure image is responsive.`,
+    createImage: [`Use ${cssLibrary} css for html styling. Add a image inside <img> tag, with the src being ${imageSrc}. Alt must be ${additionalInfo}. Use <figure> tag, make it semantic. Wrap it all in a <article>. Make sure image is responsive.`],
   };
 
   return promptTemplates[promptTemplate].join(" ");
