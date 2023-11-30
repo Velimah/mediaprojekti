@@ -5,6 +5,7 @@ import { useChat } from "../contexts/ChatContext";
 import { HtmlContext } from "../contexts/HtmlContext";
 import { useChatGPT } from "../hooks/ApiHooks";
 import Loader from "./Loader";
+import AlertDialog from "./AlertDialog";
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
@@ -13,6 +14,7 @@ interface EditFormsProps {
       mapAddress: string;
       mapCity: string;
       additionalInfo: string;
+      imageSrc: string;
     };
   };
   setSelectedSection: (params: PromptTemplate) => void;
@@ -28,9 +30,12 @@ const EditForms: React.FC<EditFormsProps> = ({
 }) => {
   const { createHeadInfo, createHtmlBlock, sanitizeText } = PromptFunctions();
   const { dispatch } = useChat();
-  const { loading, setLoading } = useChatGPT();
+  const { loading, setLoading, getImage } = useChatGPT();
   const { htmlArray, setHtmlArray, pastHtmlArrays, setPastHtmlArrays, lastHtmlBlockId, setLastHtmlBlockId } =
     useContext(HtmlContext);
+  
+  const [error, setError] = useState("");
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
@@ -40,6 +45,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     mapAddress: initialValues?.mapAddress || "",
     mapCity: initialValues?.mapCity || "",
     additionalInfo: initialValues?.additionalInfo || "",
+    imageSrc: initialValues?.imageSrc || "",
   });
 
   const redoHeadTag = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -76,6 +82,23 @@ const EditForms: React.FC<EditFormsProps> = ({
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
     setLoading(true);
     try {
+      // If generate image selected, generate image first
+      if(htmlBlockName === 'createImage'){
+        // TODO: make sure this gets called first before createHtmlBlock
+        // TODO: add custom sizes
+        try {
+          const data = await getImage(formStateValues.additionalInfo, '512x512');
+          if(data===''){
+            throw new Error('Something went wrong');
+          }
+          formStateValues.imageSrc = data;
+          console.log('generated img URL:',data);
+        } catch (error) {
+          console.log("error in getting image: ", error);
+          //throw error again so parent can catch
+          throw error;
+        }
+      }
       const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
       if (typeof sanitizedHtmlData === "string") {
         const newId = checkForFreeId(newHtmlArray);
@@ -93,10 +116,13 @@ const EditForms: React.FC<EditFormsProps> = ({
       setLoading(false);
     } catch (error) {
       console.log("error", error);
+      setError((error as Error).message);
+      setShowAlertDialog(true);
       setLoading(false);
     }
   };
 
+  // TODO: add reRoll for generate img
   const reRollHtmlBlock = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
@@ -105,6 +131,7 @@ const EditForms: React.FC<EditFormsProps> = ({
       const index = newHtmlArray.findIndex((item) => item.id === lastHtmlBlockId);
       const htmlBlockName: PromptTemplate = newHtmlArray[index].name as PromptTemplate;
       setLoading(true);
+      console.log('selected reroll',htmlBlockName)
       try {
         const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
         if (typeof sanitizedHtmlData === "string") {
@@ -163,6 +190,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     { value: "createTableSection", label: "Table" },
     { value: "createMap", label: "Text | Map" },
     { value: "createFooter", label: "Footer" },
+    { value: "createImage", label: "AI Image" },
   ];
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -171,6 +199,8 @@ const EditForms: React.FC<EditFormsProps> = ({
   };
 
   return (
+    <>
+    {showAlertDialog && <AlertDialog content={error} onClose={() => setShowAlertDialog(false)} />}
     <div className='flex flex-col items-center justify-center font-robot'>
       <div className='flex items-center justify-center gap-5'>
         <button onClick={redoHeadTag} className='build-btn toolbar-btn w-40'>
@@ -325,6 +355,7 @@ const EditForms: React.FC<EditFormsProps> = ({
       </div>
       {loading && <Loader />}
     </div>
+    </>
   );
 };
 

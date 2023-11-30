@@ -6,6 +6,7 @@ export type PromptTemplate =
   | "createFooter"
   | "createMap"
   | "CreateHead"
+  | "createImage"
   | "sanitizeText";
 
 export interface FormValues {
@@ -14,10 +15,11 @@ export interface FormValues {
   mapAddress: string;
   mapCity: string;
   additionalInfo: string;
+  imageSrc: string;
 }
 
 export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: FormValues): string => {
-  const { cssLibrary, colors, mapAddress, mapCity, additionalInfo } = formValues;
+  const { cssLibrary, colors, mapAddress, mapCity, additionalInfo, imageSrc } = formValues;
 
   const promptTemplates = {
     createNavigation: [
@@ -124,6 +126,7 @@ export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: Fo
       "Code to analyze:",
     ],
     sanitizeText: [`${additionalInfo}`],
+    createImage: [`Use ${cssLibrary} css for html styling. Add a image inside <img> tag, with the src being ${imageSrc}. Alt must be ${additionalInfo}. Use <figure> tag, make it semantic. Wrap it all in a <article>. Make sure image is responsive.`],
   };
 
   return promptTemplates[promptTemplate].join(" ");
