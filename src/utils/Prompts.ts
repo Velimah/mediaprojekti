@@ -79,11 +79,8 @@ export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: Fo
       "Incorporate shadow and hover effects for links.",
       "Utilize flexbox for responsiveness.",
       "Place the following <iframe> tag inside the <div></div>, ensuring not to modify content of iframe tag:",
-      `<div>
-        <p></p>
-        <iframe style="width:100%;" src="https://www.google.com/maps/embed/v1/place?q=${mapAddress}, ${mapCity}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&zoom=15&maptype=satellite"></iframe>
-      </div>`,
-      "Make the iframe height close to 400px, and black border.",
+      `<iframe style="width:100%;" src="https://www.google.com/maps/embed/v1/place?q=${mapAddress}, ${mapCity}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&zoom=15&maptype=satellite"></iframe>`,
+      "Make the iframe height is close to 400px.",
       `Consider additional information: ${additionalInfo}.`,
       "Generate all text using the language specified in the additional information.",
     ],

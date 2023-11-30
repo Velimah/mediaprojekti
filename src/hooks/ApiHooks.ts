@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useChat } from "../contexts/ChatContext";
 
 // TODO: Update to backend URL when pushing to main, switch to localhost when testing locally
-// server URL https://medpal-catkos.northeurope.cloudapp.azure.com/gpt/completions
-const urli: string = "http://localhost:8000/gpt/completions";
+// server URL https://medpal-catkos.northeurope.cloudapp.azure.com/gpt/completions || http://localhost:8000/gpt/completions
+const urli: string = "https://medpal-catkos.northeurope.cloudapp.azure.com/gpt/completions";
 
 const useChatGPT = () => {
   const { dispatch } = useChat();

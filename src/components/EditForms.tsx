@@ -293,16 +293,14 @@ const EditForms: React.FC<EditFormsProps> = ({
                   </option>
                 ))}
               </select>
-              {lastHtmlBlockId === null && (
-                <button type='submit' className='primary-btn'>
-                  <span className='flex justify-center gap-2'>
-                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-6 h-6'>
-                      <path d='M12,1A11,11,0,1,0,23,12,11.013,11.013,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9.01,9.01,0,0,1,12,21Zm5-9a1,1,0,0,1-1,1H13v3a1,1,0,0,1-2,0V13H8a1,1,0,0,1,0-2h3V8a1,1,0,0,1,2,0v3h3A1,1,0,0,1,17,12Z' />
-                    </svg>
-                    NEW {getSectionDetails(selectedSection).toUpperCase()}
-                  </span>
-                </button>
-              )}
+              <button type='submit' className='primary-btn'>
+                <span className='flex justify-center gap-2'>
+                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-6 h-6'>
+                    <path d='M12,1A11,11,0,1,0,23,12,11.013,11.013,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9.01,9.01,0,0,1,12,21Zm5-9a1,1,0,0,1-1,1H13v3a1,1,0,0,1-2,0V13H8a1,1,0,0,1,0-2h3V8a1,1,0,0,1,2,0v3h3A1,1,0,0,1,17,12Z' />
+                  </svg>
+                  NEW {getSectionDetails(selectedSection).toUpperCase()}
+                </span>
+              </button>
               {lastHtmlBlockId && (
                 <button onClick={reRollHtmlBlock} className='primary-btn'>
                   <span className='flex justify-center gap-2'>
