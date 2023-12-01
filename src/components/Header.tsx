@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from "../contexts/UserContext";
+import { useNotification } from "../contexts/NotificationContext";
 
 const Header = () => {
 
@@ -10,6 +11,7 @@ const Header = () => {
   const [handleCloseAnim, setHandleCloseAnim] = useState<boolean>(false);
   const {user, setUser} = useUser();
   const navigate = useNavigate();
+  const {setNotification} = useNotification();
 
   // TODO: add router/page switch
   const renderPage = () => {
@@ -70,6 +72,7 @@ const Header = () => {
 
   const Logout = () => {
     setUser(null);
+    setNotification("default", "Logged out");
     navigate("/");
   }
   // render navigation items

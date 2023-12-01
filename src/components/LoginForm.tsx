@@ -3,6 +3,7 @@ import { UserData, useUsers } from "../hooks/UserApiHooks";
 import { useUser } from "../contexts/UserContext";
 import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "../contexts/NotificationContext";
 
 const LoginForm: React.FC = () => {
   const { loginUser, loading } = useUsers();
@@ -10,6 +11,8 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const {setUser} = useUser();
   const navigate = useNavigate();
+  const {setNotification} = useNotification();
+
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: add better validators/sanitize inputs
@@ -23,6 +26,7 @@ const LoginForm: React.FC = () => {
         console.log("logindata : ", data);
         if (data.accessToken) {
           setUser(data);
+          setNotification("default", "Logged in")
           navigate("/");
         }
       }
