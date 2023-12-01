@@ -3,7 +3,11 @@ import { useUsers } from "../hooks/UserApiHooks";
 import { useNotification } from "../contexts/NotificationContext";
 import Loader from "./Loader";
 
-const RegisterForm: React.FC = () => {
+interface RegisterFormProps {
+  setToggle: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
   const { setNotification } = useNotification();
   const { registerUser, loading } = useUsers();
   const [username, setUsername] = useState("");
@@ -20,6 +24,8 @@ const RegisterForm: React.FC = () => {
       } else {
        const data = await registerUser(username, password);
        console.log("userdata: ", data);
+       setNotification("default", "User registered successfully!");
+       setToggle(true);
       }
     } catch (error) {
       console.log("error in handleRegister: ", error);
@@ -40,6 +46,7 @@ const RegisterForm: React.FC = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
+            required
           />
         </div>
         <div className="flex flex-col">
@@ -52,6 +59,7 @@ const RegisterForm: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
+            required
           />
         </div>
         <div className="flex flex-col">
@@ -64,6 +72,7 @@ const RegisterForm: React.FC = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
+            required
           />
         </div>
         <button
