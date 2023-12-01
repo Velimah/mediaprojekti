@@ -1,23 +1,31 @@
 import { useState } from "react";
-import { useUsers } from "../hooks/UserApiHooks";
+import { UserData, useUsers } from "../hooks/UserApiHooks";
+import { useUser } from "../contexts/UserContext";
 import Loader from "./Loader";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
   const { loginUser, loading } = useUsers();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const {setUser} = useUser();
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: add better validators/sanitize inputs
     e.preventDefault();
     try {
       if (!username || !password) {
-      console.log("Username/password cannot be empty");
-      return;
-    } else {
-      const data = await loginUser(username, password);
-      console.log("logindata: ", data);
-    }
+        console.log("Username/password cannot be empty");
+        return;
+      } else {
+        const data: UserData = await loginUser(username, password);
+        console.log("logindata : ", data);
+        if (data.accessToken) {
+          setUser(data);
+          navigate("/");
+        }
+      }
     } catch (error) {
       console.log("error in handleLogin: ", error);
     }

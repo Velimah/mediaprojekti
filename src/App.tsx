@@ -9,12 +9,15 @@ import Notification from "./components/Notification";
 import AdvancedHome from "./views/AdvancedHome";
 import AdvancedResult from "./views/AdvancedResult";
 import Login from "./views/Login";
+import Account from "./views/Account"
+import { UserProvider } from "./contexts/UserContext";
 export function sum(a: number, b: number) {
   return a + b;
 }
 
 const App = () => {
   return (
+    <UserProvider>
     <ChatProvider>
     <NotificationProvider>
       <HashRouter>
@@ -25,12 +28,14 @@ const App = () => {
             <Route path='/result' element={<Result />} />
             <Route path='/advancedresult' element={<AdvancedResult />} />
             <Route path='/login' element={<Login />}/>
+            <Route path='/account' element={<Account />}/>
           </Route>
         </Routes>
       </HashRouter>
       <Notification />
       </NotificationProvider>
     </ChatProvider>
+    </UserProvider>
   );
 };
 
