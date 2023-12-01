@@ -22,10 +22,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
         setNotification("error", "Passwords do not match!");
         return;
       } else {
-       const data = await registerUser(username, password);
-       console.log("userdata: ", data);
-       setNotification("default", "User registered successfully!");
-       setToggle(true);
+        const data = await registerUser(username, password);
+        console.log("userdata: ", data);
+        setNotification("default", "User registered successfully!");
+        setToggle(true);
       }
     } catch (error) {
       console.log("error in handleRegister: ", error);
@@ -45,9 +45,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
+            className="... peer border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
             required
+            pattern=".{1,}"
           />
+          <span className="mt-2 hidden text-sm text-orange-400 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+            Username can't be empty
+          </span>
         </div>
         <div className="flex flex-col">
           <label htmlFor="password" className="mb-1 font-semibold">
@@ -58,9 +62,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
+            className="... peer border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
             required
+            pattern=".{7,}"
           />
+          <span className="mt-2 hidden text-sm text-orange-400 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+            Password should be atleat 7 letters
+          </span>
         </div>
         <div className="flex flex-col">
           <label htmlFor="confirmPassword" className="mb-1 font-semibold">
@@ -71,9 +79,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
             id="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
+            className="... peer border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
             required
+            pattern=".{7,}"
           />
+          <span className="mt-2 hidden text-sm text-orange-400 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+            Password should be atleat 7 letters
+          </span>
         </div>
         <button
           type="submit"
