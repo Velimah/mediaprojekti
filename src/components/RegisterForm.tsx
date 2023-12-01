@@ -10,15 +10,16 @@ const RegisterForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    // TODO: add better validators/sanitize inputs
     e.preventDefault();
-
     try {
       if (password !== confirmPassword) {
         setNotification("error", "Passwords do not match!");
         return;
       } else {
-        registerUser(username, password);
+       const data = await registerUser(username, password);
+       console.log("userdata: ", data);
       }
     } catch (error) {
       console.log("error in handleRegister: ", error);
@@ -38,7 +39,7 @@ const RegisterForm: React.FC = () => {
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+            className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
           />
         </div>
         <div className="flex flex-col">
@@ -50,7 +51,7 @@ const RegisterForm: React.FC = () => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+            className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
           />
         </div>
         <div className="flex flex-col">
@@ -62,7 +63,7 @@ const RegisterForm: React.FC = () => {
             id="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+            className="border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
           />
         </div>
         <button
