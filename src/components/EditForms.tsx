@@ -5,6 +5,7 @@ import { useChat } from "../contexts/ChatContext";
 import { HtmlContext } from "../contexts/HtmlContext";
 import { useChatGPT } from "../hooks/ApiHooks";
 import Loader from "./Loader";
+import AlertDialog from "./AlertDialog";
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
@@ -13,6 +14,7 @@ interface EditFormsProps {
       mapAddress: string;
       mapCity: string;
       additionalInfo: string;
+      imageSrc: string;
     };
   };
   setSelectedSection: (params: PromptTemplate) => void;
@@ -26,11 +28,14 @@ const EditForms: React.FC<EditFormsProps> = ({
   selectedSection,
   getSectionDetails,
 }) => {
-  const { createHeadInfo, createHtmlBlock } = PromptFunctions();
+  const { createHeadInfo, createHtmlBlock, sanitizeText } = PromptFunctions();
   const { dispatch } = useChat();
-  const { loading, setLoading } = useChatGPT();
+  const { loading, setLoading, getImage } = useChatGPT();
   const { htmlArray, setHtmlArray, pastHtmlArrays, setPastHtmlArrays, lastHtmlBlockId, setLastHtmlBlockId } =
     useContext(HtmlContext);
+  
+  const [error, setError] = useState("");
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
 
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
@@ -40,6 +45,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     mapAddress: initialValues?.mapAddress || "",
     mapCity: initialValues?.mapCity || "",
     additionalInfo: initialValues?.additionalInfo || "",
+    imageSrc: initialValues?.imageSrc || "",
   });
 
   const redoHeadTag = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -76,6 +82,23 @@ const EditForms: React.FC<EditFormsProps> = ({
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
     setLoading(true);
     try {
+      // If generate image selected, generate image first
+      if(htmlBlockName === 'createImage'){
+        // TODO: make sure this gets called first before createHtmlBlock
+        // TODO: add custom sizes
+        try {
+          const data = await getImage(formStateValues.additionalInfo, '512x512');
+          if(data===''){
+            throw new Error('Something went wrong');
+          }
+          formStateValues.imageSrc = data;
+          console.log('generated img URL:',data);
+        } catch (error) {
+          console.log("error in getting image: ", error);
+          //throw error again so parent can catch
+          throw error;
+        }
+      }
       const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
       if (typeof sanitizedHtmlData === "string") {
         const newId = checkForFreeId(newHtmlArray);
@@ -93,23 +116,34 @@ const EditForms: React.FC<EditFormsProps> = ({
       setLoading(false);
     } catch (error) {
       console.log("error", error);
+      setError((error as Error).message);
+      setShowAlertDialog(true);
       setLoading(false);
     }
   };
 
+  // TODO: add reRoll for generate img
   const reRollHtmlBlock = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const newHtmlArray = [...htmlArray];
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]); // Save the current state to the history
+    const newHtmlArray = [...htmlArray];
     if (typeof lastHtmlBlockId === "number") {
       const index = newHtmlArray.findIndex((item) => item.id === lastHtmlBlockId);
       const htmlBlockName: PromptTemplate = newHtmlArray[index].name as PromptTemplate;
       setLoading(true);
+      console.log('selected reroll',htmlBlockName)
       try {
         const sanitizedHtmlData = await createHtmlBlock(htmlBlockName, formStateValues);
         if (typeof sanitizedHtmlData === "string") {
-          newHtmlArray[index].content = sanitizedHtmlData;
-          setHtmlArray(newHtmlArray);
+          const updatedHtmlArray = newHtmlArray.map((item, i) => {
+            if (i === index) {
+              // Modify the content property for the specific index
+              return { ...item, content: sanitizedHtmlData };
+            }
+            // For other indices, return the item unchanged
+            return item;
+          });
+          setHtmlArray([...updatedHtmlArray]);
         }
         setLoading(false);
       } catch (error) {
@@ -119,15 +153,33 @@ const EditForms: React.FC<EditFormsProps> = ({
     }
   };
 
+  const handleSanitizeText = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+      const sanitizedText = await sanitizeText("sanitizeText", formStateValues);
+      if (typeof sanitizedText === "string") {
+        setFormStateValues({
+          ...formStateValues,
+          additionalInfo: sanitizedText,
+        });
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
   const undoLastChange = () => {
     if (pastHtmlArrays.length > 0) {
+      console.log("pastHtmlArrays", pastHtmlArrays);
       const previousHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];
       const previousHtmlArrays = [...pastHtmlArrays];
       setPastHtmlArrays(previousHtmlArrays.slice(0, -1));
-      setHtmlArray(previousHtmlArray);
+      setHtmlArray([...previousHtmlArray]);
       setLastHtmlBlockId(null);
     }
-    // Remove this line -> setUndo(false);
   };
 
   // select options for form
@@ -138,15 +190,17 @@ const EditForms: React.FC<EditFormsProps> = ({
     { value: "createTableSection", label: "Table" },
     { value: "createMap", label: "Text | Map" },
     { value: "createFooter", label: "Footer" },
+    { value: "createImage", label: "AI Image" },
   ];
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    event.preventDefault();
     setSelectedSection(event.target.value as PromptTemplate);
     setLastHtmlBlockId(null);
   };
 
   return (
+    <>
+    {showAlertDialog && <AlertDialog content={error} onClose={() => setShowAlertDialog(false)} />}
     <div className='flex flex-col items-center justify-center font-robot'>
       <div className='flex items-center justify-center gap-5'>
         <button onClick={redoHeadTag} className='build-btn toolbar-btn w-40'>
@@ -174,10 +228,10 @@ const EditForms: React.FC<EditFormsProps> = ({
       <div className='flex flex-col flex-wrap justify-center items-center'>
         {/* ... (your other buttons) */}
 
-        <div className='bg-ai-black-100 p-4 rounded-b-md relative'>
+        <div className='bg-ai-black-100 p-4 rounded-b-md relative w-2xl'>
           <form className=' text-white' onSubmit={(event) => handleCreateHtmlBlockForm(selectedSection, event)}>
             {selectedSection === "createMap" && (
-              <>
+              <div>
                 <label className='relative'>
                   <input
                     id='mapAdress'
@@ -211,14 +265,14 @@ const EditForms: React.FC<EditFormsProps> = ({
                 </label>
                 <label className='relative'>
                   <input
-                    id='mapAdress'
+                    id='mapCity'
                     type='text'
                     placeholder='And the city  ...'
-                    value={formStateValues.mapAddress}
+                    value={formStateValues.mapCity}
                     onChange={(event) =>
                       setFormStateValues({
                         ...formStateValues,
-                        mapAddress: event.target.value,
+                        mapCity: event.target.value,
                       })
                     }
                     className='mb-2 rounded-md border-ai-black text-ai-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full'
@@ -240,7 +294,7 @@ const EditForms: React.FC<EditFormsProps> = ({
                     </svg>
                   </span>
                 </label>
-              </>
+              </div>
             )}
             <label className='relative mt-2'>
               <textarea
@@ -254,13 +308,17 @@ const EditForms: React.FC<EditFormsProps> = ({
                     additionalInfo: event.target.value,
                   })
                 }
-                className='rounded-md border-ai-black text-ai-black py-3 pl-12 pr-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full'
+                className='rounded-md border-ai-black text-ai-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full'
               />
             </label>
-            <div className='flex gap-2 mt-2 '>
-              <select value={selectedSection} onChange={handleSelectChange} className='toolbar-btn bg-ai-black'>
+            <div className='flex flex-col md:flex-row gap-2 mt-2'>
+              <select
+                value={selectedSection}
+                onChange={handleSelectChange}
+                className='toolbar-btn bg-black hover:bg-black hover:text-ai-primary '
+              >
                 {sections.map((section) => (
-                  <option className='bg-ai-primary' key={section.value} value={section.value}>
+                  <option className='' key={section.value} value={section.value}>
                     {section.label}
                   </option>
                 ))}
@@ -283,12 +341,21 @@ const EditForms: React.FC<EditFormsProps> = ({
                   </span>
                 </button>
               )}
+              <button onClick={handleSanitizeText} className='primary-btn'>
+                <span className='flex justify-center gap-2'>
+                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-6 h-6'>
+                    <path d='M1,12A11,11,0,0,1,17.882,2.7l1.411-1.41A1,1,0,0,1,21,2V6a1,1,0,0,1-1,1H16a1,1,0,0,1-.707-1.707l1.128-1.128A8.994,8.994,0,0,0,3,12a1,1,0,0,1-2,0Zm21-1a1,1,0,0,0-1,1,9.01,9.01,0,0,1-9,9,8.9,8.9,0,0,1-4.42-1.166l1.127-1.127A1,1,0,0,0,8,17H4a1,1,0,0,0-1,1v4a1,1,0,0,0,.617.924A.987.987,0,0,0,4,23a1,1,0,0,0,.707-.293L6.118,21.3A10.891,10.891,0,0,0,12,23,11.013,11.013,0,0,0,23,12,1,1,0,0,0,22,11Z' />
+                  </svg>
+                  SANITIZE
+                </span>
+              </button>
             </div>
           </form>
         </div>
       </div>
       {loading && <Loader />}
     </div>
+    </>
   );
 };
 
