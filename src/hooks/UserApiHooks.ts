@@ -10,6 +10,13 @@ export interface UserData {
   accessToken: string;
 }
 
+export interface WebsiteData {
+  _id : string,
+  name : string,
+  html : string,
+  previewimage : string | null
+}
+
 const useUsers = () => {
   const [loading, setLoading] = useState(false);
 
@@ -34,9 +41,6 @@ const useUsers = () => {
       }
 
       const data = await response.text();
-
-      console.log("response: ", response);
-      console.log("data: ", data);
 
       return data;
     } catch (error) {
@@ -68,9 +72,6 @@ const useUsers = () => {
       }
 
       const data = await response.json();
-
-      console.log("response: ", response);
-      console.log("data: ", data);
 
       return data;
     } catch (error) {
@@ -121,7 +122,37 @@ const useUsers = () => {
     }
   };
 
-  return { registerUser, loginUser, loading, saveCode };
+  const getUsersSavedWebsites = async (user: UserData): Promise<WebsiteData[]> => {
+    const options: RequestInit = {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        Authorization: authHeader(user),
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(urli + "/getsaved/" + user.id, options);
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      return data as WebsiteData[];
+    } catch (error) {
+      console.log(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { registerUser, loginUser, loading, saveCode, getUsersSavedWebsites };
 }
 
 
