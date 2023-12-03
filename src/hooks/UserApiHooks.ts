@@ -81,26 +81,24 @@ const useUsers = () => {
     }
   }
 
- function authHeader() {
-    const user : UserData = JSON.parse(localStorage.getItem('user') || null);
-  
+  const authHeader = (user: UserData): string => {
     if (user && user.accessToken) {
-      return  'Bearer ' + user.accessToken;
+      return "Bearer " + user.accessToken;
     } else {
-      return '';
+      return "";
     }
-  }
+  };
   
-
-  const saveCode = async (name: string, html: string, userid: string): Promise<string> => {
+  // Save html to db
+  const saveCode = async (name: string, html: string, user: UserData): Promise<string> => {
     const options: RequestInit = {
       method: "POST",
       mode: "cors",
       headers: {
-        "Authorization" : authHeader(),
+        "Authorization" : authHeader(user),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: name, html: html, user: userid }),
+      body: JSON.stringify({ name: name, html: html, user: user.id }),
     };
 
     try {
