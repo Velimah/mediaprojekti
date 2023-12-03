@@ -5,8 +5,15 @@ import { PromptTemplate } from "../utils/Prompts";
 import { useNotification } from "../contexts/NotificationContext";
 import EditForms from "../components/EditForms";
 import DragDropList from "../components/DragDropList";
+import { useUsers } from "../hooks/UserApiHooks";
+import { useUser } from "../contexts/UserContext";
+import ProtectedComponent from "../components/ProtectedComponent";
+
 
 const AdvancedResult = () => {
+  const { user } = useUser();
+  const { saveCode }  = useUsers();
+
   const { htmlArray } = useContext(HtmlContext);
 
   const [code, setCode] = useState<string>("");
@@ -87,10 +94,15 @@ const AdvancedResult = () => {
   };
 
   const handleSave = () => {
-    // Save logic here
-    setNotification("default", "Saved");
-    // Close Save -popup if code string has been saved succesfully to database
-    setOpenSave(false);
+    const name = prompt("Please enter a name for your code:");
+
+     if (name && user) {
+      saveCode(name, code, user);
+      setOpenSave(false);
+      setNotification("default", "Saved");
+    } else {
+      setNotification("default", "Code was not saved");
+    }
   };
 
   // template for section details
@@ -158,6 +170,7 @@ const AdvancedResult = () => {
               <span className="text-2xl font-bold font-robot">SAVE</span>
             </div>
             <div className="flex flex-col items-center justify-center font-robot gap-5">
+
               <button onClick={handleSave} className="primary-btn">
                 <span className="flex gap-2 justify-center">
                   <svg
@@ -279,6 +292,7 @@ const AdvancedResult = () => {
                     COPY
                   </span>
                 </button>
+                <ProtectedComponent hasAuth={  
                 <button
                   onClick={() => setOpenSave(true)}
                   className="build-btn toolbar-btn w-40"
@@ -298,7 +312,7 @@ const AdvancedResult = () => {
                     </svg>
                     SAVE
                   </span>
-                </button>
+                </button>} noAuth={ <div></div>} />
                 {/*
               <button
                 onClick={handleSave}
