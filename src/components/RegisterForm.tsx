@@ -67,7 +67,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
             pattern=".{7,}"
           />
           <span className="mt-2 hidden text-sm text-orange-400 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
-            Password should be atleat 7 letters
+            Password should be at least 7 letters
           </span>
         </div>
         <div className="flex flex-col">
@@ -84,7 +84,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
             pattern=".{7,}"
           />
           <span className="mt-2 hidden text-sm text-orange-400 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
-            Password should be atleat 7 letters
+            Password should be at least 7 letters
           </span>
         </div>
         <button
