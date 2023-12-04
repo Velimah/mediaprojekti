@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useChat } from "../contexts/ChatContext";
 
 // TODO: Update to backend URL when pushing to main, switch to localhost when testing locally
-// server URL https://medpal-catkos.northeurope.cloudapp.azure.com || http://localhost:8000/gpt/completions
-const urli: string = "https://medpal-catkos.northeurope.cloudapp.azure.com";
+// server URL https://medpal-catkos.northeurope.cloudapp.azure.com || http://localhost:8000
+const urli: string = "http://localhost:8000";
 const urlTxt: string = "/gpt/completions";
 const urlImg: string = "/gpt/generations";
 
@@ -94,7 +94,7 @@ const useChatGPT = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return { postQuestion, getImage, loading, setLoading };
 };
