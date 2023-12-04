@@ -12,6 +12,7 @@ export interface UserData {
 
 export interface WebsiteData {
   _id : string,
+  originalPrompt: string;
   name : string,
   html : string,
   previewimage : string | null
@@ -91,7 +92,7 @@ const useUsers = () => {
   };
   
   // Save html to db
-  const saveCode = async (name: string, html: string, user: UserData): Promise<string> => {
+  const saveCode = async (originalPrompt: string, name: string, html: string, user: UserData): Promise<string> => {
     const options: RequestInit = {
       method: "POST",
       mode: "cors",
@@ -99,7 +100,7 @@ const useUsers = () => {
         "Authorization" : authHeader(user),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: name, html: html, user: user.id }),
+      body: JSON.stringify({ originalPrompt: originalPrompt, name: name, html: html, user: user.id }),
     };
 
     try {
@@ -152,7 +153,39 @@ const useUsers = () => {
     }
   };
 
-  return { registerUser, loginUser, loading, saveCode, getUsersSavedWebsites };
+
+  const updateUsersSavedWebsite = async (websiteId: string, updatedData: WebsiteData, user: UserData): Promise<WebsiteData[]> => {
+    const options: RequestInit = {
+      method: "PUT",
+      mode: "cors",
+      headers: {
+        Authorization: authHeader(user),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: user.id, updatedData }),
+    };
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(urli + "/updatesaved/" + websiteId, options);
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      return data as WebsiteData[];
+    } catch (error) {
+      console.log(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { registerUser, loginUser, loading, saveCode, getUsersSavedWebsites, updateUsersSavedWebsite };
 }
 
 
