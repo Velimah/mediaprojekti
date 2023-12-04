@@ -37,7 +37,7 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
 
     if (destination && destination.droppableId === "removeArea") {
       // The item was dragged into the remove area, remove it from the list
-      console.log("indexToRemove", indexToRemove);
+      setLastHtmlBlockId(null);
 
       const updatedItems = renderedItems.slice(); // Create a copy
       updatedItems.splice(indexToRemove, 1);
@@ -121,7 +121,7 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
         <Droppable droppableId='removeArea' direction='horizontal'>
           {(provided) => (
             <div
-              className='group flex flex-col w-full h-fit p-2 mt-4 bg-ai-tertiary text-center rounded justify-center items-center'
+              className='group flex flex-col w-full h-12 p-2 mt-4 bg-ai-tertiary text-center rounded justify-center items-center'
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
