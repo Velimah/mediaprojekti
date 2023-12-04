@@ -185,7 +185,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     { value: "createNavigation", label: "Navigation" },
     { value: "createMainSection", label: "Text" },
     { value: "createTableSection", label: "Table" },
-    { value: "createMap", label: "Text | Map" },
+    { value: "createMap", label: "Map" },
     { value: "createFooter", label: "Footer" },
     { value: "createImage", label: "AI Image" },
   ];
@@ -199,7 +199,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     <>
       {showAlertDialog && <AlertDialog content={error} onClose={() => setShowAlertDialog(false)} />}
       <div className='flex flex-col items-center justify-center font-robot'>
-        <div className='flex items-center justify-center gap-5'>
+        <div className='flex flex-wrap items-center justify-center gap-5'>
           <button onClick={redoHeadTag} className='build-btn toolbar-btn w-40'>
             <span className='flex justify-center gap-2'>
               <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-6 h-6'>
