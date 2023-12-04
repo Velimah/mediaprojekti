@@ -168,13 +168,14 @@ const AdvancedHome = () => {
                         }
                       >
                         <option value='Tailwind'>Tailwind</option>
-                        <option value='Vanilla'>Vanilla/Default</option>
                         <option value='Bootstrap'>Bootstrap</option>
+                        <option value='Vanilla'>Vanilla/Default</option>
                         <option value='Materialize'>Materialize</option>
                         <option value='Bulma'>Bulma</option>
                         <option value='Foundation'>Foundation</option>
                       </select>
                     </label>
+                    {/* 
                     <label className='flex flex-row items-center'>
                       <span className='pr-2 font-bold'>Primary color:</span>
                       <input
@@ -190,6 +191,7 @@ const AdvancedHome = () => {
                         }
                       />
                     </label>
+                    */}
                   </div>
                   <label className='grow pt-4 md:pl-4 md:pt-0'>
                     <input type='submit' className='primary-btn' value='CREATE TEMPLATE' />
