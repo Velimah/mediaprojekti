@@ -5,13 +5,13 @@ import { PromptTemplate } from "../utils/Prompts";
 import { useNotification } from "../contexts/NotificationContext";
 import EditForms from "../components/EditForms";
 import DragDropList from "../components/DragDropList";
-import { useUsers } from "../hooks/UserApiHooks";
+// import { useUsers } from "../hooks/UserApiHooks";
 import { useUser } from "../contexts/UserContext";
 import ProtectedComponent from "../components/ProtectedComponent";
 
 const AdvancedResult = () => {
   const { user } = useUser();
-  const { saveCode } = useUsers();
+  // const { saveCode } = useUsers();
 
   const { htmlArray } = useContext(HtmlContext);
 
@@ -95,7 +95,7 @@ const AdvancedResult = () => {
     const name = prompt("Please enter a name for your code:");
 
     if (name && user) {
-      saveCode(name, code, user);
+      // saveCode(name, code, user);
       setOpenSave(false);
       setNotification("default", "Saved");
     } else {
