@@ -3,6 +3,7 @@ import { useChatGPT } from "../hooks/ApiHooks";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import AlertDialog from "../components/AlertDialog";
+import { ChatState } from "../contexts/ChatContext";
 
 const Home = () => {
   const { postQuestion, loading } = useChatGPT();
@@ -23,9 +24,17 @@ const Home = () => {
       setShowAlertDialog(true);
     } else {
       try {
-        const data = await postQuestion("html", newQuestion + addCSSprompt(newCSS) + addColorPrompt(newColor));
+        const data = await postQuestion(
+          "html",
+          newQuestion + addCSSprompt(newCSS) + addColorPrompt(newColor)
+        );
         console.log(data);
-        navigate("/result", { state: newQuestion });
+        const tila: ChatState = {
+          question: newQuestion,
+          answer: data,
+          editedanswer: "",
+        };
+        navigate("/result", { state: tila });
         setNewQuestion("");
       } catch (error) {
         console.log("error: ", error);
@@ -40,22 +49,16 @@ const Home = () => {
     switch (selectedValue) {
       case "Tailwind":
         return " (use Tailwind CSS)";
-        break;
       case "Bootstrap":
         return " (use Bootstrap CSS)";
-        break;
       case "Materialize":
         return " (use Materialize CSS)";
-        break;
       case "Bulma":
         return " (use Bulma CSS)";
-        break;
       case "Foundation":
         return " (use Foundation CSS)";
-        break;
       default:
         return "";
-        break;
     }
   };
   // Add primary colour prompt, returns string if selectedValue isn't empty

@@ -1,6 +1,6 @@
 import { createContext, useReducer,useContext, ReactNode, Dispatch } from "react";
 
-type ChatState = {
+export type ChatState = {
   question: string;
   answer: string;
   editedanswer: string;

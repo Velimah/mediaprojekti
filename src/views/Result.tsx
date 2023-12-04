@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useChat } from "../contexts/ChatContext";
+import { ChatState, useChat } from "../contexts/ChatContext";
 import PromptDialog from "../components/PromptDialog";
 import { useLocation } from "react-router-dom";
 import { useNotification } from "../contexts/NotificationContext";
@@ -13,7 +13,7 @@ const Result = () => {
   const { user } = useUser();
   const { saveCode }  = useUsers();
   const { /*question,*/ answer /*, editedanswer*/ } = state;
-  const originalPrompt = useLocation().state || {};
+  const originalPrompt = useLocation().state as ChatState|| {};
 
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
@@ -46,6 +46,11 @@ const Result = () => {
       setCode(answer);
     }
   }, [answer]);
+
+  useEffect(() => {
+    // from account view
+    setCode(originalPrompt.answer);
+  }, [originalPrompt.answer]);
 
   const handleRunCode = () => {
     if (previewFrame.current) {
@@ -84,7 +89,7 @@ const Result = () => {
     const name = prompt("Please enter a name for your code:");
 
     if (name && user) {
-      saveCode(name, code, user);
+      saveCode(originalPrompt.question, name, code, user);
       setOpenSave(false);
       setNotification("default", "Saved");
     } else {
@@ -187,7 +192,7 @@ const Result = () => {
     <>
       {openSave && <SavePopup />}
       <div className='flex flex-col w-full items-center'>
-        <PromptDialog question={originalPrompt} />
+        <PromptDialog question={originalPrompt.question} />
         <div className='w-full lg:w-3/4 px-4'>
           <div className='my-4'>
             <div className='bg-ai-black-100 flex flex-col items-center border border-ai-black-100 rounded'>

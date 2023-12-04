@@ -23,7 +23,6 @@ const LoginForm: React.FC = () => {
         return;
       } else {
         const data: UserData = await loginUser(username, password);
-        console.log("logindata : ", data);
         if (data.accessToken) {
           setUser(data);
           setNotification("default", "Logged in")

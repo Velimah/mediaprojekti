@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 interface PromptDialog {
-  question: string;
+  question: string | null;
 }
 
-const PromptDialog: React.FC<{ question: string }> = ({
+const PromptDialog: React.FC<{ question: string | null }> = ({
     question,
 }) => {
 
