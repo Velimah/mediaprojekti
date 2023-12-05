@@ -113,11 +113,11 @@ const AdvancedResult = () => {
       case "createTableSection":
         return "Table";
       case "createMap":
-        return "Text | Map";
+        return "Map";
       case "createFooter":
         return "Footer";
       case "createImage":
-        return "Generate Image";
+        return "AI Image";
       default:
         return "Unknown Section";
     }
