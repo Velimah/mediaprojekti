@@ -185,7 +185,36 @@ const useUsers = () => {
     }
   };
 
-  return { registerUser, loginUser, loading, saveCode, getUsersSavedWebsites, updateUsersSavedWebsite };
+  const deleteUsersSavedWebsite = async (websiteId: string, user: UserData): Promise<void> => {
+    const options: RequestInit = {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        Authorization: authHeader(user),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: user.id }),
+    };
+
+    try {
+      setLoading(true);
+
+      const response = await fetch(urli + "/deletesaved/" + websiteId, options);
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      console.log("deleted");
+    } catch (error) {
+      console.log(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { registerUser, loginUser, loading, saveCode, getUsersSavedWebsites, updateUsersSavedWebsite, deleteUsersSavedWebsite };
 }
 
 
