@@ -7,7 +7,7 @@ import { useChatGPT } from "../hooks/ApiHooks";
 import Loader from "./Loader";
 import AlertDialog from "./AlertDialog";
 
-interface EditFormsProps {
+export interface EditFormsProps {
   originalFormValues: {
     formValues: {
       htmlArray: HtmlBlock[];
@@ -18,6 +18,8 @@ interface EditFormsProps {
       mapCity: string;
       additionalInfo: string;
       imageSrc: string;
+      _id?: string;
+      name: string;
     };
   };
   setSelectedSection: (params: PromptTemplate) => void;
@@ -51,6 +53,8 @@ const EditForms: React.FC<EditFormsProps> = ({
     mapCity: initialValues?.mapCity || "",
     additionalInfo: initialValues?.additionalInfo || "",
     imageSrc: initialValues?.imageSrc || "",
+    _id: initialValues?._id || undefined,
+    name: initialValues?.name || ""
   });
 
   const redoHeadTag = async (event: React.MouseEvent<HTMLButtonElement>) => {

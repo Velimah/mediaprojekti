@@ -19,6 +19,8 @@ export interface FormValues {
   mapCity: string;
   additionalInfo: string;
   imageSrc: string;
+  _id?: string;
+  name: string;
 }
 
 export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: FormValues): string => {

@@ -25,16 +25,18 @@ const Home = () => {
     } else {
       try {
         const data = await postQuestion(
-          "html",
-          newQuestion + addCSSprompt(newCSS) + addColorPrompt(newColor)
+          "html", newQuestion + addCSSprompt(newCSS) + addColorPrompt(newColor)
         );
-        console.log(data);
-        const tila: ChatState = {
+        const chatState: ChatState = {
           question: newQuestion,
           answer: data,
           editedanswer: "",
+          _id: undefined,
+          name: "",
+          cssLibrary:"",
+          color:""
         };
-        navigate("/result", { state: tila });
+        navigate("/result", { state: chatState });
         setNewQuestion("");
       } catch (error) {
         console.log("error: ", error);
