@@ -1,20 +1,20 @@
 import { useState, useContext, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { HtmlContext } from "../contexts/HtmlContext";
-import { PromptTemplate } from "../utils/Prompts";
+import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useNotification } from "../contexts/NotificationContext";
 import EditForms from "../components/EditForms";
 import DragDropList from "../components/DragDropList";
-import { useUsers } from "../hooks/UserApiHooks";
+import { useUsers, advancedWebsiteData } from "../hooks/UserApiHooks";
 import { useUser } from "../contexts/UserContext";
 import ProtectedComponent from "../components/ProtectedComponent";
 
 const AdvancedResult = () => {
   const { user } = useUser();
-  const { advancedSaveCode } = useUsers();
+  const { advancedSaveCode, updateUsersAdvancedSavedWebsite } = useUsers();
 
   const { htmlArray, setHtmlArray } = useContext(HtmlContext);
-  const originalFormValues = (useLocation().state) || {};
+  const originalFormValues = useLocation().state || {};
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
   const codeTextarea = useRef<HTMLTextAreaElement>(null);
@@ -25,9 +25,6 @@ const AdvancedResult = () => {
   const [selectedSection, setSelectedSection] =
     useState<PromptTemplate>("createNavigation");
 
-  // const location = useLocation();
-
-  // const originalFormValues = location.state || {};
   const { setNotification } = useNotification();
   const [previewWidth, setPreviewWidth] = useState<string>("100%");
   const [hasSaved, setHasSaved] = useState<boolean>(false);
@@ -35,14 +32,11 @@ const AdvancedResult = () => {
   const [handleCloseSave, setHandleCloseSave] = useState<boolean>(false);
 
   useEffect(() => {
-    // console.log("useEffect=>originalFormValues", originalFormValues);
-    if (originalFormValues) {
-      if (originalFormValues.htmlArray) {
-        setCode(originalFormValues.code);
-        setHtmlArray(originalFormValues.htmlArray);
-      }
+    if (originalFormValues && originalFormValues.formValues.htmlArray) {
+      setCode(originalFormValues.formValues.code);
+      setHtmlArray(originalFormValues.formValues.htmlArray);
     }
-  }, [originalFormValues]);
+  }, [originalFormValues.formValues]);
 
   /* add a warning when user is about to exit/refresh page IF not saved before new changes */
   useEffect(() => {
@@ -60,7 +54,6 @@ const AdvancedResult = () => {
     // Update the code state with the current answer
     if (htmlArray) {
       setCode(htmlArray.map((block) => block.content).join(""));
-      console.log("htmlAray:", htmlArray);
     }
   }, [htmlArray]);
 
@@ -86,7 +79,6 @@ const AdvancedResult = () => {
         setNotification("default", "Copied to clipboard");
       }
     } catch (error) {
-      console.log("Error when copying to clipboard: ", error);
       setNotification("error", "Something went wrong.");
     }
   };
@@ -104,12 +96,34 @@ const AdvancedResult = () => {
   };
 
   const handleSave = () => {
-    const name = prompt("Please enter a name for your code:");
-    console.log("handlesave:",originalFormValues);
+    const fvals: FormValues = originalFormValues.formValues;
+    let name: string | null = "";
+    name = prompt("Please enter a name for your code:", fvals.name);
+
     if (name && user) {
-      advancedSaveCode(code, name, originalFormValues.formValues.cssLibrary, htmlArray, user);
-      setOpenSave(false);
-      setNotification("default", "Saved");
+      if (fvals._id !== undefined) {
+        const website: advancedWebsiteData = {
+          originalCode: code,
+          htmlarray: htmlArray,
+          name: name,
+          _id: fvals._id,
+          cssLibrary: fvals.cssLibrary,
+          previewimage: null,
+        };
+        updateUsersAdvancedSavedWebsite(website._id, website, user);
+        setOpenSave(false);
+        setNotification("default", "Updated");
+      } else {
+        advancedSaveCode(
+          code,
+          name,
+          originalFormValues.formValues.cssLibrary,
+          htmlArray,
+          user
+        );
+        setOpenSave(false);
+        setNotification("default", "Saved");
+      }
     } else {
       setNotification("default", "Code was not saved");
     }

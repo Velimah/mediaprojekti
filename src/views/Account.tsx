@@ -4,7 +4,6 @@ import { WebsiteData, advancedWebsiteData, useUsers } from "../hooks/UserApiHook
 import ProtectedComponent from "../components/ProtectedComponent";
 import { useNavigate } from 'react-router-dom';
 import { ChatState } from "../contexts/ChatContext";
-import { FormValues } from "../utils/Prompts";
 
 const Account: React.FC = () => {
   const { getUsersSavedWebsites, getUsersAdvancedSavedWebsites, deleteUsersSavedWebsite,deleteUsersSavedAdvancedWebsite } = useUsers();
@@ -63,25 +62,25 @@ const Account: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchedUsersData, fetchedUsersAdvancedData]);
 
-  const selectItemClick = async (event: React.MouseEvent) => {
-    event.preventDefault();
-    const id = event.currentTarget.id;
+  const selectItemClick = async (id: string) => {  
     const selectedprojekti: WebsiteData | undefined = fetchedUsersData.find(
       (a) => a._id === id
     );
     if (selectedprojekti) {
       const state: ChatState = {
+        name: selectedprojekti.name,
+        _id: selectedprojekti._id,
         question: selectedprojekti.originalPrompt,
         answer: selectedprojekti.html,
         editedanswer: "",
+        cssLibrary:"",
+        color:""
       };
       navigate("/result", { state: state });
     }
   };
 
-  const selectAdvancedItemClick = async (event: React.MouseEvent) => {
-    event.preventDefault();
-    const id = event.currentTarget.id;
+  const selectAdvancedItemClick = async (id: string) => {  
     const selectedprojekti: advancedWebsiteData | undefined = fetchedUsersAdvancedData.find(
       (a) => a._id === id
     );
@@ -96,6 +95,8 @@ const Account: React.FC = () => {
           mapCity: "",
           additionalInfo: "",
           imageSrc: "",
+          _id: selectedprojekti._id,
+          name: selectedprojekti.name
         },
       };
 
@@ -130,6 +131,7 @@ const Account: React.FC = () => {
       console.log("user not found");
     }
   };
+
   return (
     <ProtectedComponent
       hasAuth={
@@ -144,12 +146,10 @@ const Account: React.FC = () => {
             <h2 className="text-2xl font-bold mb-4">Saved builds</h2>
             <div className="flex flex-wrap space-b  p-4 rounded-lg shadow-md bg-black text-center justify-center md:justify-start">
               {usersData.map((data) => (
-                <div className="m-2 relative">
-                  <div
-                    id={data._id}
-                    key={data._id}
+                <div className="m-2 relative" id={data._id} key={data._id} >
+                  <div 
                     className="savedbuild cursor-pointer bg-gray-700 min-h-[300px] h-[300px] w-[300px] rounded-lg border-2 border-slate-700 overflow-hidden"
-                    onClick={selectItemClick}
+                    onClick={() => selectItemClick(data._id)}
                   >
                     <div className="bg-slate-600 h-[80%] rounded-t-lg">
                       {isLoading ? (
@@ -200,13 +200,9 @@ const Account: React.FC = () => {
             <h2 className="text-2xl font-bold mb-4">Saved advanced builds</h2>
             <div className="flex flex-wrap space-b  p-4 rounded-lg shadow-md bg-black text-center justify-center md:justify-start">
               {usersAdvancedData.map((data) => (
-                <div className="m-2 relative">
-                  <div
-                    id={data._id}
-                    key={data._id}
-                    className="savedbuild cursor-pointer bg-gray-700 min-h-[300px] h-[300px] w-[300px] rounded-lg border-2 border-slate-700 overflow-hidden"
-                    onClick={selectAdvancedItemClick}
-                  >
+                <div className="m-2 relative" id={data._id} key={data._id} >
+                  <div className="savedbuild cursor-pointer bg-gray-700 min-h-[300px] h-[300px] w-[300px] rounded-lg border-2 border-slate-700 overflow-hidden" 
+                                     onClick={() => selectAdvancedItemClick(data._id)}>
                     <div className="bg-slate-600 h-[80%] rounded-t-lg">
                       {isLoading ? (
                         <div className="text-white flex items-center justify-center">
