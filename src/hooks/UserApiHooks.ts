@@ -319,8 +319,53 @@ const useUsers = () => {
   };
 
 
+  const updateUsersAdvancedSavedWebsite = async (websiteId: string, updatedData: advancedWebsiteData, user: UserData): Promise<advancedWebsiteData[]> => {
+    const options: RequestInit = {
+      method: "PUT",
+      mode: "cors",
+      headers: {
+        Authorization: authHeader(user),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: user.id, updatedData }),
+    };
 
-  return { registerUser, loginUser, loading, saveCode, getUsersSavedWebsites, getUsersAdvancedSavedWebsites, updateUsersSavedWebsite, deleteUsersSavedWebsite, advancedSaveCode, deleteUsersSavedAdvancedWebsite};
+    try {
+      setLoading(true);
+
+      const response = await fetch(
+        urli + "/updatesavedadvanced/" + websiteId,
+        options
+      );
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      return data as advancedWebsiteData[];
+    } catch (error) {
+      console.log(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    registerUser,
+    loginUser,
+    loading,
+    saveCode,
+    getUsersSavedWebsites,
+    getUsersAdvancedSavedWebsites,
+    updateUsersSavedWebsite,
+    deleteUsersSavedWebsite,
+    advancedSaveCode,
+    deleteUsersSavedAdvancedWebsite,
+    updateUsersAdvancedSavedWebsite,
+  };
 }
 
 
