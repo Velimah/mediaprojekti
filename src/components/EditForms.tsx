@@ -2,13 +2,16 @@ import { useState, useContext } from "react";
 import { PromptFunctions } from "../utils/PromptFunctions";
 import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
-import { HtmlContext } from "../contexts/HtmlContext";
+import { HtmlBlock, HtmlContext } from "../contexts/HtmlContext";
 import { useChatGPT } from "../hooks/ApiHooks";
 import Loader from "./Loader";
 import AlertDialog from "./AlertDialog";
+
 interface EditFormsProps {
   originalFormValues: {
     formValues: {
+      htmlArray: HtmlBlock[];
+      code: string;
       cssLibrary: string;
       colors: string;
       mapAddress: string;
@@ -40,6 +43,8 @@ const EditForms: React.FC<EditFormsProps> = ({
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
   const [formStateValues, setFormStateValues] = useState<FormValues>({
+    htmlArray: initialValues?.htmlArray || [],
+    code: initialValues?.code || "",
     cssLibrary: initialValues?.cssLibrary || "",
     colors: initialValues?.colors || "",
     mapAddress: initialValues?.mapAddress || "",
