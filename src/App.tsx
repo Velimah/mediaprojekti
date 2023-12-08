@@ -12,6 +12,7 @@ import Login from "./views/Login";
 import Account from "./views/Account";
 import { UserProvider } from "./contexts/UserContext";
 import ProtectedComponennt from "./components/ProtectedComponent";
+import AuthVerify from "./utils/AuthVerify";
 export function sum(a: number, b: number) {
   return a + b;
 }
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path="*" element={<Navigate to={"/"} replace />} />
               </Route>
             </Routes>
+            <AuthVerify/>
           </HashRouter>
           <Notification />
         </NotificationProvider>

@@ -2,19 +2,24 @@ import { useState, useContext } from "react";
 import { PromptFunctions } from "../utils/PromptFunctions";
 import { FormValues, PromptTemplate } from "../utils/Prompts";
 import { useChat } from "../contexts/ChatContext";
-import { HtmlContext } from "../contexts/HtmlContext";
+import { HtmlBlock, HtmlContext } from "../contexts/HtmlContext";
 import { useChatGPT } from "../hooks/ApiHooks";
 import Loader from "./Loader";
 import AlertDialog from "./AlertDialog";
-interface EditFormsProps {
+
+export interface EditFormsProps {
   originalFormValues: {
     formValues: {
+      htmlArray: HtmlBlock[];
+      code: string;
       cssLibrary: string;
       colors: string;
       mapAddress: string;
       mapCity: string;
       additionalInfo: string;
       imageSrc: string;
+      _id?: string;
+      name: string;
     };
   };
   setSelectedSection: (params: PromptTemplate) => void;
@@ -40,12 +45,16 @@ const EditForms: React.FC<EditFormsProps> = ({
   // Destructuring formValues from originalFormValues
   const { formValues: initialValues } = originalFormValues;
   const [formStateValues, setFormStateValues] = useState<FormValues>({
+    htmlArray: initialValues?.htmlArray || [],
+    code: initialValues?.code || "",
     cssLibrary: initialValues?.cssLibrary || "",
     colors: initialValues?.colors || "",
     mapAddress: initialValues?.mapAddress || "",
     mapCity: initialValues?.mapCity || "",
     additionalInfo: initialValues?.additionalInfo || "",
     imageSrc: initialValues?.imageSrc || "",
+    _id: initialValues?._id || undefined,
+    name: initialValues?.name || ""
   });
 
   const redoHeadTag = async (event: React.MouseEvent<HTMLButtonElement>) => {

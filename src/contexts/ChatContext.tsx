@@ -4,12 +4,19 @@ export type ChatState = {
   question: string;
   answer: string;
   editedanswer: string;
+  name: string;
+  _id?: string;
+  cssLibrary: string;
+  color: string;
 };
 
 const initialChatState: ChatState = {
   question: "",
   answer: "",
   editedanswer: "",
+  name: "",
+  cssLibrary: "",
+  color: ""
 };
 
 type ChatAction =

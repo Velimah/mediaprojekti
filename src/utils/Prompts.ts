@@ -1,3 +1,5 @@
+import { HtmlBlock } from "../contexts/HtmlContext";
+
 export type PromptTemplate =
   | "createNavigation"
   | "createMainSection"
@@ -9,12 +11,16 @@ export type PromptTemplate =
   | "sanitizeText";
 
 export interface FormValues {
+  htmlArray: HtmlBlock[];
+  code: string;
   cssLibrary: string;
   colors: string;
   mapAddress: string;
   mapCity: string;
   additionalInfo: string;
   imageSrc: string;
+  _id?: string;
+  name: string;
 }
 
 export const getPromptTemplate = (promptTemplate: PromptTemplate, formValues: FormValues): string => {
