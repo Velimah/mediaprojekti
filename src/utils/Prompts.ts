@@ -11,8 +11,8 @@ export type PromptTemplate =
   | "sanitizeText";
 
 export interface FormValues {
-  htmlArray: HtmlBlock[];
-  code: string;
+  htmlArray?: HtmlBlock[];
+  code?: string;
   cssLibrary: string;
   colors: string;
   mapAddress: string;
