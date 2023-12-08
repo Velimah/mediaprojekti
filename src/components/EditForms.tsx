@@ -54,21 +54,24 @@ const EditForms: React.FC<EditFormsProps> = ({
     additionalInfo: initialValues?.additionalInfo || "",
     imageSrc: initialValues?.imageSrc || "",
     _id: initialValues?._id || undefined,
-    name: initialValues?.name || ""
+    name: initialValues?.name || "",
   });
 
+  //takes built html blocks and recreates the htmlArray with new head information using html block information
   const redoHeadTag = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const newArray = [...htmlArray];
     setLoading(true);
 
+    // fecteches head information and adds it to the htmlArray in first position
     const sanitizedHtmlData = await createHeadInfo(
       formStateValues,
       htmlArray
-        .slice(1, -1) // Exclude the first and last elements
+        .slice(1, -1) // Exclude the first and last html blocks
         .map((block) => block.content)
         .join("")
     );
+    // replaces last item with document end to be sure it is correct
     newArray[0] = sanitizedHtmlData;
     newArray[htmlArray.length - 1] = { id: 1000, name: "documentEnd", content: "\n</body>\n</html>" };
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
@@ -76,6 +79,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     setLoading(false);
   };
 
+  // check for first available id and assigns it to the new html block
   const checkForFreeId = (newArray: { id: number }[]) => {
     for (let i = 1; i < 1000; i++) {
       const isDuplicateId = newArray.some((element: { id: number }) => element.id === i);
@@ -85,6 +89,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     }
   };
 
+  // creates new html block and adds it to the htmlArray
   const handleCreateHtmlBlockForm = async (htmlBlockName: PromptTemplate, event: React.FormEvent) => {
     event.preventDefault();
     const newHtmlArray = [...htmlArray];
@@ -161,6 +166,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     }
   };
 
+  // sanitizes text and adds it to the form text area
   const handleSanitizeText = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
@@ -179,6 +185,7 @@ const EditForms: React.FC<EditFormsProps> = ({
     }
   };
 
+  // goes back to previous htmlArray and removes last item from pastHtmlArrays
   const undoLastChange = () => {
     if (pastHtmlArrays.length > 0) {
       const previousHtmlArray = pastHtmlArrays[pastHtmlArrays.length - 1];

@@ -19,27 +19,37 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
   }, [htmlArray]);
 
   const onDragEnd = ({ source, destination }: DropResult) => {
+    //checks if the item was dropped outside the list/remove area
     if (destination === undefined || destination === null) return null;
     if (source.droppableId === destination.droppableId && destination.index === source.index) return null;
+    // the index of the item being moved
     const indexToRemove = source.index;
 
+    // removes first and last objects from htmlArray
     const reorderedItems = Array.from(htmlArray.slice(1, -1));
+    //saves to moved item
     const [movedItem] = reorderedItems.splice(source.index, 1);
+    // puts moved item into new position
     reorderedItems.splice(destination.index, 0, movedItem);
+    // renders the list with new order
     setRenderedItems(reorderedItems);
 
     // Add the first and last items back to htmlArray
     const firstItem = htmlArray[0];
     const lastItem = htmlArray[htmlArray.length - 1];
     const newHtmlArray = [firstItem, ...reorderedItems, lastItem];
+    // saves array history
     setPastHtmlArrays([...pastHtmlArrays, htmlArray]);
+    // updates complete htmlArray
     setHtmlArray(newHtmlArray);
 
+    //check if item is moved into remove area
     if (destination && destination.droppableId === "removeArea") {
-      // The item was dragged into the remove area, remove it from the list
+      // removes active html block
       setLastHtmlBlockId(null);
 
-      const updatedItems = renderedItems.slice(); // Create a copy
+      // creates a new array without the removed item and renders it
+      const updatedItems = renderedItems.slice();
       updatedItems.splice(indexToRemove, 1);
       setRenderedItems(updatedItems);
 
@@ -50,6 +60,7 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
     }
   };
 
+  // toggles active html block and changs form names when clicked
   const handleItemClick = (item: HtmlBlock, event: React.MouseEvent) => {
     event.preventDefault();
     if (item.id !== lastHtmlBlockId) {
