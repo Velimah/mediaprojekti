@@ -4,10 +4,12 @@ import { WebsiteData, advancedWebsiteData, useUsers } from "../hooks/UserApiHook
 import ProtectedComponent from "../components/ProtectedComponent";
 import { useNavigate } from 'react-router-dom';
 import { ChatState } from "../contexts/ChatContext";
+import { useNotification } from "../contexts/NotificationContext";
 
 const Account: React.FC = () => {
-  const { getUsersSavedWebsites, getUsersAdvancedSavedWebsites, deleteUsersSavedWebsite,deleteUsersSavedAdvancedWebsite } = useUsers();
+  const { getUsersSavedWebsites, getUsersAdvancedSavedWebsites, deleteUsersSavedWebsite, deleteUsersSavedAdvancedWebsite } = useUsers();
   const { user } = useUser();
+  const { setNotification } = useNotification();
 
   const [usersData, setUsersData] = useState<WebsiteData[]>([]);
   const [fetchedUsersData, setFetchedUsersData] = useState<WebsiteData[]>([]);
@@ -110,8 +112,10 @@ const Account: React.FC = () => {
         await deleteUsersSavedWebsite(id, user); 
         const updatedSavedStuff = await getUsersSavedWebsites(user);
         setFetchedUsersData(updatedSavedStuff);
+        setNotification("default", "Deleted")
       } catch (error) {
         console.error("Error deleting:", error);
+        setNotification("error", "Something went wrong while trying to delete")
       }
     } else {
       console.log("user not found");
@@ -124,8 +128,10 @@ const Account: React.FC = () => {
         await deleteUsersSavedAdvancedWebsite(id, user); 
         const updatedSavedStuff = await getUsersAdvancedSavedWebsites(user);
         setFetchedUsersAdvancedData(updatedSavedStuff);
+        setNotification("default", "Deleted")
       } catch (error) {
         console.error("Error deleting:", error);
+        setNotification("error", "Something went wrong while trying to delete")
       }
     } else {
       console.log("user not found");
