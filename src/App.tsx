@@ -13,9 +13,6 @@ import Account from "./views/Account";
 import { UserProvider } from "./contexts/UserContext";
 import ProtectedComponennt from "./components/ProtectedComponent";
 import AuthVerify from "./utils/AuthVerify";
-export function sum(a: number, b: number) {
-  return a + b;
-}
 
 const App = () => {
   return (
@@ -25,22 +22,19 @@ const App = () => {
           <HashRouter>
             <Routes>
               <Route element={<Layout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/advanced" element={<AdvancedHome />} />
-                <Route path="/result" element={<Result />} />
-                <Route path="/advancedresult" element={<AdvancedResult />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/account" element={
-                    <ProtectedComponennt
-                      hasAuth={<Account />}
-                      noAuth={<Navigate to={"/login"} replace />}
-                    />
-                  }
+                <Route path='/' element={<Home />} />
+                <Route path='/advanced' element={<AdvancedHome />} />
+                <Route path='/result' element={<Result />} />
+                <Route path='/advancedresult' element={<AdvancedResult />} />
+                <Route path='/login' element={<Login />} />
+                <Route
+                  path='/account'
+                  element={<ProtectedComponennt hasAuth={<Account />} noAuth={<Navigate to={"/login"} replace />} />}
                 />
-                <Route path="*" element={<Navigate to={"/"} replace />} />
+                <Route path='*' element={<Navigate to={"/"} replace />} />
               </Route>
             </Routes>
-            <AuthVerify/>
+            <AuthVerify />
           </HashRouter>
           <Notification />
         </NotificationProvider>
