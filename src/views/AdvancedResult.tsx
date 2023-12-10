@@ -190,7 +190,7 @@ const AdvancedResult = () => {
   const SavePopup = () => {
     return (
       <div
-        className="w-full h-full overflow-hidden absolute top-1/2 left-1/2 transform translate-x-[-50%] -translate-y-1/2 z-[1] bg-black bg-opacity-25"
+        className="w-full h-full overflow-hidden fixed top-1/2 left-1/2 transform translate-x-[-50%] -translate-y-1/2 z-[1] bg-black bg-opacity-25"
         id="alertDialog"
       >
         <div
