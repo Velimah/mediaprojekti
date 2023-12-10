@@ -45,6 +45,11 @@ const Header = () => {
     };
   }, []);
 
+   // Close MobileMenu if active page changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [activePage]);
+
   // render mobile menu
   const MobileMenu = () => {
     return (
