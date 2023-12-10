@@ -15,6 +15,8 @@ const AdvancedResult = () => {
 
   const { htmlArray, setHtmlArray } = useContext(HtmlContext);
   const originalFormValues = useLocation().state || {};
+  const [formValues, setFormValues] = useState(originalFormValues.formValues || {});
+  const name = useRef(formValues.name);
   const [code, setCode] = useState<string>("");
   const previewFrame = useRef<HTMLIFrameElement>(null);
   const codeTextarea = useRef<HTMLTextAreaElement>(null);
@@ -28,6 +30,7 @@ const AdvancedResult = () => {
   const { setNotification } = useNotification();
   const [previewWidth, setPreviewWidth] = useState<string>("100%");
   const [hasSaved, setHasSaved] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [openSave, setOpenSave] = useState<boolean>(false);
   const [handleCloseSave, setHandleCloseSave] = useState<boolean>(false);
 
@@ -61,6 +64,19 @@ const AdvancedResult = () => {
     handleRunCode();
   }, [code]);
 
+  useEffect(() => {
+    // Disable scrolling when save modal is open
+    if (openSave) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [openSave]);
+
   const handleRunCode = () => {
     if (previewFrame.current) {
       const iframeDocument = previewFrame.current.contentDocument;
@@ -88,44 +104,64 @@ const AdvancedResult = () => {
     const url = URL.createObjectURL(blob);
     const fileLink = document.createElement("a");
     fileLink.href = url;
-    fileLink.download = "your-website.html";
+    const sanitizename = name.current.replace(/[\\/:"*?<>|]/g, '') // use as filename if it does not contain unsupported characters
+    fileLink.download = `${sanitizename !== '' ? name.current : 'your-website'}.html`;
     fileLink.dispatchEvent(new MouseEvent("click"));
     URL.revokeObjectURL(url);
     //change hasSaved to true
     setHasSaved(true);
   };
 
-  const handleSave = () => {
-    const fvals: FormValues = originalFormValues.formValues;
-    let name: string | null = "";
-    name = prompt("Please enter a name for your code:", fvals.name);
+  const handleSave = async () => {
+    setIsSaving(true);
 
-    if (name && user) {
-      if (fvals._id !== undefined) {
-        const website: advancedWebsiteData = {
-          originalCode: code,
-          htmlarray: htmlArray,
-          name: name,
-          _id: fvals._id,
-          cssLibrary: fvals.cssLibrary,
-          previewimage: null,
-        };
-        updateUsersAdvancedSavedWebsite(website._id, website, user);
-        setOpenSave(false);
-        setNotification("default", "Updated");
+    const fvals: FormValues = formValues;
+    try {
+      if (name.current !== "" && user) {
+        if (fvals._id !== undefined) {
+          const website: advancedWebsiteData = {
+            originalCode: code,
+            htmlarray: htmlArray,
+            name: name.current,
+            _id: fvals._id,
+            cssLibrary: fvals.cssLibrary,
+            previewimage: null,
+          };
+          setOpenSave(false);
+          setNotification("default", "Updating...");
+          await updateUsersAdvancedSavedWebsite(website._id, website, user);
+          setNotification("default", "Updated!");
+          setHasSaved(true);
+        } else {
+          setOpenSave(false);
+          setNotification("default", "Saving...");
+
+          const response = await advancedSaveCode(
+            code,
+            name.current,
+            formValues.cssLibrary,
+            htmlArray,
+            user
+          );
+
+          const parsedResponse = JSON.parse(response);
+
+          setFormValues({
+            ...formValues,
+            _id: parsedResponse._id,
+          });
+
+          setNotification("default", "Saved!");
+          setHasSaved(true);
+        }
       } else {
-        advancedSaveCode(
-          code,
-          name,
-          originalFormValues.formValues.cssLibrary,
-          htmlArray,
-          user
-        );
-        setOpenSave(false);
-        setNotification("default", "Saved");
+        setNotification("default", "Code was not saved");
       }
-    } else {
-      setNotification("default", "Code was not saved");
+    } catch (error) {
+      console.log(error);
+      setNotification("error", "Something went wrong");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -192,6 +228,19 @@ const AdvancedResult = () => {
               <span className="text-2xl font-bold font-robot">SAVE</span>
             </div>
             <div className="flex flex-col items-center justify-center font-robot gap-5">
+              <label htmlFor="nameInput" className="text-white">
+                Enter a name:
+              </label>
+              <input
+                className="border rounded-md py-2 px-4"
+                type="text"
+                placeholder="Enter name"
+                defaultValue={name.current}
+                id="nameInput"
+                onChange={(e) => {
+                  name.current = e.target.value.trim();
+                }}
+              ></input>
               <button onClick={handleSave} className="primary-btn">
                 <span className="flex gap-2 justify-center">
                   <svg
@@ -317,7 +366,8 @@ const AdvancedResult = () => {
                   hasAuth={
                     <button
                       onClick={() => setOpenSave(true)}
-                      className="build-btn toolbar-btn w-40"
+                      className="build-btn toolbar-btn w-40 disabled:opacity-50"
+                      disabled={isSaving}
                     >
                       <span className="flex justify-center gap-2">
                         <svg
