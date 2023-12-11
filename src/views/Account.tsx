@@ -176,7 +176,14 @@ const Account: React.FC = () => {
                         )
                       )}
                     </div>
-                    <p className="text-black py-2 font-robot break-words">{data.name}</p>
+                    <p className="group flex justify-center items-center min-h-[20%] break-words text-black py-2 font-robot break-words">
+                      {data.name.length > 27 && (
+                        <span className="opacity-0 group-hover:opacity-100 bg-zinc-800 text-white text-xs rounded p-1 absolute bottom-10 left-1/2 transform -translate-x-1/2 whitespace-wrap max-w-[110%] pointer-events-none border-zinc-400 border">
+                          {data.name}
+                        </span>
+                      )}
+                      {data.name}
+                    </p>
                   </div>
                   <div className="w-full">
                     <button
@@ -228,7 +235,14 @@ const Account: React.FC = () => {
                         )
                       )}
                     </div>
-                    <p className="text-ai-black py-2 font-robot break-words">{data.name}</p>
+                    <p className="group flex justify-center items-center min-h-[20%] break-words text-ai-black py-2 font-robot break-words">
+                      {data.name.length > 27 && (
+                        <span className="opacity-0 group-hover:opacity-100 bg-zinc-800 text-white text-xs rounded p-1 absolute bottom-10 left-1/2 transform -translate-x-1/2 whitespace-wrap max-w-[110%] pointer-events-none border-zinc-400 border">
+                          {data.name}
+                        </span>
+                      )}
+                      {data.name}
+                    </p>
                   </div>
                   <div className="w-full">
                     <button
