@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useChat } from "../contexts/ChatContext";
+import { useUser } from '../contexts/UserContext';
 
 // TODO: Update to backend URL when pushing to main, switch to localhost when testing locally
 // server URL https://medpal-catkos.northeurope.cloudapp.azure.com || http://localhost:8000
@@ -11,6 +12,9 @@ const useChatGPT = () => {
   const { dispatch } = useChat();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
+
+  //get username
+  const { user } = useUser();
 
   const postQuestion = async (role: string, newQuestion: string): Promise<string> => {
     const options: RequestInit = {
@@ -64,7 +68,7 @@ const useChatGPT = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ prompt: newQuestion, size: size }),
+      body: JSON.stringify({ prompt: newQuestion, size: size, username: user?.username }),
     };
     console.log("Prompt:", newQuestion);
 

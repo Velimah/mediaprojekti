@@ -416,34 +416,11 @@ const Result = () => {
                   }
                   noAuth={<></>}
                 />
-
-                {/*
-              <button
-                onClick={handleSave}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Save
-              </button>
-              <button
-                onClick={handleSaveToFile}
-                className="bg-black text-white py-2 px-4 rounded m-1"
-              >
-                Save as HTML
-              </button>*/}
               </div>
             </div>
           </div>
-          {/*
-        <div className="mb-4">
-          <button
-            onClick={handleRunCode}
-            className="bg-blue-500 text-white py-2 px-4 rounded"
-          >
-            Show preview
-          </button>
-        </div>*/}
           <div className="mb-4">
-            <div className="bg-white flex flex-col items-center border border-black rounded">
+            <div className="bg-transparent flex flex-col items-center border border-black rounded">
               <h2
                 className="bg-ai-primary text-ai-black text-lg font-bold font-robot w-full p-3 h-12 flex items-center uppercase cursor-pointer"
                 onClick={togglePreviewVisibility}

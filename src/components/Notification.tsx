@@ -41,7 +41,7 @@ const Notification: React.FC = () => {
                    transform translate-y-full animate-slide-up`;
       break;
     case "error":
-      notiStyle = `bg-red-500 
+      notiStyle = `bg-ai-tertiary
                    text-center flex flex-row text-white bottom-0 right-10 
                    fixed p-3 border rounded-xl transition-transform duration-[${time}ms] 
                    transform translate-y-full animate-slide-up`;

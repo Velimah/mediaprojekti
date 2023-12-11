@@ -74,7 +74,7 @@ const PromptDialog: React.FC<{ question: string | null }> = ({
             </div>
         </div>
         ) : (
-            <div className={`fixed left-0 top-2/4 -translate-y-1/2 ml-5 animate-slide-left cursor-pointer hover:scale-110 transition-scale duration-300 ease-in-out `}
+            <div className={`fixed left-0 top-2/4 -translate-y-1/2 ml-5 animate-slide-left cursor-pointer hover:scale-110 transition-scale duration-75 ease-in-out `}
                 onClick={()=>setHide(true)}
             >
                 <div className="flex flex-col items-center bg-ai-black shadow-2xl rounded-md w-full">
