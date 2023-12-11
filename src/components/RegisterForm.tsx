@@ -34,7 +34,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
 
   return (
     <div className="bg-ai-black-100 p-8 rounded-lg shadow-3xl text-white">
-      <h2 className="text-2xl font-bold mb-4">Register</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center font-robot">Register</h2>
       <form className="space-y-4" onSubmit={handleRegister}>
         <div className="flex flex-col">
           <label htmlFor="username" className="mb-1 font-semibold">
@@ -45,11 +45,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="... peer border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
+            className="... peer rounded-md border-ai-black text-ai-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full"
             required
             pattern=".{1,}"
           />
-          <span className="mt-2 hidden text-sm text-orange-400 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+          <span className="mt-2 hidden text-sm text-ai-tertiary peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
             Username can't be empty
           </span>
         </div>
@@ -62,11 +62,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="... peer border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
+            className="... peer rounded-md border-ai-black text-ai-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full"
             required
             pattern=".{7,}"
           />
-          <span className="mt-2 hidden text-sm text-orange-400 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+          <span className="mt-2 hidden text-sm text-ai-tertiary peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
             Password should be at least 7 letters
           </span>
         </div>
@@ -79,17 +79,17 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setToggle }) => {
             id="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="... peer border px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black"
+            className="... peer rounded-md border-ai-black text-ai-black p-3 placeholder-grey-400 placeholder:italic placeholder:truncate focus:outline-none focus:border-ai-primary focus:ring-ai-primary focus:ring-2 w-full"
             required
             pattern=".{7,}"
           />
-          <span className="mt-2 hidden text-sm text-orange-400 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+          <span className="mt-2 hidden text-sm text-ai-tertiary peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
             Password should be at least 7 letters
           </span>
         </div>
         <button
           type="submit"
-          className="primary-btn w-full text-white px-4 py-2 rounded-md transition duration-300"
+          className="primary-btn"
         >
           Register
         </button>

@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        "ai-primary": "#74A446", // green
-        "ai-secondary": "#BD8D2E", // orange/brown
+        "ai-primary": "#92da36", // green
+        "ai-secondary": "#ffab40", // orange/brown
         "ai-tertiary": "#D14242", // red
         "ai-black": "#161616",
         "ai-black-100": "#1e1e1e",
@@ -16,6 +16,7 @@ export default {
       },
       backgroundSize: {
         20: "20px 20px",
+        50: "50px 50px",
       },
       backgroundImage: {
         gridBg:

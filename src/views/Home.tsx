@@ -188,9 +188,9 @@ const Home = () => {
                         className='w-full rounded-md bg-white pl-1 cursor-pointer text-ai-black'
                         onChange={(e) => setNewCSS(e.target.value)}
                       >
-                        <option value='Vanilla'>Vanilla/Default</option>
                         <option value='Tailwind'>Tailwind</option>
                         <option value='Bootstrap'>Bootstrap</option>
+                        <option value='Vanilla'>Vanilla/Default</option>
                         <option value='Materialize'>Materialize</option>
                         <option value='Bulma'>Bulma</option>
                         <option value='Foundation'>Foundation</option>

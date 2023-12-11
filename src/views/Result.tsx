@@ -116,7 +116,7 @@ const Result = () => {
 
   const handleBuild = () => {
     // Build logic here
-    setNotification("default", "Built");
+    setNotification("default", "Built!");
   };
 
   const handleSave = async () => {
@@ -438,7 +438,7 @@ const Result = () => {
             </div>
           </div>
           <div className="mb-4">
-            <div className="bg-white flex flex-col items-center border border-black rounded">
+            <div className="bg-transparent flex flex-col items-center border border-black rounded">
               <h2
                 className="bg-ai-primary text-ai-black text-lg font-bold font-robot w-full p-3 h-12 flex items-center uppercase cursor-pointer"
                 onClick={togglePreviewVisibility}
