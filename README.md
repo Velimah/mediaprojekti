@@ -19,6 +19,10 @@
 **Build to production:**
 `npm run build`
 
+**Project backend Github repository**
+
+[https://github.com/Velimah/mediaprojekti-backend/](https://github.com/Velimah/mediaprojekti-backend/)
+
 **Project website**
 
 [https://velimah.github.io/mediaprojekti/](https://velimah.github.io/mediaprojekti/)
