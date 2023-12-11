@@ -85,11 +85,11 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
                 <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                   {(provided, snapshot) => (
                     <div
-                      className={`w-full p-2 mt-2 rounded cursor-pointer ${
+                      className={`w-full p-2 mt-2 rounded cursor-pointer stroke-ai-primary hover:stroke-black ${
                         snapshot.isDragging
-                          ? "bg-ai-primary"
+                          ? "bg-ai-primary stroke-black"
                           : lastHtmlBlockId === item.id
-                          ? "bg-ai-primary"
+                          ? "bg-ai-primary stroke-black"
                           : "toolbar-btn"
                       }`}
                       onClick={(event) => handleItemClick(item, event)}
@@ -111,7 +111,6 @@ const DragDropList: React.FC<DragDropListProps> = ({ setSelectedSection, getSect
                               {" "}
                               <path
                                 d='M5 10H19M14 19L12 21L10 19M14 5L12 3L10 5M5 14H19'
-                                stroke='#000000'
                                 strokeWidth='2'
                                 strokeLinecap='round'
                                 strokeLinejoin='round'

@@ -46,13 +46,31 @@ const Result = () => {
   useEffect(() => {
     // Update the code state with the current answer
     if (answer) {
-      setCode(answer);
+      // Extract content between ```html and ```
+      const regex = /```html\n([\s\S]*?)\n```/;
+      const match = answer.match(regex);
+      if (match) {
+        const extracted = match[1];
+        setCode(extracted);
+      } else {
+        setCode(answer);
+      }
     }
   }, [answer]);
 
   useEffect(() => {
     // from account view
-    setCode(originalPrompt.answer);
+    if (originalPrompt.answer) {
+      // Extract content between ```html and ```
+      const regex = /```html\n([\s\S]*?)\n```/;
+      const match = originalPrompt.answer.match(regex);
+      if (match) {
+        const extracted = match[1];
+        setCode(extracted);
+      } else {
+        setCode(originalPrompt.answer);
+      }
+    }
   }, [originalPrompt.answer]);
 
   useEffect(() => {
