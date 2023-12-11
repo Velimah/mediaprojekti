@@ -98,7 +98,7 @@ const Result = () => {
 
   const handleBuild = () => {
     // Build logic here
-    setNotification("default", "Built");
+    setNotification("default", "Built!");
   };
 
   const handleSave = async () => {

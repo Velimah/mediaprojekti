@@ -24,6 +24,9 @@
   .active { /* ative nav link styling */
     @apply text-ai-primary border-ai-primary border-b-2;
   }
+  .saved-builds{
+    display: grid; align-items: center; justify-items: center;
+  }
 }
 
 @keyframes slide-up {

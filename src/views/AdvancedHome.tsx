@@ -155,7 +155,7 @@ const AdvancedHome = () => {
                 </label>
                 <div className='flex py-4 md:flex-row flex-col items-stretch md:items-center'>
                   <div>
-                    <label className='flex flex-row pb-2'>
+                    <label className='flex flex-row'>
                       <span className='pr-2 font-bold'>CSS:</span>
                       <select
                         id='userPromptCSS'

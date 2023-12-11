@@ -25,8 +25,7 @@ const Loader = () => {
               />
             </svg>
             <span className='pt-4 font-robot font-bold text-2xl'>LOADING</span>
-            <button className='p-2 mt-4 primary-btn' onClick={() => setLoading(false)}>
-              Remove Popup
+            <button onClick={() => setLoading(false)}>
             </button>
           </div>
         </div>

@@ -16,6 +16,7 @@ export default {
       },
       backgroundSize: {
         20: "20px 20px",
+        50: "50px 50px",
       },
       backgroundImage: {
         gridBg:

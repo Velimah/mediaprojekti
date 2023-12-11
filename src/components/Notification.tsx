@@ -10,12 +10,12 @@ const Notification: React.FC = () => {
   useEffect(() => {
     if (!isInitialCall) {
       setVisible(true);
-      console.log("show noti");
+      //console.log("show noti");
 
       const timeout = setTimeout(() => {
         setVisible(false);
         setKey((prevKey) => prevKey + 1);
-        console.log("hide noti");
+        //console.log("hide noti");
       }, time);
 
       return () => {
@@ -37,13 +37,13 @@ const Notification: React.FC = () => {
     case "default":
       notiStyle = `bg-black 
                    text-center flex flex-row text-white bottom-0 right-10 
-                   fixed p-3 border rounded-xl transition-transform duration-[${time}ms] 
+                   fixed p-3 rounded-xl transition-transform duration-[${time}ms] 
                    transform translate-y-full animate-slide-up`;
       break;
     case "error":
       notiStyle = `bg-ai-tertiary
                    text-center flex flex-row text-white bottom-0 right-10 
-                   fixed p-3 border rounded-xl transition-transform duration-[${time}ms] 
+                   fixed p-3 rounded-xl transition-transform duration-[${time}ms] 
                    transform translate-y-full animate-slide-up`;
       break;
     default:
@@ -58,7 +58,7 @@ const Notification: React.FC = () => {
         fill="none"
         viewBox="0 0 24 10"
         strokeWidth="1.5"
-        stroke="grey"
+        stroke="white"
         className="h-8 shrink-0"
       >
         <rect
@@ -68,7 +68,7 @@ const Notification: React.FC = () => {
           height="9"
           strokeLinecap="round"
           strokeLinejoin="round"
-          fill="grey"
+          fill="white"
         />
         <circle
           cx="8.5"
@@ -76,7 +76,7 @@ const Notification: React.FC = () => {
           r="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          fill="white"
+          fill="black"
           className="animate-pulse"
         />
         <circle
@@ -85,11 +85,11 @@ const Notification: React.FC = () => {
           r="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          fill="white"
+          fill="black"
           className="animate-pulse"
         />
       </svg>
-      <p>{notificationMessage}</p>
+      <p className="font-robot">{notificationMessage}</p>
     </div>
   ) : null;
 };
