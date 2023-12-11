@@ -144,17 +144,17 @@ const Account: React.FC = () => {
         <div className="bg-ai-black-100 p-8 rounded-lg shadow-3xl text-white w-full lg:w-3/4 px-4 m-5">
           <div className="my-4">
             <h2 className="text-2xl font-bold mb-4">Account</h2>
-            <div className="placeholder flex flex-wrap space-b  p-4 rounded-lg shadow-md bg-black text-center justify-center md:justify-start">
+            <div className="placeholder flex flex-wrap space-b  p-4 rounded-lg shadow-md bg-[#0d0d0d] text-center justify-center md:justify-start">
               <p>username: {user?.username}</p>
             </div>
           </div>
           <div className="my-4">
             <h2 className="text-2xl font-bold mb-4">Saved builds</h2>
-            <div className="flex flex-wrap space-b  p-4 rounded-lg shadow-md bg-black text-center justify-center md:justify-start">
+            <div className="flex flex-wrap space-b  p-4 rounded-lg shadow-md bg-[#0d0d0d] text-center justify-center md:justify-start">
               {usersData.map((data) => (
-                <div className="m-2 relative" id={data._id} key={data._id} >
-                  <div 
-                    className="savedbuild cursor-pointer bg-gray-700 min-h-[300px] h-[300px] w-[300px] rounded-lg border-2 border-slate-700 overflow-hidden"
+                <div className="m-2 relative" id={data._id} key={data._id}>
+                  <div
+                    className="savedbuild cursor-pointer bg-zinc-700 min-h-[200px] h-[250px] w-[250px] rounded-lg border-2 border-zinc-600 overflow-hidden"
                     onClick={() => selectItemClick(data._id)}
                   >
                     <div className="bg-slate-600 h-[80%] rounded-t-lg">
@@ -172,7 +172,14 @@ const Account: React.FC = () => {
                         )
                       )}
                     </div>
-                    <p className="text-white font-bold break-words">{data.name}</p>
+                    <p className="group flex justify-center items-center min-h-[20%] text-white font-bold break-words">
+                      {data.name.length > 27 && (
+                        <span className="opacity-0 group-hover:opacity-100 bg-zinc-800 text-white text-xs rounded p-1 absolute bottom-10 left-1/2 transform -translate-x-1/2 whitespace-wrap max-w-[110%] pointer-events-none border-zinc-400 border">
+                          {data.name}
+                        </span>
+                      )}
+                      {data.name}
+                    </p>
                   </div>
                   <div className="w-full">
                     <button
@@ -204,11 +211,13 @@ const Account: React.FC = () => {
           </div>
           <div className="my-4">
             <h2 className="text-2xl font-bold mb-4">Saved advanced builds</h2>
-            <div className="flex flex-wrap space-b  p-4 rounded-lg shadow-md bg-black text-center justify-center md:justify-start">
+            <div className="flex flex-wrap space-b  p-4 rounded-lg shadow-md bg-[#0d0d0d] text-center justify-center md:justify-start">
               {usersAdvancedData.map((data) => (
-                <div className="m-2 relative" id={data._id} key={data._id} >
-                  <div className="savedbuild cursor-pointer bg-gray-700 min-h-[300px] h-[300px] w-[300px] rounded-lg border-2 border-slate-700 overflow-hidden" 
-                                     onClick={() => selectAdvancedItemClick(data._id)}>
+                <div className="m-2 relative" id={data._id} key={data._id}>
+                  <div
+                    className="savedbuild cursor-pointer bg-zinc-700 min-h-[250px] h-[250px] w-[250px] rounded-lg border-2 border-zinc-600 overflow-hidden"
+                    onClick={() => selectAdvancedItemClick(data._id)}
+                  >
                     <div className="bg-slate-600 h-[80%] rounded-t-lg">
                       {isLoading ? (
                         <div className="text-white flex items-center justify-center">
@@ -224,7 +233,14 @@ const Account: React.FC = () => {
                         )
                       )}
                     </div>
-                    <p className="text-white font-bold break-words">{data.name}</p>
+                    <p className="group flex justify-center items-center min-h-[20%] text-white font-bold break-words">
+                      {data.name.length > 27 && (
+                        <span className="opacity-0 group-hover:opacity-100 bg-zinc-800 text-white text-xs rounded p-1 absolute bottom-10 left-1/2 transform -translate-x-1/2 whitespace-wrap max-w-[110%] pointer-events-none border-zinc-400 border">
+                          {data.name}
+                        </span>
+                      )}
+                      {data.name}
+                    </p>
                   </div>
                   <div className="w-full">
                     <button
