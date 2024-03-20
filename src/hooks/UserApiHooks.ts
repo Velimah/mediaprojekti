@@ -3,7 +3,7 @@ import { HtmlBlock } from "../contexts/HtmlContext";
 
 // TODO: Update to backend URL when pushing to main, switch to localhost when testing locally
 // server URL https://medpal-catkos.northeurope.cloudapp.azure.com/user
-const urli: string = "https://www.ai-pagebuilder-backend.vercel.app//user";
+const urli: string = "https://www.ai-pagebuilder-backend.vercel.app/user";
 
 export interface UserData {
   id: string;
