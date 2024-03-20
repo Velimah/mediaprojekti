@@ -4,7 +4,7 @@ import { useUser } from '../contexts/UserContext';
 
 // TODO: Update to backend URL when pushing to main, switch to localhost when testing locally
 // server URL https://medpal-catkos.northeurope.cloudapp.azure.com || http://localhost:8000
-const urli: string = "https://medpal-catkos.northeurope.cloudapp.azure.com";
+const urli: string = "https://ai-pagebuilder-backend.vercel.app/";
 const urlTxt: string = "/gpt/completions";
 const urlImg: string = "/gpt/generations";
 
